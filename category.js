@@ -1,4 +1,3 @@
-// category.js
 document.addEventListener('DOMContentLoaded', () => {
   const contentDiv = document.getElementById('content');
   const categoryButtons = Array.from(document.querySelectorAll('.category-button'));
@@ -84,4 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ดึงสถานะ active ทันทีเมื่อหน้าเว็บกำลังโหลด
   checkURL();
+
+  // เพิ่มส่วนการเปลี่ยนเส้นทาง URL ไปยัง #emoji เมื่อเข้ามาครั้งแรก
+  if (!window.location.hash) {
+    window.location.hash = 'emoji';
+  }
 });
