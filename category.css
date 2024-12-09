@@ -1,0 +1,99 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* category.css */
+.category-bar {
+    display: flex;
+    justify-content: center; /* กลางหน้า */
+    align-items: center;
+    width: 100%;
+    background: none; /* ไม่มีพื้นหลัง */
+    border-bottom: none; /* ไม่มีเส้นขีดล่าง */
+    margin: 0; /* ไม่มีระยะห่าง */
+    padding: 0; /* ไม่มีระยะห่าง */
+    background-image: var(--navbar-bg); /* ใช้ CSS Variable สำหรับพื้นหลัง */
+    color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
+    position: relative;
+    top: 0; /* ปรับระยะห่างเริ่มต้น */
+}
+
+.category-container {
+    display: flex;
+    width: 100%;
+}
+
+.category-button {
+    flex: 1; /* ขยายปุ่มให้มีขนาดเท่ากัน */
+    width: 50%; /* ปุ่มแต่ละปุ่มครึ่งหนึ่งของ .category-container */
+    margin: 0; /* ไม่มีช่องว่าง */
+    background: none; /* ไม่มีพื้นหลัง */
+    color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+    outline: none; /* ปิดการแสดงผล outline */
+    box-shadow: none; /* ปิดการแสดงผล shadow */
+    -webkit-tap-highlight-color: transparent; /* ปิด highlight เมื่อคลิกใน WebKit เบราว์เซอร์ */
+    -webkit-user-select: none; /* ป้องกันการเลือกตัวอักษรใน WebKit เบราว์เซอร์ */
+    user-select: none; /* ป้องกันการเลือกตัวอักษร */
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 480px) {
+    .category-bar {
+        top: -26px; /* ลดระยะห่างจาก nav */
+    }
+    .category-button {
+        font-size: 14px; /* ปรับขนาดตัวอักษร */
+        padding: 10px 15px; /* ขนาดกะทัดรัด */
+    }
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดกลาง */
+@media (min-width: 481px) and (max-width: 767px) {
+    .category-bar {
+        top: 9px; /* ไม่มีระยะห่างจาก nav */
+    }
+    .category-button {
+        font-size: 18px; /* ปรับขนาดตัวอักษร */
+        padding: 16px 22px; /* ขนาดกะทัดรัด */
+    }
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดใหญ่ */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .category-bar {
+        top: 10px; /* เพิ่มระยะห่างจาก nav */
+    }
+    .category-button {
+        font-size: 20px; /* ปรับขนาดตัวอักษร */
+        padding: 20px 28px; /* ขนาดกะทัดรัด */
+    }
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดใหญ่มาก */
+@media (min-width: 1025px) {
+    .category-bar {
+        top: 10px; /* เพิ่มระยะห่างจาก nav */
+    }
+    .category-button {
+        font-size: 22px; /* ปรับขนาดตัวอักษร */
+        padding: 22px 32px; /* ขนาดกะทัดรัด */
+    }
+}
+
+.category-button:hover {
+    background-color: var(--nav-button-hover-bg); /* พื้นหลังเมื่อ hover */
+    color: var(--nav-button-hover-color); /* สีตัวอักษรเมื่อ hover */
+}
+
+.category-button.active {
+    background-color: var(--nav-button-bg-active); /* พื้นหลังเมื่อ active */
+    color: var(--nav-button-color-active); /* สีตัวอักษรเมื่อ active */
+}

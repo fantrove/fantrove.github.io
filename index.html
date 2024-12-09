@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="category.css"> <!-- ลิงก์ไปยัง category.css -->
+    <title>FanTrove</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-title">FanTrove</div>
+        <div class="navbar-toggle" id="navbarToggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+
+    <!-- ปุ่ม category ที่เลื่อนแนวนอน -->
+    <div class="category-bar">
+        <div class="category-container">
+            <button class="category-button" onclick="loadContent('emoji')">อีโมจิ</button>
+            <button class="category-button" onclick="loadContent('specialchar')">อักษรพิเศษ</button>
+            <!-- เพิ่มปุ่มหมวดหมู่เพิ่มเติมตามต้องการ -->
+        </div>
+    </div>
+    
+    <div id="content">
+        <!-- เนื้อหาจะถูกโหลดมาแสดงในส่วนนี้ -->
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <button class="nav-button" onclick="navigate('index.html')">หน้าหลัก</button>
+        <button class="nav-button" onclick="navigate('about.html')">เกี่ยวกับ</button>
+        <button class="nav-button" onclick="navigate('services.html')">บริการ</button>
+        <button class="nav-button" onclick="navigate('contact.html')">ติดต่อ</button>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    
+    <script src="nav.js"></script>
+    <script src="category.js"></script> <!-- ลิงก์ไปยัง category.js -->
+</body>
+</html>

@@ -1,0 +1,213 @@
+@import url('nav.css');
+
+:root {
+  --main-color: #12D181; /* สีเขียว */
+  --main-gradient: linear-gradient(90deg, #12D181, #0ABAB5); /* ไล่เฉดสีเขียวออกน้ำทะเล */
+  --black-color: #252525; /* สีดำ */
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #FFFFFF; /* พื้นหลังสีขาวอมเทา */
+  color: var(--black-color); /* สีของตัวอักษรเป็นสีดำ */
+}
+
+nav {
+  background-color: #ffffff; /* สีพื้นหลังของ nav เป็นสีขาว */
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* เพิ่มเงาเบาๆ */
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  color: var(--black-color);
+  transition: color 0.3s ease; /* เพิ่มการเปลี่ยนสีแบบ smooth */
+}
+
+.back-button:hover {
+  color: var(--main-color); /* เปลี่ยนสีเมื่อเลื่อนเมาส์ */
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 600; /* เพิ่มน้ำหนักตัวอักษร */
+  display: flex;
+  align-items: center;
+  color: var(--black-color);
+  pointer-events: none;
+}
+
+.page-title span {
+  pointer-events: auto;
+  user-select: text;
+}
+
+main {
+  padding: 70px 20px 40px; /* ช่องว่างด้านบน 70px, ด้านข้าง 20px, และด้านล่าง 40px */
+  max-width: 800px;
+  margin: 0 auto; /* จัดกึ่งกลางเนื้อหา */
+}
+
+.section {
+  margin-bottom: 40px;
+  padding: 0 20px; /* ช่องว่างด้านข้าง 20px */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* เส้นแบ่งบางๆ */
+  padding-bottom: 20px;
+}
+
+.main-title, .title {
+  margin: 0 0 10px 0; /* ปรับช่องว่างระหว่างหัวข้อ */
+  font-size: 14px;
+  color: var(--main-color);
+  pointer-events: none;
+  transition: color 0.3s ease; /* การเปลี่ยนสีแบบ smooth */
+}
+
+.title span {
+  pointer-events: auto;
+  user-select: text;
+}
+
+.content,
+.developer-name {
+  font-size: 16px;
+  color: var(--black-color); /* สีดำสำหรับเนื้อหาปกติ */
+  margin-top: 10px;
+  font-weight: 400; /* น้ำหนักปกติ */
+}
+
+.developer-name {
+  font-weight: bold;
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 480px) {
+  nav {
+    padding: 10px;
+  }
+  .back-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  .page-title {
+    font-size: 14px;
+  }
+  .main-title, .title {
+    font-size: 16px;
+  }
+  .section {
+    padding: 0 15px;
+    margin-bottom: 30px;
+  }
+  .content,
+  .developer-name {
+    font-size: 13px;
+  }
+  main {
+    padding: 60px 15px 30px; /* ช่องว่างด้านบน 60px, ด้านข้าง 15px, และด้านล่าง 30px */
+  }
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดกลาง */
+@media (min-width: 481px) and (max-width: 767px) {
+  nav {
+    padding: 12px;
+  }
+  .back-button svg {
+    width: 22px;
+    height: 22px;
+  }
+  .page-title {
+    font-size: 14px;
+  }
+  .main-title, .title {
+    font-size: 13px;
+  }
+  .section {
+    padding: 0 20px;
+    margin-bottom: 35px;
+  }
+  .content,
+  .developer-name {
+    font-size: 14px;
+  }
+  main {
+    padding: 65px 20px 35px; /* ช่องว่างด้านบน 65px, ด้านข้าง 20px, และด้านล่าง 35px */
+  }
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดใหญ่ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  nav {
+    padding: 14px;
+  }
+  .back-button svg {
+    width: 24px;
+    height: 24px;
+  }
+  .page-title {
+    font-size: 16px;
+  }
+  .main-title, .title {
+    font-size: 14px;
+    margin: 0;
+  }
+  .section {
+    padding: 0 25px;
+    margin-bottom: 40px;
+  }
+  .content,
+  .developer-name {
+    font-size: 13px;
+  }
+  main {
+    padding: 70px 25px 40px; /* ช่องว่างด้านบน 70px, ด้านข้าง 25px, และด้านล่าง 40px */
+  }
+}
+
+/* ระยะห่างสำหรับหน้าจอขนาดใหญ่มาก */
+@media (min-width: 1025px) {
+  nav {
+    padding: 16px;
+  }
+  .back-button svg {
+    width: 26px;
+    height: 26px;
+  }
+  .page-title {
+    font-size: 20px;
+  }
+  .main-title, .title {
+    font-size: 15px;
+    margin: 0;
+  }
+  .section {
+    padding: 0 30px;
+    margin-bottom: 40px;
+  }
+  .content,
+  .developer-name {
+    font-size: 14px;
+  }
+  main {
+    padding: 80px 30px 50px; /* ช่องว่างด้านบน 80px, ด้านข้าง 30px, และด้านล่าง 50px */
+  }
+}
