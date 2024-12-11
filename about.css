@@ -28,14 +28,6 @@ nav {
 }
 
 .back-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  box-shadow: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
   margin-right: 10px;
   display: flex;
   align-items: center;
@@ -45,6 +37,17 @@ nav {
 
 .back-button:hover {
   color: var(--main-color); /* เปลี่ยนสีเมื่อเลื่อนเมาส์ */
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .page-title {

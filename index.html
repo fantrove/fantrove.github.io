@@ -4,32 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Fan Trove">
-    <meta property="og:description" content="This is a description of Fan Trove website.">
-    <meta property="og:url" content="https://fan-trove.vercel.app/#emoji">
-    <meta property="og:image" content="https://i.postimg.cc/pVc4xqKJ/Fan-Trove-20241209-214051-0000.png">
-    <meta property="og:type" content="website">
-    <meta property="og:image:width" content="320">
-    <meta property="og:image:height" content="100">
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="Fan Trove">
+<meta property="og:description" content="This is a description of Fan Trove website.">
+<meta property="og:url" content="https://fan-trove.vercel.app/#emoji">
+<meta property="og:image" content="https://i.postimg.cc/pVc4xqKJ/Fan-Trove-20241209-214051-0000.png">
+<meta property="og:type" content="website">
+<meta property="og:image:width" content="320">
+<meta property="og:image:height" content="100">
 
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Fan Trove">
-    <meta name="twitter:description" content="This is a description of Fan Trove website.">
-    <meta name="twitter:url" content="https://fan-trove.vercel.app/#emoji">
-    <meta name="twitter:image" content="https://i.postimg.cc/pVc4xqKJ/Fan-Trove-20241209-214051-0000.png">
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fan Trove">
+<meta name="twitter:description" content="This is a description of Fan Trove website.">
+<meta name="twitter:url" content="https://fan-trove.vercel.app/#emoji">
+<meta name="twitter:image" content="https://i.postimg.cc/pVc4xqKJ/Fan-Trove-20241209-214051-0000.png">
 
-    <!-- Additional Meta Tags for other platforms -->
-    <meta property="og:locale" content="en_US">
-    <meta property="fb:app_id" content="your_facebook_app_id"> <!-- Facebook-specific -->
-    <meta name="twitter:site" content="@your_twitter_handle"> <!-- Twitter-specific -->
-    <meta name="twitter:creator" content="@your_twitter_handle">
-    <meta name="linkedin:card" content="summary_large_image"> <!-- LinkedIn-specific -->
+<!-- Additional Meta Tags for other platforms -->
+<meta property="og:locale" content="en_US">
+<meta property="fb:app_id" content="your_facebook_app_id"> <!-- Facebook-specific -->
+<meta name="twitter:site" content="@your_twitter_handle"> <!-- Twitter-specific -->
+<meta name="twitter:creator" content="@your_twitter_handle">
+<meta name="linkedin:card" content="summary_large_image"> <!-- LinkedIn-specific -->
 
-    <!-- General Meta Tags -->
-    <meta name="description" content="This is a description of Fan Trove website.">
-    <link rel="canonical" href="https://fan-trove.vercel.app/#emoji">
+<!-- General Meta Tags -->
+<meta name="description" content="This is a description of Fan Trove website.">
+<link rel="canonical" href="https://fan-trove.vercel.app/#emoji">
     
     <link rel="stylesheet" href="nav.css">
     <link rel="stylesheet" href="category.css"> <!-- ลิงก์ไปยัง category.css -->
@@ -39,34 +39,34 @@
 </head>
 <body>
     <nav class="navbar" id="navbar" role="navigation">
-        <div class="navbar-title" role="heading" aria-level="1">FanTrove</div>
-        <button class="navbar-toggle" id="navbarToggle" role="button" aria-label="Toggle navigation">
+        <div class="navbar-title">FanTrove</div>
+        <div class="navbar-toggle" id="navbarToggle">
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
-        </button>
+        </div>
     </nav>
 
     <!-- ปุ่ม category ที่เลื่อนแนวนอน -->
-    <div class="category-bar" role="region" aria-label="Category Navigation">
-        <div class="category-container" role="group" aria-label="Categories">
-            <button class="category-button" role="tab" aria-label="Emoji Category" onclick="loadContent('emoji')">อีโมจิ</button>
-            <button class="category-button" role="tab" aria-label="Special Characters Category" onclick="loadContent('specialchar')">อักษรพิเศษ</button>
+    <div class="category-bar">
+        <div class="category-container">
+            <button class="category-button" role="category-button-emoji" onclick="loadContent('emoji')">อีโมจิ</button>
+            <button class="category-button" role="category-button-specialchar" onclick="loadContent('specialchar')">อักษรพิเศษ</button>
             <!-- เพิ่มปุ่มหมวดหมู่เพิ่มเติมตามต้องการ -->
         </div>
     </div>
     
-    <main id="content" role="main">
+    <div id="content">
         <!-- เนื้อหาจะถูกโหลดมาแสดงในส่วนนี้ -->
-    </main>
+    </div>
     
-    <aside class="sidebar" id="sidebar" role="complementary" aria-label="Sidebar Navigation">
-        <button class="nav-button" role="link" onclick="navigate('index.html')">หน้าแรก</button>
-        <button class="nav-button" role="link" onclick="navigate('about.html')">เกี่ยวกับ</button>
-        <button class="nav-button" role="link" onclick="navigate('services.html')">บริการ</button>
-        <button class="nav-button" role="link" onclick="navigate('contact.html')">ติดต่อ</button>
-    </aside>
-    <div class="overlay" id="overlay" role="presentation"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="nav-button" onclick="navigate('index.html')">หน้าแรก</button>
+        <button class="nav-button" onclick="navigate('about.html')">เกี่ยวกับ</button>
+        <button class="nav-button" onclick="navigate('services.html')">บริการ</button>
+        <button class="nav-button" onclick="navigate('contact.html')">ติดต่อ</button>
+    </div>
+    <div class="overlay" id="overlay"></div>
     
     <script src="nav.js"></script>
     <script src="category.js"></script> <!-- ลิงก์ไปยัง category.js -->
