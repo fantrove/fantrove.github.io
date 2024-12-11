@@ -1,7 +1,7 @@
 :root {
     --navbar-bg: linear-gradient(-225deg, #3D4E81 0%, #5753C9 48%, #6E7FF3 100%);
     --navbar-color: #fff;
-    --navbar-border: 1px solid #650032;
+    --navbar-border: 1px solid #001CBD;
     --sidebar-bg: linear-gradient(-225deg, #423FA0 0%, #5753C9 48%, #6E7FF3 100%);
     --nav-button-bg-active: #6A78FE; /* ปรับสีให้เข้มขึ้น */
     --nav-button-color-active: #ffffff;

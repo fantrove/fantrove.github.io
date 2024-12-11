@@ -17,13 +17,14 @@ body {
 nav {
   background-color: #ffffff; /* สีพื้นหลังของ nav เป็นสีขาว */
   padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* เพิ่มเงาเบาๆ */
+  box-shadow: 0 10px 15px rgba(255, 255, 255, 1); /* เพิ่มเงาเบาๆ */
   display: flex;
   align-items: center;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
+  border-bottom: 1px solid #D7D7D7;
 }
 
 .back-button {
@@ -94,8 +95,19 @@ main {
   font-weight: 400; /* น้ำหนักปกติ */
 }
 
-.developer-name {
-  font-weight: bold;
+a {
+  color: #0066CC; /* สีน้ำเงินเข้มสดใส */
+  text-decoration: none; /* ปิดเส้นใต้ */
+  outline: none; /* ลบเส้นขอบตอนโฟกัส */
+  box-shadow: none; /* ลบเอฟเฟกต์เงา */
+  -webkit-tap-highlight-color: transparent; /* ลบไฮไลต์เมื่อแตะในมือถือ */
+  -webkit-user-select: none; /* ป้องกันการเลือกข้อความในเบราว์เซอร์ Webkit */
+  user-select: none; /* ป้องกันการเลือกข้อความในเบราว์เซอร์ทั่วไป */
+  transition: color 0.3s ease; /* เพิ่มเอฟเฟกต์การเปลี่ยนสี */
+}
+
+a:hover {
+  color: #0099FF; /* สีฟ้าสว่างสดใสเมื่อ hover */
 }
 
 /* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
