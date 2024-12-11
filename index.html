@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar" id="navbar">
+    <nav class="navbar" id="navbar" role="navigation">
         <div class="navbar-title">FanTrove</div>
         <div class="navbar-toggle" id="navbarToggle">
             <div class="bar"></div>
@@ -48,25 +48,25 @@
     </nav>
 
     <!-- ปุ่ม category ที่เลื่อนแนวนอน -->
-    <div class="category-bar">
-        <div class="category-container">
-            <button class="category-button" onclick="loadContent('emoji')">อีโมจิ</button>
-            <button class="category-button" onclick="loadContent('specialchar')">อักษรพิเศษ</button>
+    <div class="category-bar" role="navigation" role="category-bar">
+        <div class="category-container" role="category-container">
+            <button class="category-button" role="category-button-emoji" onclick="loadContent('emoji')">อีโมจิ</button>
+            <button class="category-button" role="category-button-specialchar" onclick="loadContent('specialchar')">อักษรพิเศษ</button>
             <!-- เพิ่มปุ่มหมวดหมู่เพิ่มเติมตามต้องการ -->
         </div>
     </div>
     
-    <div id="content">
+    <div id="content" role="content">
         <!-- เนื้อหาจะถูกโหลดมาแสดงในส่วนนี้ -->
     </div>
     
-    <div class="sidebar" id="sidebar">
-        <button class="nav-button" onclick="navigate('index.html')">หน้าหลัก</button>
-        <button class="nav-button" onclick="navigate('about.html')">เกี่ยวกับ</button>
-        <button class="nav-button" onclick="navigate('services.html')">บริการ</button>
-        <button class="nav-button" onclick="navigate('contact.html')">ติดต่อ</button>
+    <div class="sidebar" id="sidebar" role="sidebar">
+        <button class="nav-button" role="home-button" onclick="navigate('index.html')">หน้าแรก</button>
+        <button class="nav-button" role="about-button" onclick="navigate('about.html')">เกี่ยวกับ</button>
+        <button class="nav-button" role="services-button" onclick="navigate('services.html')">บริการ</button>
+        <button class="nav-button" role="contact" onclick="navigate('contact.html')">ติดต่อ</button>
     </div>
-    <div class="overlay" id="overlay"></div>
+    <div class="overlay" id="overlay" role="overlay"></div>
     
     <script src="nav.js"></script>
     <script src="category.js"></script> <!-- ลิงก์ไปยัง category.js -->
