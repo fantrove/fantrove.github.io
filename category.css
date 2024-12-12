@@ -10,7 +10,7 @@ body {
     justify-content: center; /* กลางหน้า */
     align-items: center;
     width: 90%;
-    max-width: 1200px; /* กำหนดความกว้างสูงสุด */
+    max-width: 1000px; /* กำหนดความกว้างสูงสุด */
     margin: 0 auto; /* จัดกลางหน้า */
     padding: 7px; /* ระยะห่างภายใน */
     background: none; /* ไม่มีพื้นหลัง */
@@ -28,14 +28,12 @@ body {
 
 .category-button {
     flex: 1; /* ขยายปุ่มให้มีขนาดเท่ากัน */
-    width: 50%; /* ปุ่มแต่ละปุ่มครึ่งหนึ่งของ .category-container */
-    margin: 0; /* ไม่มีช่องว่าง */
+    margin: 0 5px; /* ช่องว่างระหว่างปุ่ม */
     background: none; /* ไม่มีพื้นหลัง */
     color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
     border: none;
-    border-radius: 0;
     cursor: pointer;
-    font-weight: 501;
+    font-weight: 500;
     text-align: center;
     transition: background-color 0.3s, color 0.3s;
     outline: none; /* ปิดการแสดงผล outline */
@@ -44,16 +42,19 @@ body {
     -webkit-user-select: none; /* ป้องกันการเลือกตัวอักษรใน WebKit เบราว์เซอร์ */
     user-select: none; /* ป้องกันการเลือกตัวอักษร */
     border-radius: 10px;
+    font-size: 14px;
+    padding: 8px 10px;
 }
 
 /* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
 @media (max-width: 480px) {
     .category-bar {
         top: -26px; /* ลดระยะห่างจาก nav */
+        padding: 5px;
     }
     .category-button {
-        font-size: 14px; /* ปรับขนาดตัวอักษร */
-        padding: 7px 10px; /* ขนาดกะทัดรัด */
+        font-size: 12px; /* ปรับขนาดตัวอักษรให้เล็กลง */
+        padding: 5px 7px; /* ขนาดกะทัดรัดมากขึ้น */
     }
 }
 
@@ -63,8 +64,8 @@ body {
         top: 9px; /* ไม่มีระยะห่างจาก nav */
     }
     .category-button {
-        font-size: 18px; /* ปรับขนาดตัวอักษร */
-        padding: 12px 17px; /* ขนาดกะทัดรัด */
+        font-size: 14px; /* ปรับขนาดตัวอักษร */
+        padding: 7px 10px; /* ขนาดกะทัดรัด */
     }
 }
 
@@ -74,8 +75,8 @@ body {
         top: 10px; /* เพิ่มระยะห่างจาก nav */
     }
     .category-button {
-        font-size: 20px; /* ปรับขนาดตัวอักษร */
-        padding: 16px 23px; /* ขนาดกะทัดรัด */
+        font-size: 16px; /* ปรับขนาดตัวอักษร */
+        padding: 10px 15px; /* ขนาดกะทัดรัด */
     }
 }
 
@@ -85,8 +86,8 @@ body {
         top: 10px; /* เพิ่มระยะห่างจาก nav */
     }
     .category-button {
-        font-size: 22px; /* ปรับขนาดตัวอักษร */
-        padding: 18px 27px; /* ขนาดกะทัดรัด */
+        font-size: 18px; /* ปรับขนาดตัวอักษร */
+        padding: 12px 20px; /* ขนาดกะทัดรัด */
     }
 }
 
