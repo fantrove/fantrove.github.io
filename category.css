@@ -9,15 +9,16 @@ body {
     display: flex;
     justify-content: center; /* กลางหน้า */
     align-items: center;
-    width: 100%;
+    width: 90%;
+    max-width: 1200px; /* กำหนดความกว้างสูงสุด */
+    margin: 0 auto; /* จัดกลางหน้า */
+    padding: 7px; /* ระยะห่างภายใน */
     background: none; /* ไม่มีพื้นหลัง */
-    border-bottom: none; /* ไม่มีเส้นขีดล่าง */
-    margin: 0; /* ไม่มีระยะห่าง */
-    padding: 0; /* ไม่มีระยะห่าง */
     background-image: var(--navbar-bg); /* ใช้ CSS Variable สำหรับพื้นหลัง */
     color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
     position: relative;
     top: 0; /* ปรับระยะห่างเริ่มต้น */
+    border-radius: 13px;
 }
 
 .category-container {
@@ -34,7 +35,7 @@ body {
     border: none;
     border-radius: 0;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 501;
     text-align: center;
     transition: background-color 0.3s, color 0.3s;
     outline: none; /* ปิดการแสดงผล outline */
@@ -42,6 +43,7 @@ body {
     -webkit-tap-highlight-color: transparent; /* ปิด highlight เมื่อคลิกใน WebKit เบราว์เซอร์ */
     -webkit-user-select: none; /* ป้องกันการเลือกตัวอักษรใน WebKit เบราว์เซอร์ */
     user-select: none; /* ป้องกันการเลือกตัวอักษร */
+    border-radius: 10px;
 }
 
 /* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
@@ -51,7 +53,7 @@ body {
     }
     .category-button {
         font-size: 14px; /* ปรับขนาดตัวอักษร */
-        padding: 10px 15px; /* ขนาดกะทัดรัด */
+        padding: 7px 10px; /* ขนาดกะทัดรัด */
     }
 }
 
@@ -62,7 +64,7 @@ body {
     }
     .category-button {
         font-size: 18px; /* ปรับขนาดตัวอักษร */
-        padding: 16px 22px; /* ขนาดกะทัดรัด */
+        padding: 12px 17px; /* ขนาดกะทัดรัด */
     }
 }
 
@@ -73,7 +75,7 @@ body {
     }
     .category-button {
         font-size: 20px; /* ปรับขนาดตัวอักษร */
-        padding: 20px 28px; /* ขนาดกะทัดรัด */
+        padding: 16px 23px; /* ขนาดกะทัดรัด */
     }
 }
 
@@ -84,7 +86,7 @@ body {
     }
     .category-button {
         font-size: 22px; /* ปรับขนาดตัวอักษร */
-        padding: 22px 32px; /* ขนาดกะทัดรัด */
+        padding: 18px 27px; /* ขนาดกะทัดรัด */
     }
 }
 

@@ -17,14 +17,14 @@ body {
 nav {
   background-color: #ffffff; /* สีพื้นหลังของ nav เป็นสีขาว */
   padding: 10px;
-  box-shadow: 0 10px 15px rgba(255, 255, 255, 1); /* เพิ่มเงาเบาๆ */
+  box-shadow: 0 11px 12px rgba(255, 255, 255, 1); /* เพิ่มเงาเบาๆ */
   display: flex;
   align-items: center;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid #D7D7D7;
+  border-bottom: 1px solid #E7E7E7;
 }
 
 .back-button {
@@ -137,7 +137,7 @@ a:hover {
     font-size: 13px;
   }
   main {
-    padding: 60px 15px 30px; /* ช่องว่างด้านบน 60px, ด้านข้าง 15px, และด้านล่าง 30px */
+    padding: 75px 15px 30px; /* ช่องว่างด้านบน 60px, ด้านข้าง 15px, และด้านล่าง 30px */
   }
 }
 
@@ -165,7 +165,7 @@ a:hover {
     font-size: 14px;
   }
   main {
-    padding: 65px 20px 35px; /* ช่องว่างด้านบน 65px, ด้านข้าง 20px, และด้านล่าง 35px */
+    padding: 80px 20px 35px; /* ช่องว่างด้านบน 65px, ด้านข้าง 20px, และด้านล่าง 35px */
   }
 }
 
@@ -194,7 +194,7 @@ a:hover {
     font-size: 13px;
   }
   main {
-    padding: 70px 25px 40px; /* ช่องว่างด้านบน 70px, ด้านข้าง 25px, และด้านล่าง 40px */
+    padding: 85px 25px 40px; /* ช่องว่างด้านบน 70px, ด้านข้าง 25px, และด้านล่าง 40px */
   }
 }
 
@@ -223,6 +223,6 @@ a:hover {
     font-size: 14px;
   }
   main {
-    padding: 80px 30px 50px; /* ช่องว่างด้านบน 80px, ด้านข้าง 30px, และด้านล่าง 50px */
+    padding: 100px 30px 50px; /* ช่องว่างด้านบน 80px, ด้านข้าง 30px, และด้านล่าง 50px */
   }
 }
