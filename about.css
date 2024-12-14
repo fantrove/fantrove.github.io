@@ -1,42 +1,65 @@
-@import url('nav.css');
-
 :root {
   --main-color: #12D181; /* สีเขียว */
   --main-gradient: linear-gradient(90deg, #12D181, #0ABAB5); /* ไล่เฉดสีเขียวออกน้ำทะเล */
   --black-color: #252525; /* สีดำ */
+  --light-gray: #F4F4F4; /* สีเทาอ่อน */
+  --border-color: rgba(0, 0, 0, 0.1); /* สีเส้นขอบอ่อน */
+  --premium-dark: #1B1B1B; /* สีเข้มสำหรับสร้างความหรูหรา */
+  --highlight-color: #00B3A6; /* สีเน้นความทันสมัย */
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* ฟอนต์สำหรับหน้าเว็บ */
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family);
+  height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: #FFFFFF; /* พื้นหลังสีขาวอมเทา */
-  color: var(--black-color); /* สีของตัวอักษรเป็นสีดำ */
+  background-color: #FFFFFF;
+  color: var(--black-color);
 }
 
 nav {
-  background-color: #ffffff; /* สีพื้นหลังของ nav เป็นสีขาว */
-  padding: 10px;
-  box-shadow: 0 11px 12px rgba(255, 255, 255, 1); /* เพิ่มเงาเบาๆ */
+  background-color: #FFFFFF;
+  padding: 10px 30px;
+  box-shadow: 0 30px 25px rgba(255, 255, 255, 1);
   display: flex;
   align-items: center;
   position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid #E7E7E7;
+  border-bottom: 1px solid var(--border-color); /* เส้นขอบบางๆ */
+  transition: transform 0.3s ease;
+  font-weight: 600; /* ตัวอักษรหนาเล็กน้อยเพื่อเพิ่มความหรูหรา */
+}
+
+nav a {
+  color: var(--black-color);
+  text-decoration: none;
+  font-size: 18px;
+  margin-right: 25px;
+  padding: 5px 10px;
+  border-radius: 4px; /* เพิ่มมุมโค้งมน */
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+nav a:hover {
+  color: #FFFFFF;
+  background-color: var(--highlight-color); /* เน้นสีพื้นหลังเมื่อ hover */
 }
 
 .back-button {
-  margin-right: 10px;
+  margin-right: 20px;
   display: flex;
   align-items: center;
   color: var(--black-color);
-  transition: color 0.3s ease; /* เพิ่มการเปลี่ยนสีแบบ smooth */
+  transition: color 0.3s ease;
 }
 
 .back-button:hover {
-  color: var(--main-color); /* เปลี่ยนสีเมื่อเลื่อนเมาส์ */
+  color: var(--main-color);
 }
 
 button {
@@ -44,185 +67,101 @@ button {
   border: none;
   cursor: pointer;
   outline: none;
-  box-shadow: none;
   -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 .page-title {
-  font-size: 16px;
-  font-weight: 600; /* เพิ่มน้ำหนักตัวอักษร */
-  display: flex;
-  align-items: center;
+  font-size: 28px;
+  font-weight: 700;
   color: var(--black-color);
-  pointer-events: none;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.5px; /* เพิ่มระยะห่างระหว่างตัวอักษร */
 }
 
-.page-title span {
-  pointer-events: auto;
-  user-select: text;
+.bottom-box-shadow {
+  position: fixed;
+  bottom: -110px;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 -30px 30px rgba(255, 255, 255, 1); /* เงาฟุ้งจากด้านล่างขึ้นบน */
+  background-color: #FFFFFF; /* สีพื้นหลังให้เหมือนกับพื้นของเนื้อหา */
+  z-index: 888; /* ตั้งค่า z-index ให้สูงกว่าปกติ */
 }
 
 main {
-  padding: 70px 20px 40px; /* ช่องว่างด้านบน 70px, ด้านข้าง 20px, และด้านล่าง 40px */
-  max-width: 800px;
-  margin: 0 auto; /* จัดกึ่งกลางเนื้อหา */
+  padding: 130px 30px 140px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .section {
   margin-bottom: 40px;
-  padding: 0 20px; /* ช่องว่างด้านข้าง 20px */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* เส้นแบ่งบางๆ */
-  padding-bottom: 20px;
+  padding: 25px;
+  background-color: var(--light-gray);
+  border-radius: 12px; /* ขอบโค้งมนมากขึ้น */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูพรีเมียม */
+  transition: box-shadow 0.3s ease;
+}
+
+.section:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* เมื่อ hover ให้เงาเข้มขึ้น */
 }
 
 .main-title, .title {
-  margin: 0 0 10px 0; /* ปรับช่องว่างระหว่างหัวข้อ */
-  font-size: 14px;
+  font-size: 20px;
   color: var(--main-color);
-  pointer-events: none;
-  transition: color 0.3s ease; /* การเปลี่ยนสีแบบ smooth */
-}
-
-.title span {
-  pointer-events: auto;
-  user-select: text;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .content,
 .developer-name {
-  font-size: 16px;
-  color: var(--black-color); /* สีดำสำหรับเนื้อหาปกติ */
+  font-size: 18px;
+  color: var(--black-color);
+  font-weight: 400;
   margin-top: 10px;
-  font-weight: 400; /* น้ำหนักปกติ */
+  line-height: 1.7;
 }
 
 a {
-  color: #0066CC; /* สีน้ำเงินเข้มสดใส */
-  text-decoration: none; /* ปิดเส้นใต้ */
-  outline: none; /* ลบเส้นขอบตอนโฟกัส */
-  box-shadow: none; /* ลบเอฟเฟกต์เงา */
-  -webkit-tap-highlight-color: transparent; /* ลบไฮไลต์เมื่อแตะในมือถือ */
-  -webkit-user-select: none; /* ป้องกันการเลือกข้อความในเบราว์เซอร์ Webkit */
-  user-select: none; /* ป้องกันการเลือกข้อความในเบราว์เซอร์ทั่วไป */
-  transition: color 0.3s ease; /* เพิ่มเอฟเฟกต์การเปลี่ยนสี */
+  color: #0066CC;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 a:hover {
-  color: #0099FF; /* สีฟ้าสว่างสดใสเมื่อ hover */
+  color: #0099FF;
 }
 
-/* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
+/* ปรับให้เหมาะสมกับหน้าจอ */
 @media (max-width: 480px) {
   nav {
-    padding: 10px;
+    padding: 10px 20px;
   }
-  .back-button svg {
-    width: 20px;
-    height: 20px;
-  }
-  .page-title {
-    font-size: 14px;
-  }
-  .main-title, .title {
-    font-size: 16px;
-  }
-  .section {
-    padding: 0 15px;
-    margin-bottom: 30px;
-  }
-  .content,
-  .developer-name {
-    font-size: 13px;
-  }
-  main {
-    padding: 75px 15px 30px; /* ช่องว่างด้านบน 60px, ด้านข้าง 15px, และด้านล่าง 30px */
-  }
-}
 
-/* ระยะห่างสำหรับหน้าจอขนาดกลาง */
-@media (min-width: 481px) and (max-width: 767px) {
-  nav {
-    padding: 12px;
-  }
-  .back-button svg {
-    width: 22px;
-    height: 22px;
-  }
-  .page-title {
-    font-size: 14px;
-  }
-  .main-title, .title {
-    font-size: 13px;
-  }
-  .section {
-    padding: 0 20px;
-    margin-bottom: 35px;
-  }
-  .content,
-  .developer-name {
-    font-size: 14px;
-  }
-  main {
-    padding: 80px 20px 35px; /* ช่องว่างด้านบน 65px, ด้านข้าง 20px, และด้านล่าง 35px */
-  }
-}
-
-/* ระยะห่างสำหรับหน้าจอขนาดใหญ่ */
-@media (min-width: 768px) and (max-width: 1024px) {
-  nav {
-    padding: 14px;
-  }
-  .back-button svg {
-    width: 24px;
-    height: 24px;
-  }
   .page-title {
     font-size: 16px;
   }
   .main-title, .title {
-    font-size: 14px;
-    margin: 0;
-  }
-  .section {
-    padding: 0 25px;
-    margin-bottom: 40px;
+    font-size: 16px;
   }
   .content,
   .developer-name {
-    font-size: 13px;
-  }
-  main {
-    padding: 85px 25px 40px; /* ช่องว่างด้านบน 70px, ด้านข้าง 25px, และด้านล่าง 40px */
+    font-size: 14px;
   }
 }
 
-/* ระยะห่างสำหรับหน้าจอขนาดใหญ่มาก */
-@media (min-width: 1025px) {
-  nav {
-    padding: 16px;
-  }
-  .back-button svg {
-    width: 26px;
-    height: 26px;
-  }
+@media (min-width: 768px) {
   .page-title {
-    font-size: 20px;
+    font-size: 18px;
   }
   .main-title, .title {
-    font-size: 15px;
-    margin: 0;
-  }
-  .section {
-    padding: 0 30px;
-    margin-bottom: 40px;
+    font-size: 14px;
   }
   .content,
   .developer-name {
-    font-size: 14px;
-  }
-  main {
-    padding: 100px 30px 50px; /* ช่องว่างด้านบน 80px, ด้านข้าง 30px, และด้านล่าง 50px */
+    font-size: 10px;
   }
 }

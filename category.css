@@ -2,101 +2,103 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
+    padding-bottom: 60px; /* เพิ่มระยะห่างด้านล่างเพื่อไม่ให้แถบตัวเลือกไปทับเนื้อหา */
 }
 
 /* category.css */
 .category-bar {
     display: flex;
-    justify-content: center; /* กลางหน้า */
+    justify-content: center;
     align-items: center;
-    width: 90%;
-    max-width: 1000px; /* กำหนดความกว้างสูงสุด */
-    margin: 0 auto; /* จัดกลางหน้า */
-    padding: 7px; /* ระยะห่างภายใน */
-    background: none; /* ไม่มีพื้นหลัง */
-    background-image: var(--navbar-bg); /* ใช้ CSS Variable สำหรับพื้นหลัง */
-    color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
-    position: relative;
-    top: 0; /* ปรับระยะห่างเริ่มต้น */
-    border-radius: 13px;
+    width: 100%; /* ครอบคลุมทั้งหน้าจอ */
+    max-width: 1000px;
+    padding: 10px; /* ขนาดกะทัดรัดสำหรับหน้าจอเล็ก */
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient ที่นุ่มนวล */
+    color: white;
+    border-radius: 25px 25px 0 0; /* ขอบมนทั้งสองมุมบน */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* เงาที่ชัดเจนให้ความรู้สึกพรีเมียม */
+    position: fixed;
+    bottom: 0; /* ขยับขึ้นจากล่างสุด */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    transition: all 0.3s ease; /* การเคลื่อนไหวแบบราบรื่น */
 }
 
 .category-container {
     display: flex;
     width: 100%;
+    padding-bottom: 10px; /* เพิ่มช่องว่างระหว่างปุ่มกับขอบล่างของแถบหมวดหมู่ */
 }
 
 .category-button {
-    flex: 1; /* ขยายปุ่มให้มีขนาดเท่ากัน */
-    margin: 0 5px; /* ช่องว่างระหว่างปุ่ม */
-    background: none; /* ไม่มีพื้นหลัง */
-    color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
+    flex: 1;
+    margin: 0 5px; /* ลดระยะห่างระหว่างปุ่ม */
+    background: #ffffff;
+    color: #333;
+    border: 2px solid transparent;
+    border-radius: 30px; /* ปรับขอบมนมากขึ้น */
+    font-weight: 600;
     text-align: center;
-    transition: background-color 0.3s, color 0.3s;
-    outline: none; /* ปิดการแสดงผล outline */
-    box-shadow: none; /* ปิดการแสดงผล shadow */
-    -webkit-tap-highlight-color: transparent; /* ปิด highlight เมื่อคลิกใน WebKit เบราว์เซอร์ */
-    -webkit-user-select: none; /* ป้องกันการเลือกตัวอักษรใน WebKit เบราว์เซอร์ */
-    user-select: none; /* ป้องกันการเลือกตัวอักษร */
-    border-radius: 10px;
-    font-size: 14px;
-    padding: 8px 10px;
+    font-size: 14px; /* ลดขนาดตัวอักษร */
+    padding: 8px 12px; /* ลดขนาดของปุ่ม */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* ระยะห่างสำหรับหน้าจอขนาดเล็ก */
-@media (max-width: 480px) {
-    .category-bar {
-        top: -26px; /* ลดระยะห่างจาก nav */
-        padding: 5px;
-    }
-    .category-button {
-        font-size: 12px; /* ปรับขนาดตัวอักษรให้เล็กลง */
-        padding: 5px 7px; /* ขนาดกะทัดรัดมากขึ้น */
-    }
-}
-
-/* ระยะห่างสำหรับหน้าจอขนาดกลาง */
-@media (min-width: 481px) and (max-width: 767px) {
-    .category-bar {
-        top: 9px; /* ไม่มีระยะห่างจาก nav */
-    }
-    .category-button {
-        font-size: 14px; /* ปรับขนาดตัวอักษร */
-        padding: 7px 10px; /* ขนาดกะทัดรัด */
-    }
-}
-
-/* ระยะห่างสำหรับหน้าจอขนาดใหญ่ */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .category-bar {
-        top: 10px; /* เพิ่มระยะห่างจาก nav */
-    }
-    .category-button {
-        font-size: 16px; /* ปรับขนาดตัวอักษร */
-        padding: 10px 15px; /* ขนาดกะทัดรัด */
-    }
-}
-
-/* ระยะห่างสำหรับหน้าจอขนาดใหญ่มาก */
-@media (min-width: 1025px) {
-    .category-bar {
-        top: 10px; /* เพิ่มระยะห่างจาก nav */
-    }
-    .category-button {
-        font-size: 18px; /* ปรับขนาดตัวอักษร */
-        padding: 12px 20px; /* ขนาดกะทัดรัด */
-    }
-}
-
-.category-button:hover {
-    background-color: var(--nav-button-hover-bg); /* พื้นหลังเมื่อ hover */
-    color: var(--nav-button-hover-color); /* สีตัวอักษรเมื่อ hover */
+.category-button:active {
+    transform: translateY(1px); /* ลดตำแหน่งเมื่อกด */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .category-button.active {
-    background-color: var(--nav-button-bg-active); /* พื้นหลังเมื่อ active */
-    color: var(--nav-button-color-active); /* สีตัวอักษรเมื่อ active */
+    background-color: #2575fc; /* พื้นหลังเมื่อ active */
+    color: white;
+    border-color: #2575fc;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* สำหรับหน้าจอขนาดเล็ก (max-width: 480px) */
+@media (max-width: 480px) {
+    .category-bar {
+        padding: 8px; /* ขนาดกะทัดรัดมากขึ้น */
+    }
+    .category-button {
+        font-size: 12px; /* ลดขนาดตัวอักษรให้เล็กลง */
+        padding: 6px 10px; /* ลดขนาดของปุ่มให้เล็กลง */
+    }
+}
+
+/* สำหรับหน้าจอขนาดกลาง (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .category-bar {
+        padding: 10px; /* ขนาดกะทัดรัด */
+    }
+    .category-button {
+        font-size: 14px; /* ขนาดตัวอักษรเล็กลง */
+        padding: 8px 12px; /* ปรับขนาดปุ่มให้พอดี */
+    }
+}
+
+/* สำหรับหน้าจอขนาดใหญ่ (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .category-bar {
+        padding: 12px;
+    }
+    .category-button {
+        font-size: 14px; /* ขนาดตัวอักษรเล็กลง */
+        padding: 10px 14px; /* ขนาดปุ่มที่เหมาะสม */
+    }
+}
+
+/* สำหรับหน้าจอขนาดใหญ่มาก (1025px ขึ้นไป) */
+@media (min-width: 1025px) {
+    .category-bar {
+        padding: 10px;
+    }
+    .category-button {
+        font-size: 12px; /* ขนาดตัวอักษรเล็กลงมาก */
+        padding: 8px 12px; /* ขนาดปุ่มที่พอดี */
+    }
 }

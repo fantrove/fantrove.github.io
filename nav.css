@@ -1,48 +1,50 @@
 :root {
     --navbar-bg: linear-gradient(-225deg, #3D4E81 0%, #5753C9 48%, #6E7FF3 100%);
     --navbar-color: #fff;
-    --navbar-border: 1px solid #001CBD;
+    --navbar-border: 1px solid #650032;
     --sidebar-bg: linear-gradient(-225deg, #423FA0 0%, #5753C9 48%, #6E7FF3 100%);
-    --nav-button-bg-active: #6A78FE; /* ปรับสีให้เข้มขึ้น */
-    --nav-button-color-active: #FFFFFF;
-    --nav-button-hover-bg: #9A97FF; /* ใช้สีเดียวกันกับ active */
-    --nav-button-hover-color: #FFFFFF;
+    --nav-button-bg-active: #6A78FE;
+    --nav-button-color-active: #ffffff;
+    --nav-button-hover-bg: #797FEF;
+    --nav-button-hover-color: #ffffff;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f9;
+    margin-top: 70px;
 }
 
 .navbar {
-    position: fixed; /* ทำให้ navbar อยู่ติดกับหน้าจอ */
-    top: 0; /* ตำแหน่งด้านบน */
-    left: 0; /* ครอบคลุมจากขอบซ้าย */
-    right: 0; /* ครอบคลุมจนถึงขอบขวา */
-    z-index: 1000; /* จัดลำดับให้ navbar อยู่เหนือ element อื่น */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    background-image: var(--navbar-bg); /* ใช้ CSS Variable สำหรับพื้นหลัง */
-    color: var(--navbar-color); /* ใช้ CSS Variable สำหรับสีตัวอักษร */
-    border-bottom: var(--navbar-border); /* ใช้ CSS Variable สำหรับเส้นขอบล่าง */
+    padding: 11px 15px; /* ลดขนาด padding */
+    background-image: var(--navbar-bg);
+    color: var(--navbar-color);
+    border-bottom: var(--navbar-border);
     transition: border-bottom 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
 }
 
 .navbar-title {
-    font-size: 28px;
-    font-weight: 701; /* เพิ่มน้ำหนักตัวอักษร */
+    font-size: 19px; /* ลดขนาดตัวอักษร */
+    font-weight: 700;
     white-space: nowrap;
-    pointer-events: none; /* ปิดการคลิกบนชื่อเว็บไซต์ */
+    pointer-events: none;
 }
 
 .navbar-title span {
-    pointer-events: auto; /* อนุญาตการคลิก */
-    user-select: text; /* อนุญาตการเลือกตัวอักษร */
-    background: linear-gradient(90deg, #f4f4f9, #ccc); /* แถบสีแบบไล่เฉด */
-    padding: 0 5px;
+    pointer-events: auto;
+    user-select: text;
+    background: linear-gradient(90deg, #f4f4f9, #ccc);
+    padding: 0 4px;
     border-radius: 3px;
 }
 
@@ -50,18 +52,17 @@ body {
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    gap: 6px; /* ใช้ gap เพื่อลดระยะห่างระหว่างขีด */
-    outline: none; /* ปิดการแสดงผล outline */
-    box-shadow: none; /* ปิดการแสดงผล shadow */
-    -webkit-tap-highlight-color: transparent; /* ปิด highlight เมื่อคลิกใน WebKit เบราว์เซอร์ */
-    -webkit-user-select: none; /* ป้องกันการเลือกตัวอักษรใน WebKit เบราว์เซอร์ */
+    gap: 4px;
+    outline: none;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .bar {
-    width: 30px; /* ขยายความกว้างของ bar */
-    height: 4px; /* เพิ่มความสูงของ bar */
+    width: 23px; /* ลดขนาด */
+    height: 3px; /* ลดขนาด */
     background-color: #fff;
-    border-radius: 2px; /* มุมโค้งมน */
+    border-radius: 2px;
     transition: transform 0.4s, opacity 0.4s;
 }
 
@@ -69,44 +70,44 @@ body {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 250px; /* ปรับขนาด sidebar */
+    width: 210px; /* ลดขนาด sidebar */
     height: 100%;
-    background-image: var(--sidebar-bg); /* ใช้ CSS Variable สำหรับพื้นหลัง */
+    background-image: var(--sidebar-bg);
     transition: right 0.4s ease, background-color 0.4s ease;
-    padding-top: 60px; /* เพิ่ม padding-top เป็น 60px สำหรับหน้าจอขนาดเล็ก */
+    padding-top: 60px;
     z-index: 2;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .nav-button {
     width: 100%;
-    padding: 15px 25px; /* ปรับขนาด padding */
+    padding: 10px 18px; /* ลดขนาด padding */
     text-decoration: none;
-    font-size: 18px; /* ปรับขนาดตัวอักษร */
+    font-size: 14px; /* ลดขนาดตัวอักษร */
     color: white;
     background: none;
     border: none;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s; /* เพิ่มการเปลี่ยนสีตัวอักษร */
-    font-weight: 501;
-    outline: none; /* ปิดการแสดงผล outline */
-    box-shadow: none; /* ปิดการแสดงผล shadow */
-    -webkit-tap-highlight-color: transparent; /* ปิด highlight เมื่อคลิกใน WebKit เบราว์เซอร์ */
-    -webkit-user-select: none; /* ป้องกันการเลือกตัวอักษรใน WebKit เบราว์เซอร์ */
-    user-select: none; /* ป้องกันการเลือกตัวอักษร */
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: 500;
+    outline: none;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .nav-button:hover {
-    background-color: var(--nav-button-hover-bg); /* ใช้ CSS Variable สำหรับพื้นหลัง hover */
-    color: var(--nav-button-hover-color); /* ใช้ CSS Variable สำหรับสีตัวอักษรเมื่อ hover */
-    border-radius: 5px; /* มุมโค้งมน */
+    background-color: var(--nav-button-hover-bg);
+    color: var(--nav-button-hover-color);
+    border-radius: 5px;
 }
 
 .nav-button.active {
-    background-color: var(--nav-button-bg-active); /* ใช้ CSS Variable สำหรับพื้นหลังเมื่อ active */
-    color: var(--nav-button-color-active); /* ใช้ CSS Variable สำหรับสีตัวอักษรเมื่อ active */
-    border-radius: 5px; /* มุมโค้งมน */
+    background-color: var(--nav-button-bg-active);
+    color: var(--nav-button-color-active);
+    border-radius: 5px;
 }
 
 .overlay {
@@ -118,26 +119,26 @@ body {
     background-color: rgba(0, 0, 0, 0);
     display: none;
     z-index: 1;
-    transition: background-color 0.4s ease, opacity 0.4s ease; /* เพิ่ม transition สำหรับ background-color และ opacity */
-    opacity: 0; /* ตั้งค่าเริ่มต้นของ opacity เป็น 0 */
+    transition: background-color 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
 }
 
 .show-overlay {
     display: block;
-    background-color: rgba(0, 0, 0, 0.5); /* เปลี่ยน background-color เมื่อแสดง */
-    opacity: 1; /* ตั้งค่า opacity เป็น 1 เมื่อแสดง */
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
 }
 
 .open .bar:nth-child(1) {
-    transform: rotate(45deg) translate(7px, 7px); /* ปรับการหมุนเพื่อให้เป็นกากะบาดสมบูรณ์ */
+    transform: rotate(45deg) translate(7px, 3.1px);
 }
 
 .open .bar:nth-child(2) {
-    opacity: 0; /* ซ่อนขีดที่สอง */
+    opacity: 0;
 }
 
 .open .bar:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px); /* ปรับการหมุนเพื่อให้เป็นกากะบาดสมบูรณ์ */
+    transform: rotate(-45deg) translate(7px, -3.1px);
 }
 
 .open-sidebar {
@@ -148,86 +149,46 @@ body {
     display: block;
 }
 
-/* Media Query สำหรับหน้าจอที่มีขนาดเล็กกว่า 480px */
-@media (max-width: 480px) {
-    .navbar {
-        padding: 10px 14px; /* ขนาดเหมาะสม */
-    }
-    .navbar-title {
-        font-size: 20px; /* ขนาดเหมาะสม */
-    }
-    .bar {
-        width: 22px; /* ขนาดเหมาะสม */
-        height: 3px; /* ขนาดเหมาะสม */
-    }
-    .nav-button {
-        padding: 10px 15px; /* ขนาดเหมาะสม */
-        font-size: 14px; /* ขนาดเหมาะสม */
-    }
-}
-
-/* Media Query สำหรับหน้าจอที่มีขนาดระหว่าง 481px ถึง 767px */
-@media (min-width: 481px) and (max-width: 767px) {
-    .navbar {
-        padding: 18px 22px; /* ขนาดเหมาะสม */
-    }
-    .navbar-title {
-        font-size: 26px; /* ขนาดเหมาะสม */
-    }
-    .bar {
-        width: 28px; /* ขนาดเหมาะสม */
-        height: 4px; /* ขนาดเหมาะสม */
-    }
-    .nav-button {
-        padding: 16px 22px; /* ขนาดเหมาะสม */
-        font-size: 18px; /* ขนาดเหมาะสม */
-    }
-    .sidebar {
-        padding-top: 60px; /* เพิ่ม padding-top เป็น 60px สำหรับหน้าจอขนาดเล็ก */
-        width: 350px;
-    }
-}
-
 /* Media Query สำหรับหน้าจอที่มีขนาดระหว่าง 768px ถึง 1024px */
 @media (min-width: 768px) and (max-width: 1024px) {
     .navbar {
-        padding: 22px 28px; /* ขนาดเหมาะสม */
+        padding: 12px 16px; /* ลดขนาด */
     }
     .navbar-title {
-        font-size: 30px; /* ขนาดเหมาะสม */
+        font-size: 22px; /* ลดขนาด */
     }
     .bar {
-        width: 32px; /* ขนาดเหมาะสม */
-        height: 5px; /* ขนาดเหมาะสม */
+        width: 24px; /* ลดขนาด */
+        height: 3px; /* ลดขนาด */
     }
     .nav-button {
-        padding: 20px 28px; /* ขนาดเหมาะสม */
-        font-size: 20px; /* ขนาดเหมาะสม */
+        padding: 10px 15px; /* ลดขนาด */
+        font-size: 14px; /* ลดขนาด */
     }
     .sidebar {
-        padding-top: 100px; /* ปรับ padding-top ให้พอดี */
-        width: 380px;
+        padding-top: 60px; /* ปรับ padding-top */
+        width: 280px; /* ลดขนาด */
     }
 }
 
 /* Media Query สำหรับหน้าจอที่มีขนาดใหญ่กว่า 1024px */
 @media (min-width: 1025px) {
     .navbar {
-        padding: 27px 37px; /* ขนาดเหมาะสม */
+        padding: 12px 16px; /* ลดขนาด */
     }
     .navbar-title {
-        font-size: 34px; /* ขนาดเหมาะสม */
+        font-size: 24px; /* ลดขนาด */
     }
     .bar {
-        width: 38px; /* ขนาดเหมาะสม */
-        height: 6px; /* ขนาดเหมาะสม */
+        width: 26px; /* ลดขนาด */
+        height: 3px; /* ลดขนาด */
     }
     .nav-button {
-        padding: 22px 32px; /* ขนาดเหมาะสม */
-        font-size: 22px; /* ขนาดเหมาะสม */
+        padding: 12px 16px; /* ลดขนาด */
+        font-size: 16px; /* ลดขนาด */
     }
     .sidebar {
-        padding-top: 130px; /* ปรับ padding-top ให้พอดี */
-        width: 450px;
+        padding-top: 80px; /* ปรับ padding-top */
+        width: 300px; /* ลดขนาด */
     }
 }
