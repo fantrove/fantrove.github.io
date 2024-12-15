@@ -10,95 +10,94 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%; /* ครอบคลุมทั้งหน้าจอ */
+    width: 100%;
     max-width: 1000px;
-    padding: 10px; /* ขนาดกะทัดรัดสำหรับหน้าจอเล็ก */
-    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient ที่นุ่มนวล */
+    padding: 12px 20px; /* เพิ่มความกว้างของ padding เพื่อความสบายตา */
+    background: linear-gradient(135deg, #6a11cb 30%, #2575fc 80%); /* Gradient ที่นุ่มนวล */
     color: white;
-    border-radius: 25px 25px 0 0; /* ขอบมนทั้งสองมุมบน */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* เงาที่ชัดเจนให้ความรู้สึกพรีเมียม */
+    border-radius: 30px 30px 0 0; /* ขอบมนมากขึ้น */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25); /* เงาที่ชัดเจนและลึกขึ้น */
     position: fixed;
-    bottom: 0; /* ขยับขึ้นจากล่างสุด */
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    
     transition: all 0.3s ease; /* การเคลื่อนไหวแบบราบรื่น */
 }
 
 .category-container {
     display: flex;
     width: 100%;
-    padding-bottom: 10px; /* เพิ่มช่องว่างระหว่างปุ่มกับขอบล่างของแถบหมวดหมู่ */
+    padding-bottom: 12px; /* เพิ่มช่องว่างระหว่างปุ่มกับขอบล่าง */
 }
 
 .category-button {
     flex: 1;
-    margin: 0 5px; /* ลดระยะห่างระหว่างปุ่ม */
+    margin: 0 6px; /* ลดระยะห่างระหว่างปุ่ม */
     background: #ffffff;
     color: #333;
     border: 2px solid transparent;
-    border-radius: 30px; /* ปรับขอบมนมากขึ้น */
+    border-radius: 40px; /* ปรับขอบมนให้ดูหรูหรามากขึ้น */
     font-weight: 600;
     text-align: center;
-    font-size: 14px; /* ลดขนาดตัวอักษร */
-    padding: 8px 12px; /* ลดขนาดของปุ่ม */
+    font-size: 15px; /* ปรับขนาดตัวอักษรให้อ่านง่าย */
+    padding: 10px 14px; /* เพิ่มขนาดของปุ่ม */
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     -webkit-tap-highlight-color: transparent;
 }
 
 .category-button:active {
-    transform: translateY(1px); /* ลดตำแหน่งเมื่อกด */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px); /* ลดตำแหน่งเมื่อกด */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .category-button.active {
     background-color: #2575fc; /* พื้นหลังเมื่อ active */
     color: white;
     border-color: #2575fc;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ active */
 }
 
 /* สำหรับหน้าจอขนาดเล็ก (max-width: 480px) */
 @media (max-width: 480px) {
     .category-bar {
-        padding: 8px; /* ขนาดกะทัดรัดมากขึ้น */
+        padding: 10px; /* ลดขนาดกะทัดรัด */
     }
     .category-button {
-        font-size: 12px; /* ลดขนาดตัวอักษรให้เล็กลง */
-        padding: 6px 10px; /* ลดขนาดของปุ่มให้เล็กลง */
+        font-size: 13px; /* ขนาดตัวอักษรเล็กลง */
+        padding: 8px 12px; /* ปรับขนาดปุ่ม */
     }
 }
 
 /* สำหรับหน้าจอขนาดกลาง (481px - 767px) */
 @media (min-width: 481px) and (max-width: 767px) {
     .category-bar {
-        padding: 10px; /* ขนาดกะทัดรัด */
+        padding: 12px; /* เพิ่มความห่าง */
     }
     .category-button {
-        font-size: 14px; /* ขนาดตัวอักษรเล็กลง */
-        padding: 8px 12px; /* ปรับขนาดปุ่มให้พอดี */
+        font-size: 14px;
+        padding: 10px 14px; /* ขนาดปุ่มที่พอดี */
     }
 }
 
 /* สำหรับหน้าจอขนาดใหญ่ (768px - 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
     .category-bar {
-        padding: 12px;
+        padding: 14px;
     }
     .category-button {
-        font-size: 14px; /* ขนาดตัวอักษรเล็กลง */
-        padding: 10px 14px; /* ขนาดปุ่มที่เหมาะสม */
+        font-size: 15px;
+        padding: 12px 16px;
     }
 }
 
 /* สำหรับหน้าจอขนาดใหญ่มาก (1025px ขึ้นไป) */
 @media (min-width: 1025px) {
     .category-bar {
-        padding: 10px;
+        padding: 12px;
     }
     .category-button {
-        font-size: 12px; /* ขนาดตัวอักษรเล็กลงมาก */
-        padding: 8px 12px; /* ขนาดปุ่มที่พอดี */
+        font-size: 14px;
+        padding: 10px 14px;
     }
 }

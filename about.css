@@ -20,8 +20,8 @@ body {
 
 nav {
   background-color: #FFFFFF;
-  padding: 10px 30px;
-  box-shadow: 0 30px 25px rgba(255, 255, 255, 1);
+  padding: 12px 30px; /* เพิ่มพื้นที่ padding เพื่อความหรูหรา */
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 1), 0 4px 6px rgba(0, 0, 0, 0.05); /* ปรับให้สีขาวมีความเข้ม 1 */
   display: flex;
   align-items: center;
   position: fixed;
@@ -30,24 +30,8 @@ nav {
   right: 0;
   width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid var(--border-color); /* เส้นขอบบางๆ */
+  border-bottom: 3px solid var(--border-color); /* เส้นขอบหนาขึ้น */
   transition: transform 0.3s ease;
-  font-weight: 600; /* ตัวอักษรหนาเล็กน้อยเพื่อเพิ่มความหรูหรา */
-}
-
-nav a {
-  color: var(--black-color);
-  text-decoration: none;
-  font-size: 18px;
-  margin-right: 25px;
-  padding: 5px 10px;
-  border-radius: 4px; /* เพิ่มมุมโค้งมน */
-  transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-nav a:hover {
-  color: #FFFFFF;
-  background-color: var(--highlight-color); /* เน้นสีพื้นหลังเมื่อ hover */
 }
 
 .back-button {
@@ -71,22 +55,22 @@ button {
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 32px; /* ขนาดใหญ่ขึ้น */
   font-weight: 700;
   color: var(--black-color);
   margin: 0;
   text-align: center;
-  letter-spacing: 0.5px; /* เพิ่มระยะห่างระหว่างตัวอักษร */
+  letter-spacing: 1px; /* เพิ่มระยะห่างระหว่างตัวอักษร */
 }
 
 .bottom-box-shadow {
   position: fixed;
-  bottom: -110px;
+  bottom: -120px; /* ปรับระยะห่างจากด้านล่างเล็กน้อย */
   left: 0;
   width: 100%;
-  box-shadow: 0 -30px 30px rgba(255, 255, 255, 1); /* เงาฟุ้งจากด้านล่างขึ้นบน */
-  background-color: #FFFFFF; /* สีพื้นหลังให้เหมือนกับพื้นของเนื้อหา */
-  z-index: 888; /* ตั้งค่า z-index ให้สูงกว่าปกติ */
+  box-shadow: 0 -15px 40px rgba(255, 255, 255, 1), 0 -6px 15px rgba(255, 255, 255, 0.1); /* ปรับให้สีขาวมีความเข้ม 1 */
+  background-color: #FFFFFF;
+  z-index: 888;
 }
 
 main {
@@ -97,22 +81,28 @@ main {
 
 .section {
   margin-bottom: 40px;
-  padding: 25px;
+  padding: 30px; /* เพิ่ม padding เพื่อให้ดูหรูหราขึ้น */
   background-color: var(--light-gray);
-  border-radius: 12px; /* ขอบโค้งมนมากขึ้น */
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูพรีเมียม */
-  transition: box-shadow 0.3s ease;
+  border-radius: 20px; /* ขอบโค้งมนมากขึ้น */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูพรีเมียม */
 }
 
-.section:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* เมื่อ hover ให้เงาเข้มขึ้น */
+.section a {
+  color: var(--main-color); /* เน้นสีให้ตรงกับสีหลัก */
+  text-decoration: none; /* ไม่ให้มีขีดเส้นใต้ */
+  font-weight: 600; /* ตัวหนาเล็กน้อยเพื่อเพิ่มความหรูหรา */
+  transition: color 0.3s ease; /* เพิ่มการเปลี่ยนแปลงสีอย่างนุ่มนวล */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.section a:hover {
+  color: var(--highlight-color); /* เมื่อ hover จะเปลี่ยนเป็นสีไฮไลต์ */
 }
 
 .main-title, .title {
-  font-size: 20px;
+  font-size: 24px; /* ขนาดใหญ่ขึ้น */
   color: var(--main-color);
   font-weight: 600;
-  transition: color 0.3s ease;
 }
 
 .content,
@@ -122,17 +112,6 @@ main {
   font-weight: 400;
   margin-top: 10px;
   line-height: 1.7;
-}
-
-a {
-  color: #0066CC;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-a:hover {
-  color: #0099FF;
 }
 
 /* ปรับให้เหมาะสมกับหน้าจอ */
