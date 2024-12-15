@@ -4,3 +4,29 @@ body {
     padding: 90px 20px 90px;
     background-color: #f4f4f9; /* พื้นหลังสีอ่อน */
 }
+
+/* Footer */
+footer {
+    width: 100%; /* ขยายให้เต็มความกว้าง */
+    padding: 20px 0; /* เพิ่ม padding ด้านบนและล่าง */
+    background-color: #6200ea;
+    color: white;
+    text-align: center;
+    box-sizing: border-box; /* ให้ padding นับรวมกับขนาด */
+    position: fixed; /* ยึดตำแหน่ง footer ไว้ที่ด้านล่างสุด */
+    left: 0; /* ให้ footer เริ่มต้นจากขอบซ้ายของหน้าจอ */
+    bottom: 90px; /* เพิ่มช่องว่าง 90px จากด้านล่างสุด */
+    margin-bottom: 90px; /* ช่องว่างด้านล่าง */
+}
+
+/* Footer Content */
+.footer-content {
+    max-width: 1000px; /* จำกัดความกว้างของเนื้อหา */
+    margin: 0 auto; /* จัดตำแหน่งให้อยู่กลาง */
+    padding: 0 20px; /* เพิ่ม padding ด้านข้าง */
+}
+
+.footer-content p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const contentDiv = document.getElementById('content');
   const categoryButtons = Array.from(document.querySelectorAll('.category-button'));
-  let historyStack = []; // เก็บประวัติแค่ 2 ประวัติล่าสุด
+  const historyStackKey = 'categoryHistory'; // ใช้ localStorage เพื่อเก็บประวัติ
 
   // ฟังก์ชันเพื่อเปลี่ยนสถานะปุ่ม category
   function activateCategoryButton(button) {
@@ -25,12 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // ฟังก์ชันตรวจสอบ URL เมื่อโหลดหน้าและเปลี่ยนแปลง
   function checkURL() {
     const initialHash = window.location.hash ? window.location.hash.slice(1) : 'emoji'; // เปลี่ยนเป็น emoji เป็นหมวดหมู่เริ่มต้น
-    const activeButton = categoryButtons.find(btn => btn.getAttribute('onclick').includes(`loadContent('${initialHash}')`)) ||
-                         categoryButtons.find(btn => btn.getAttribute('onclick').includes("loadContent('emoji')"));
+    const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === initialHash);
 
     if (activeButton) {
       activateCategoryButton(activeButton);
       loadContent(initialHash);
+    } else {
+      // หากไม่มี hash หรือไม่พบหมวดหมู่ที่ตรงกับ hash ใน URL ให้เลือกหมวดหมู่ emoji
+      const emojiButton = categoryButtons.find(btn => btn.getAttribute('data-category') === 'emoji');
+      if (emojiButton) {
+        activateCategoryButton(emojiButton);
+        window.history.replaceState(null, null, '#emoji'); // ตั้งค่า URL ใหม่เป็น #emoji
+        loadContent('emoji'); // โหลดเนื้อหาหมวดหมู่ emoji
+      }
     }
   }
 
@@ -41,13 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         return; // ถ้าปุ่มถูก active อยู่ ไม่ทำอะไร
       }
-      const hash = button.getAttribute('onclick').match(/loadContent\('([^']+)'\)/)[1];
+      const hash = button.getAttribute('data-category'); // ใช้ data-category แทน
 
-      // เก็บประวัติเฉพาะ 2 ปุ่มล่าสุด
+      // เก็บประวัติเฉพาะ 2 ปุ่มล่าสุดใน localStorage
+      let historyStack = JSON.parse(localStorage.getItem(historyStackKey)) || [];
       if (historyStack.length === 2) {
         historyStack.shift(); // ลบประวัติแรกถ้ามีเกิน 2 ประวัติ
       }
       historyStack.push(hash);
+      localStorage.setItem(historyStackKey, JSON.stringify(historyStack));
 
       activateCategoryButton(button);
       window.history.pushState(null, null, `#${hash}`); // เปลี่ยนเป็น pushState เพื่อให้ทำงานกับปุ่มย้อนกลับได้อย่างถูกต้อง
@@ -58,7 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ฟังก์ชันเก็บประวัติของปุ่ม emoji เมื่อเข้ามาครั้งแรก
   function storeInitialButton() {
-    historyStack.push('emoji');
+    let historyStack = JSON.parse(localStorage.getItem(historyStackKey)) || [];
+    if (!historyStack.includes('emoji')) {
+      historyStack.push('emoji');
+      localStorage.setItem(historyStackKey, JSON.stringify(historyStack));
+    }
   }
 
   // ตรวจสอบ URL เมื่อโหลดหน้า
@@ -69,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ตรวจสอบ URL เมื่อเปลี่ยนแปลง
   window.addEventListener('popstate', () => {
+    let historyStack = JSON.parse(localStorage.getItem(historyStackKey)) || [];
     if (historyStack.length > 1) {
       historyStack.pop(); // ลบประวัติล่าสุด
       const prevHash = historyStack.pop(); // ดึงประวัติแรกที่เหลืออยู่
