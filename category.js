@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   const contentDiv = document.getElementById('content');
   const categoryButtons = Array.from(document.querySelectorAll('.category-button'));
-  const historyStackKey = 'categoryHistory'; // ใช้ localStorage เพื่อเก็บประวัติ
+  let historyStack = []; // เก็บประวัติในหน่วยความจำชั่วคราว
 
   // ฟังก์ชันเพื่อเปลี่ยนสถานะปุ่ม category
   function activateCategoryButton(button) {
+    if (!button) return; // หากไม่มีปุ่มที่ต้อง active ให้หยุดทำงาน
     categoryButtons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
   }
@@ -22,81 +23,101 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ฟังก์ชันตรวจสอบ URL เมื่อโหลดหน้าและเปลี่ยนแปลง
+  // ฟังก์ชันตรวจสอบ URL และตั้งสถานะ active
   function checkURL() {
-    const initialHash = window.location.hash ? window.location.hash.slice(1) : 'emoji'; // เปลี่ยนเป็น emoji เป็นหมวดหมู่เริ่มต้น
-    const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === initialHash);
+    let currentHash = window.location.hash ? window.location.hash.slice(1) : 'emoji'; // ค่าเริ่มต้นเป็น emoji
+    const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === currentHash);
 
     if (activeButton) {
       activateCategoryButton(activeButton);
-      loadContent(initialHash);
+      loadContent(currentHash);
     } else {
-      // หากไม่มี hash หรือไม่พบหมวดหมู่ที่ตรงกับ hash ใน URL ให้เลือกหมวดหมู่ emoji
+      // หากไม่มี hash หรือไม่พบหมวดหมู่ที่ตรงกับ hash ให้เลือก emoji
       const emojiButton = categoryButtons.find(btn => btn.getAttribute('data-category') === 'emoji');
       if (emojiButton) {
         activateCategoryButton(emojiButton);
         window.history.replaceState(null, null, '#emoji'); // ตั้งค่า URL ใหม่เป็น #emoji
-        loadContent('emoji'); // โหลดเนื้อหาหมวดหมู่ emoji
+        loadContent('emoji');
       }
     }
   }
 
+  // ฟังก์ชันจัดการประวัติ
+  function updateHistory(hash) {
+    if (historyStack.length === 2) {
+      historyStack.shift(); // ลบประวัติแรกถ้ามีเกิน 2 ประวัติ
+    }
+    historyStack.push(hash);
+  }
+
   // เพิ่ม event listeners ให้กับปุ่ม category ทุกปุ่ม
   categoryButtons.forEach(button => {
-    button.addEventListener('click', async (event) => {
+    let isPressed = false;
+
+    button.addEventListener('pointerdown', () => {
+      isPressed = true; // เริ่มกดปุ่ม
+    });
+
+    button.addEventListener('pointerup', async (event) => {
+      if (!isPressed) return; // หากไม่มี pointerdown จะไม่ทำงาน
+      isPressed = false;
+
+      const hash = button.getAttribute('data-category'); // ใช้ data-category แทน
       if (button.classList.contains('active')) {
         event.preventDefault();
-        return; // ถ้าปุ่มถูก active อยู่ ไม่ทำอะไร
+        return; // หากปุ่ม active แล้วไม่ทำงานซ้ำ
       }
-      const hash = button.getAttribute('data-category'); // ใช้ data-category แทน
 
-      // เก็บประวัติเฉพาะ 2 ปุ่มล่าสุดใน localStorage
-      let historyStack = JSON.parse(localStorage.getItem(historyStackKey)) || [];
-      if (historyStack.length === 2) {
-        historyStack.shift(); // ลบประวัติแรกถ้ามีเกิน 2 ประวัติ
-      }
-      historyStack.push(hash);
-      localStorage.setItem(historyStackKey, JSON.stringify(historyStack));
+      // อัปเดตประวัติในหน่วยความจำ
+      updateHistory(hash);
 
       activateCategoryButton(button);
-      window.history.pushState(null, null, `#${hash}`); // เปลี่ยนเป็น pushState เพื่อให้ทำงานกับปุ่มย้อนกลับได้อย่างถูกต้อง
+      window.history.pushState(null, null, `#${hash}`); // เปลี่ยน URL
+      await loadContent(hash); // โหลดเนื้อหาใหม่
+    });
 
-      await loadContent(hash); // เรียกใช้ฟังก์ชัน loadContent
+    button.addEventListener('pointerleave', () => {
+      isPressed = false; // รีเซ็ตสถานะเมื่อ pointer ออกจากปุ่ม
     });
   });
 
-  // ฟังก์ชันเก็บประวัติของปุ่ม emoji เมื่อเข้ามาครั้งแรก
-  function storeInitialButton() {
-    let historyStack = JSON.parse(localStorage.getItem(historyStackKey)) || [];
-    if (!historyStack.includes('emoji')) {
-      historyStack.push('emoji');
-      localStorage.setItem(historyStackKey, JSON.stringify(historyStack));
+  // ฟังก์ชันตรวจสอบและตั้งค่า active ปุ่มทันทีที่โหลดหน้า
+  function prepareActiveButtonOnLoad() {
+    const currentHash = window.location.hash ? window.location.hash.slice(1) : 'emoji'; // ใช้ emoji เป็นค่าเริ่มต้น
+    const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === currentHash);
+    if (activeButton) {
+      activateCategoryButton(activeButton); // ตั้ง active ให้ปุ่มที่ตรงกับ hash
+    } else {
+      const emojiButton = categoryButtons.find(btn => btn.getAttribute('data-category') === 'emoji');
+      if (emojiButton) activateCategoryButton(emojiButton); // ตั้ง active ให้ emoji เป็นค่าเริ่มต้น
     }
   }
 
   // ตรวจสอบ URL เมื่อโหลดหน้า
   checkURL();
 
-  // เก็บประวัติของปุ่ม emoji เมื่อเข้ามาครั้งแรก
-  storeInitialButton();
+  // ตั้งค่า active ปุ่มทันทีที่โหลดหน้า
+  prepareActiveButtonOnLoad();
+
+  // บันทึกประวัติของ URL เมื่อผู้ใช้เข้ามาครั้งแรก
+  const initialHash = window.location.hash ? window.location.hash.slice(1) : 'emoji';
+  updateHistory(initialHash);
 
   // ตรวจสอบ URL เมื่อเปลี่ยนแปลง
   window.addEventListener('popstate', () => {
-    let historyStack = JSON.parse(localStorage.getItem(historyStackKey)) || [];
     if (historyStack.length > 1) {
       historyStack.pop(); // ลบประวัติล่าสุด
       const prevHash = historyStack.pop(); // ดึงประวัติแรกที่เหลืออยู่
       if (prevHash) {
         window.history.replaceState(null, null, `#${prevHash}`); // ย้อนกลับไปหมวดหมู่ก่อนหน้า
         checkURL(); // ตรวจสอบและโหลดเนื้อหาใหม่
-        return;
+      } else {
+        window.history.back(); // ออกจากเว็บไซต์ถ้าไม่มีประวัติหลงเหลือ
       }
+    } else {
+      window.history.back(); // ออกจากเว็บไซต์ถ้าอยู่ในประวัติแรกสุด
     }
-    window.history.back(); // ออกจากหน้าเว็บถ้าไม่มีประวัติให้ย้อนกลับ
   });
-
-  // ดึงสถานะ active ทันทีเมื่อหน้าเว็บกำลังโหลด
-  checkURL();
 
   // เพิ่มส่วนการเปลี่ยนเส้นทาง URL ไปยัง #emoji เมื่อเข้ามาครั้งแรก
   if (!window.location.hash) {
