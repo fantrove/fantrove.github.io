@@ -33,35 +33,23 @@ function setCacheControlHeaders() {
 
 // ฟังก์ชันลบขยะใน Web Storage
 function cleanWebStorage() {
-    // ลบรายการที่ไม่จำเป็นใน Local Storage
-    for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
-            const value = localStorage.getItem(key);
-            try {
-                if (JSON.parse(value).expires < Date.now()) {
-                    localStorage.removeItem(key);
+    const cleanupStorage = (storage) => {
+        for (let key in storage) {
+            if (storage.hasOwnProperty(key)) {
+                const value = storage.getItem(key);
+                try {
+                    if (JSON.parse(value).expires < Date.now()) {
+                        storage.removeItem(key);
+                    }
+                } catch (e) {
+                    // ลบรายการที่ไม่สามารถแปลงเป็น JSON ได้
+                    storage.removeItem(key);
                 }
-            } catch (e) {
-                // ถ้าไม่สามารถแปลงเป็น JSON ได้ก็ลบออก
-                localStorage.removeItem(key);
             }
         }
-    }
-
-    // ลบรายการที่ไม่จำเป็นใน Session Storage
-    for (let key in sessionStorage) {
-        if (sessionStorage.hasOwnProperty(key)) {
-            const value = sessionStorage.getItem(key);
-            try {
-                if (JSON.parse(value).expires < Date.now()) {
-                    sessionStorage.removeItem(key);
-                }
-            } catch (e) {
-                // ถ้าไม่สามารถแปลงเป็น JSON ได้ก็ลบออก
-                sessionStorage.removeItem(key);
-            }
-        }
-    }
+    };
+    cleanupStorage(localStorage);
+    cleanupStorage(sessionStorage);
     console.log('Web storage cleaned!');
 }
 
@@ -72,7 +60,7 @@ function enablePrefetching() {
         const prefetchLink = document.createElement('link');
         prefetchLink.rel = 'prefetch';
         prefetchLink.href = link.href;
-        prefetchLink.as = 'document'; // เพิ่ม 'as' attribute เพื่อให้เบราว์เซอร์จัดการโหลดได้ดีขึ้น
+        prefetchLink.as = 'document'; 
         document.head.appendChild(prefetchLink);
     });
 }
@@ -103,15 +91,13 @@ function enableContentCompression() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/pako@2.0.4/dist/pako.min.js';
     script.onload = () => {
-        const compressData = (data) => pako.deflate(data, { level: 9 }); // ใช้การบีบอัดขั้นสูง
+        const compressData = (data) => pako.deflate(data, { level: 9 });
         const decompressData = (data) => pako.inflate(data, { to: 'string' });
 
-        // บีบอัดข้อมูลที่สำคัญ
         const data = '...'; // ตัวอย่างข้อมูลที่ต้องการบีบอัด
         const compressedData = compressData(data);
         console.log('Data compressed:', compressedData);
 
-        // การใช้งานข้อมูลที่ถูกบีบอัด
         const decompressedData = decompressData(compressedData);
         console.log('Data decompressed:', decompressedData);
     };
@@ -122,14 +108,12 @@ function enableContentCompression() {
 function enableHTTP2() {
     if (window.location.protocol === 'https:') {
         console.log('HTTP/2 enabled');
-        // ฟังก์ชันสำหรับการตั้งค่า HTTP/2 บนเซิร์ฟเวอร์ (เซิร์ฟเวอร์ควรรองรับ HTTP/2)
     }
 }
 
 // ฟังก์ชันเปิดใช้งาน Gzip Compression บนเซิร์ฟเวอร์
 function enableGzipCompression() {
     console.log('Gzip Compression enabled');
-    // ฟังก์ชันสำหรับการตั้งค่า Gzip Compression บนเซิร์ฟเวอร์ (เซิร์ฟเวอร์ควรรองรับ Gzip)
 }
 
 // ฟังก์ชันลดการใช้ทรัพยากร
@@ -141,7 +125,6 @@ function reduceResourceUsage() {
 async function stabilizeInternetConnection() {
     try {
         const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        // ดึงอินเทอร์เน็ตมาใช้ให้เกิดประสิทธิภาพสูงสุดโดยไม่มีการจำกัดความเร็ว
         await fetch('path/to/resource', { cache: 'no-store' });
         console.log('Resources pulled successfully.');
     } catch (error) {
@@ -152,7 +135,7 @@ async function stabilizeInternetConnection() {
 // เพิ่มการใช้ Web Workers สำหรับการประมวลผลที่หนักหน่วง
 function useWebWorkers() {
     if (window.Worker) {
-        const worker = new Worker('worker.js'); // ให้ใช้ไฟล์ worker.js สำหรับการประมวลผล
+        const worker = new Worker('worker.js');
         worker.postMessage({ data: 'heavy-data' });
 
         worker.onmessage = function(e) {
@@ -161,11 +144,10 @@ function useWebWorkers() {
     }
 }
 
-// ปรับปรุงฟังก์ชันช่วยโหลดให้เสถียรมากขึ้น
+// ฟังก์ชันช่วยโหลดที่ปรับปรุงแล้ว
 async function loadResources() {
     try {
-        await enablePrefetching();
-        enableLazyLoading();
+        await Promise.all([enablePrefetching(), enableLazyLoading()]);
         enableContentCompression();
         console.log('Resources loaded successfully.');
     } catch (error) {
@@ -178,12 +160,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         await unregisterServiceWorkers();
         setCacheControlHeaders();
         cleanWebStorage();
-        await loadResources(); // เรียกใช้ฟังก์ชันช่วยโหลดที่ปรับปรุงแล้ว
+        await loadResources();
         enableHTTP2();
         enableGzipCompression();
         reduceResourceUsage();
         await stabilizeInternetConnection();
-        useWebWorkers(); // ใช้ Web Workers
+        useWebWorkers();
     } catch (error) {
         console.error('Error during initialization:', error);
     }
