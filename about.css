@@ -30,7 +30,7 @@ nav {
   right: 0;
   width: 100%;
   z-index: 1000;
-  border-bottom: 3px solid var(--border-color); /* เส้นขอบหนาขึ้น */
+  border-bottom: 1px solid var(--border-color); /* เส้นขอบหนาขึ้น */
   transition: transform 0.3s ease;
 }
 
