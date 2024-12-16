@@ -6,8 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ฟังก์ชันเพื่อเปลี่ยนสถานะปุ่ม category
   function activateCategoryButton(button) {
     if (!button) return; // หากไม่มีปุ่มที่ต้อง active ให้หยุดทำงาน
-    categoryButtons.forEach(btn => btn.classList.remove('active'));
+    categoryButtons.forEach(btn => {
+      btn.classList.remove('active');
+      btn.style.pointerEvents = ''; // เปิดการคลิกปุ่มที่ไม่ active
+    });
     button.classList.add('active');
+    button.style.pointerEvents = 'none'; // ปิดการคลิกปุ่มที่ active แล้ว
   }
 
   // ฟังก์ชันโหลดเนื้อหาแบบไร้รอยต่อ

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (overlay.classList.contains('show-overlay')) {
       overlay.classList.remove('show-overlay');
-      document.body.style.overflow = ''; // ปลดบล็อคการเลื่อน
+      document.body.style.overflow = ''; // ปลดบล็อกการเลื่อน
       setTimeout(() => {
         overlay.style.display = 'none'; // หน่วงเวลาเพื่อให้การเลือนออกทำงาน
       }, 400);
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       overlay.style.display = 'block';
       setTimeout(() => {
         overlay.classList.add('show-overlay');
-        document.body.style.overflow = 'hidden'; // บล็อคการเลื่อน
+        document.body.style.overflow = 'hidden'; // บล็อกการเลื่อน
       }, 10); // หน่วงเวลาเล็กน้อยเพื่อให้ transition ทำงาน
     }
   }
@@ -35,24 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
     navbarToggle.classList.remove('open');
     sidebar.classList.remove('open-sidebar');
     overlay.classList.remove('show-overlay');
-    document.body.style.overflow = ''; // ปลดบล็อคการเลื่อน
+    document.body.style.overflow = ''; // ปลดบล็อกการเลื่อน
     setTimeout(() => {
       overlay.style.display = 'none'; // หน่วงเวลาเพื่อให้การเลือนออกทำงาน
     }, 400);
-    navButtons.forEach(button => {
-      button.style.pointerEvents = ''; // คืนค่า pointer events
-      button.style.backgroundColor = ''; // คืนค่าการเปลี่ยนสีที่เกิดจาก hover หรือ active
-    });
+    navButtons.forEach(button => button.classList.remove('hover'));
   }
 
-  // ฟังก์ชันเพื่อเปลี่ยนสีปุ่ม nav เมื่ออยู่ในหน้านั้น โดยบล็อคปุ่ม
+  // ฟังก์ชันเพื่อเปลี่ยนสีปุ่ม nav เมื่ออยู่ในหน้านั้น โดยบล็อกปุ่ม
   function highlightNavButton() {
     const currentLocation = window.location.pathname.split('/').pop();
     navButtons.forEach(button => {
       const buttonPath = button.getAttribute('onclick')?.match(/'([^']+)'/)[1];
       const isActive = (currentLocation === buttonPath || (currentLocation === '' && buttonPath === 'index.html'));
       button.classList.toggle('active', isActive);
-      button.disabled = isActive; // บล็อคปุ่มที่เชื่อมไปยังหน้านั้นๆ
+      button.disabled = isActive; // บล็อกปุ่มที่เชื่อมไปยังหน้านั้นๆ
+
+      // บล็อก :hover และ :active เมื่อปุ่มเป็น active
+      if (isActive) {
+        button.style.pointerEvents = 'none'; // ป้องกันการคลิกและโต้ตอบทั้งหมด
+      } else {
+        button.style.pointerEvents = ''; // เปิดให้โต้ตอบอีกครั้งเมื่อปุ่มไม่เป็น active
+      }
     });
   }
 
@@ -68,29 +72,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // เพิ่ม event listener สำหรับการ refresh หน้า
   window.addEventListener('beforeunload', clearAllStates);
 
-  // เพิ่ม event listeners ให้กับปุ่ม nav ทุกปุ่ม
+  // เพิ่ม event listeners ให้กับปุ่ม nav ทุกปุ่มเพื่อเรียกใช้ฟังก์ชัน navigate
   navButtons.forEach(button => {
-    button.addEventListener('pointerdown', (event) => {
-      if (!button.disabled) { // หากปุ่มไม่ได้ถูกบล็อก
-        button.style.pointerEvents = 'none'; // บล็อค pointer event ชั่วคราว
-        button.style.backgroundColor = '#ddd'; // เปลี่ยนสีเมื่อกด
+    // จัดการ pointer events
+    button.addEventListener('pointerdown', () => {
+      if (!button.classList.contains('active')) {
+        button.classList.add('hover'); // เพิ่ม hover เมื่อ pointerdown
       }
     });
 
-    button.addEventListener('pointerup', (event) => {
-      if (!button.disabled) { // หากปุ่มไม่ได้ถูกบล็อก
+    button.addEventListener('pointerup', () => {
+      if (!button.disabled) {
         const page = button.getAttribute('onclick')?.match(/'([^']+)'/)[1];
-        navigate(page);
-        button.style.pointerEvents = ''; // คืนค่า pointer events หลังจากปล่อยปุ่ม
-        button.style.backgroundColor = ''; // คืนค่าสีปุ่ม
+        navigate(page); // ตรวจสอบและไปยังหน้าใหม่
       }
+      button.classList.remove('hover'); // ลบ hover หลัง pointerup
     });
 
-    button.addEventListener('pointerleave', (event) => {
-      if (!button.disabled) { // หากปุ่มไม่ได้ถูกบล็อก
-        button.style.pointerEvents = ''; // คืนค่า pointer events หากเมาส์ออกจากปุ่ม
-        button.style.backgroundColor = ''; // คืนค่าสีปุ่ม
-      }
+    button.addEventListener('pointerleave', () => {
+      button.classList.remove('hover'); // ลบ hover เมื่อ pointerleave
     });
   });
 
