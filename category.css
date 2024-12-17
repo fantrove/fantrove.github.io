@@ -58,6 +58,19 @@ body {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ active */
 }
 
+/* ปุ่มที่ถูก active จะล็อคการทำงานของ hover และ active */
+.category-button.active {
+  pointer-events: none; /* ปิดการทำงานของการกดและ hover */
+}
+
+/* ปิดการ hover และ active เมื่อปุ่มอยู่ในสถานะ active */
+.category-button.active:hover,
+.category-button.active:active {
+  background-color: inherit; /* คงสีพื้นหลังเดิม */
+  color: inherit; /* คงสีข้อความเดิม */
+  cursor: default; /* เปลี่ยนเมาส์เป็นค่าเริ่มต้น */
+}
+
 /* สำหรับหน้าจอขนาดเล็ก (max-width: 480px) */
 @media (max-width: 480px) {
     .category-bar {
