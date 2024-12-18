@@ -1,0 +1,58 @@
+.loading-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  pointer-events: none;
+  visibility: visible; /* ทำให้แสดงเมื่อโหลด */
+  opacity: 1;
+}
+
+.spinner {
+  width: 40px; /* ปรับขนาดของวงกลม */
+  height: 40px; /* ปรับขนาดของวงกลม */
+  animation: rotator 1.2s linear infinite;
+  will-change: transform;
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+.path {
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  stroke-width: 5;
+  stroke: #00aaff;
+  animation: 
+    dash 1.2s cubic-bezier(0.25, 0.0, 0.45, 0.55) infinite;
+  will-change: stroke-dashoffset, transform, stroke;
+}
+
+@keyframes dash {
+  0% { stroke-dashoffset: 187; }
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(187deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg);
+  }
+}
+
+@media (min-width: 768px) {
+ .spinner{
+ width: 100px; /* ปรับขนาดของวงกลม */
+ height: 100px; /* ปรับขนาดของวงกลม */
+ }
+}
