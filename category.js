@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loadingContainer = document.getElementById('loading-container-c');
   const categoryButtons = Array.from(document.querySelectorAll('.category-button'));
-  let historyStack = []; // เก็บประวัติในหน่วยความจำชั่วคราว
+  let historyStack = [];
 
   // ฟังก์ชันแสดงข้อความโหลด
   function showLoadingMessage() {
@@ -15,12 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ฟังก์ชันซ่อนข้อความโหลด
   function hideLoadingMessage() {
     // ใช้ timeout เพื่อให้ transition opacity เกิดขึ้นก่อน
-    setTimeout(() => {
-      requestAnimationFrame(() => {
-        loadingContainer.style.transition = 'opacity 0.3s ease-out'; // เพิ่ม transition สำหรับขาออก
-        loadingContainer.style.opacity = '0'; // ค่อยๆ หายไป
-      });
-    }, 0); // ตั้ง timeout ที่ 0 เพื่อให้ transition เกิดขึ้นในรอบถัดไป
+    loadingContainer.style.transition = 'opacity 0.3s ease-out'; // เพิ่ม transition สำหรับขาออก
+    loadingContainer.style.opacity = '0'; // ค่อยๆ หายไป
 
     // ซ่อน visibility หลังจาก opacity เป็น 0
     setTimeout(() => {
@@ -42,24 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // ฟังก์ชันโหลดเนื้อหาแบบไร้รอยต่อ
   async function loadContent(hash, showLoader = true) {
     const page = hash === 'index' ? 'emoji.html' : `${hash}.html`;
-    let timeout;
-
     try {
       if (showLoader) showLoadingMessage(); // แสดงข้อความโหลดเฉพาะเวลาสลับหมวดหมู่
-
-      const response = await Promise.race([
-        fetch(page),
-        new Promise((_, reject) => timeout = setTimeout(() => reject(new Error('การโหลดใช้เวลานานเกินไป')), 5000)) // ตั้งเวลา timeout สำหรับการโหลด
-      ]);
-
+      const response = await fetch(page);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.text();
       document.getElementById('content').innerHTML = data;
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการโหลดเนื้อหา:', error);
     } finally {
-      clearTimeout(timeout); // ยกเลิก timeout หลังการโหลดเสร็จ
-      hideLoadingMessage(); // ซ่อนข้อความโหลด
+      hideLoadingMessage(); // ซ่อนข้อความโหลดหลังจากโหลดเนื้อหาจบ
     }
   }
 
