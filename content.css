@@ -1,0 +1,96 @@
+@import url('about.css');
+
+/* กำหนดสไตล์หลักให้ดูทันสมัยมากขึ้น */
+.content-container {
+  padding: 18px; /* ลดขนาด padding */
+  border: 2px solid #8A2BE2; /* กรอบสีม่วง */
+  border-radius: 14px; /* ลดความโค้งมน */
+  margin-bottom: 24px; /* ลดระยะห่างระหว่างกล่อง */
+  background-color: #FFFFFF; /* สีพื้นหลังขาว */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* ลดเงาลง */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.content-container h2 {
+  font-size: 20px; /* ลดขนาดหัวข้อ */
+  font-weight: 600; /* ลดน้ำหนักของฟอนต์ */
+  color: #8A2BE2; /* หัวข้อสีม่วง */
+  text-align: left;
+  border-bottom: 2px solid #8A2BE2; /* เส้นคั่นหัวข้อ */
+  padding-bottom: 8px; /* ลดระยะห่างด้านล่าง */
+  margin-bottom: 16px; /* ลดระยะห่างระหว่างหัวข้อกับเนื้อหา */
+}
+
+.content-button {
+  display: inline-block;
+  margin: 6px; /* ลดระยะห่างระหว่างปุ่ม */
+  padding: 10px 18px; /* ขนาดปุ่มลดลง */
+  border: 2px solid #8A2BE2;
+  background-color: #F4F4F4;
+  color: #8A2BE2;
+  border-radius: 8px; /* ลดความโค้งมนของปุ่ม */
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 16px; /* ขนาดฟอนต์ในปุ่มลดลง */
+  font-weight: 500; /* ลดน้ำหนักของฟอนต์ */
+  transition: all 0.3s ease;
+  text-align: center;
+  white-space: nowrap; /* ป้องกันการตัดคำในปุ่ม */
+}
+
+.content-button:focus {
+  outline: none; /* เอาขอบออกเมื่อเลือก */
+  box-shadow: 0 0 5px rgba(138, 43, 226, 0.8); /* เพิ่มเงาเมื่อโฟกัส */
+}
+
+.content-button:hover {
+  background-color: #8A2BE2; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4); /* เงาเพิ่มมิติ */
+  transform: scale(1.05); /* ขยายปุ่มเล็กน้อย */
+}
+
+.content-button:active {
+  transform: scale(1); /* กลับมาปกติเมื่อกด */
+  box-shadow: none;
+}
+
+/* ปรับแต่งสำหรับจอเล็ก */
+@media (max-width: 480px) {
+  .content-container {
+    padding: 14px; /* ลดขนาด padding */
+  }
+
+  .content-button {
+    padding: 8px 16px; /* ขนาดปุ่มเล็กลง */
+    font-size: 14px; /* ขนาดฟอนต์ในปุ่มเล็กลง */
+  }
+}
+
+/* Title Style - Simple text on the left */
+.custom-page-title {
+  font-size: 28px; /* ลดขนาดชื่อหน้า */
+  font-weight: bold;
+  color: #8A2BE2;
+  margin: 16px 0;
+  padding-left: 16px; /* ลดระยะห่างจากขอบ */
+  text-align: left;
+  background: none;
+  border: none;
+}
+
+/* Custom alert style */
+.custom-alert {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: #8A2BE2;
+  color: #fff;
+  padding: 10px 18px; /* ลดขนาดของป๊อปอัพ */
+  border-radius: 8px;
+  font-size: 14px; /* ลดขนาดฟอนต์ในป๊อปอัพ */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: none;
+  z-index: 9999;
+}
