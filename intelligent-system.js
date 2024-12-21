@@ -1,171 +1,155 @@
-// เคลียร์ Local Storage และ Session Storage เมื่อปิดหรือรีโหลดหน้าเว็บ
-window.addEventListener('beforeunload', function() {
-    localStorage.clear();
-    sessionStorage.clear();
-});
+// ฟังก์ชันเคลียร์ Local Storage และ Session Storage อย่างยืดหยุ่น
+function clearStorage(storageType) {
+    const storage = storageType === 'local' ? localStorage : sessionStorage;
+    for (let key in storage) {
+        if (storage.hasOwnProperty(key)) {
+            const value = storage.getItem(key);
+            try {
+                const data = JSON.parse(value);
+                // ลบเฉพาะรายการที่มี expire date และหมดอายุแล้ว
+                if (data.expires && data.expires < Date.now()) {
+                    storage.removeItem(key);
+                }
+            } catch (e) {
+                console.warn(`Invalid JSON or no expiration for key "${key}"`);
+            }
+        }
+    }
+    console.log(`${storageType} storage cleaned!`);
+}
 
-// ฟังก์ชันยกเลิกการลงทะเบียน Service Workers ที่ลงทะเบียนไว้
+// ฟังก์ชันยกเลิก Service Workers อย่างยืดหยุ่น
 async function unregisterServiceWorkers() {
     if ('serviceWorker' in navigator) {
         const registrations = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map(registration => registration.unregister()));
-        console.log('Service Workers unregistered!');
+        for (const registration of registrations) {
+            // ตรวจสอบว่า Service Worker ยังจำเป็นหรือไม่
+            if (registration.active && registration.active.scriptURL.includes('essential')) {
+                console.log('Skipping essential Service Worker:', registration.active.scriptURL);
+            } else {
+                await registration.unregister();
+                console.log('Service Worker unregistered:', registration.active?.scriptURL || 'unknown');
+            }
+        }
     }
 }
 
-// ฟังก์ชันป้องกันการเก็บแคชใน HTTP requests ด้วย Cache-Control headers
+// ฟังก์ชันตั้งค่า Cache-Control Headers
 function setCacheControlHeaders() {
-    const meta = document.createElement('meta');
-    meta.httpEquiv = 'Cache-Control';
-    meta.content = 'no-cache, no-store, must-revalidate';
-    document.head.appendChild(meta);
-
-    const pragma = document.createElement('meta');
-    pragma.httpEquiv = 'Pragma';
-    pragma.content = 'no-cache';
-    document.head.appendChild(pragma);
-
-    const expires = document.createElement('meta');
-    expires.httpEquiv = 'Expires';
-    expires.content = '0';
-    document.head.appendChild(expires);
+    const metaTags = [
+        { httpEquiv: 'Cache-Control', content: 'no-cache, no-store, must-revalidate' },
+        { httpEquiv: 'Pragma', content: 'no-cache' },
+        { httpEquiv: 'Expires', content: '0' }
+    ];
+    metaTags.forEach(tag => {
+        const meta = document.createElement('meta');
+        meta.httpEquiv = tag.httpEquiv;
+        meta.content = tag.content;
+        document.head.appendChild(meta);
+    });
+    console.log('Cache-Control headers set.');
 }
 
-// ฟังก์ชันลบขยะใน Web Storage
-function cleanWebStorage() {
-    const cleanupStorage = (storage) => {
-        for (let key in storage) {
-            if (storage.hasOwnProperty(key)) {
-                const value = storage.getItem(key);
-                try {
-                    if (JSON.parse(value).expires < Date.now()) {
-                        storage.removeItem(key);
-                    }
-                } catch (e) {
-                    // ลบรายการที่ไม่สามารถแปลงเป็น JSON ได้
-                    storage.removeItem(key);
-                }
-            }
-        }
-    };
-    cleanupStorage(localStorage);
-    cleanupStorage(sessionStorage);
-    console.log('Web storage cleaned!');
-}
-
-// ปรับปรุงฟังก์ชัน Prefetching เพื่อเพิ่มความเร็วในการโหลด
+// ฟังก์ชัน Prefetching ที่ยืดหยุ่น
 function enablePrefetching() {
     const links = document.querySelectorAll('a[href]');
     links.forEach(link => {
+        if (!link.href.includes(window.location.origin)) {
+            console.log('Skipping external link for prefetching:', link.href);
+            return;
+        }
         const prefetchLink = document.createElement('link');
         prefetchLink.rel = 'prefetch';
         prefetchLink.href = link.href;
-        prefetchLink.as = 'document'; 
+        prefetchLink.as = 'document';
         document.head.appendChild(prefetchLink);
     });
+    console.log('Prefetching enabled.');
 }
 
-// ปรับปรุงฟังก์ชัน Lazy Loading เพื่อเพิ่มความเร็วในการโหลด
+// ฟังก์ชัน Lazy Loading ที่ยืดหยุ่น
 function enableLazyLoading() {
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        if ('loading' in HTMLImageElement.prototype) {
+    const images = document.querySelectorAll('img[data-src]');
+    if ('loading' in HTMLImageElement.prototype) {
+        images.forEach(img => {
             img.loading = 'lazy';
-        } else {
-            const lazyImageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const lazyImage = entry.target;
-                        lazyImage.src = lazyImage.dataset.src;
-                        lazyImageObserver.unobserve(lazyImage);
-                    }
-                });
+        });
+        console.log('Native lazy loading enabled.');
+    } else {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    observer.unobserve(img);
+                }
             });
-            lazyImageObserver.observe(img);
-        }
-    });
+        });
+        images.forEach(img => observer.observe(img));
+        console.log('Lazy loading with IntersectionObserver enabled.');
+    }
 }
 
-// ฟังก์ชันบีบอัดเนื้อหาเพื่อประหยัดแบนด์วิธ
-function enableContentCompression() {
+// ฟังก์ชันบีบอัดเนื้อหาที่ยืดหยุ่น
+async function enableContentCompression() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/pako@2.0.4/dist/pako.min.js';
     script.onload = () => {
+        console.log('Content compression library loaded.');
         const compressData = (data) => pako.deflate(data, { level: 9 });
         const decompressData = (data) => pako.inflate(data, { to: 'string' });
 
-        const data = '...'; // ตัวอย่างข้อมูลที่ต้องการบีบอัด
-        const compressedData = compressData(data);
-        console.log('Data compressed:', compressedData);
+        const sampleData = 'Example data to compress and decompress';
+        const compressed = compressData(sampleData);
+        console.log('Compressed data:', compressed);
 
-        const decompressedData = decompressData(compressedData);
-        console.log('Data decompressed:', decompressedData);
+        const decompressed = decompressData(compressed);
+        console.log('Decompressed data:', decompressed);
+    };
+    script.onerror = () => {
+        console.error('Failed to load compression library.');
     };
     document.head.appendChild(script);
 }
 
-// ฟังก์ชันเปิดใช้งาน HTTP/2
-function enableHTTP2() {
-    if (window.location.protocol === 'https:') {
-        console.log('HTTP/2 enabled');
-    }
-}
-
-// ฟังก์ชันเปิดใช้งาน Gzip Compression บนเซิร์ฟเวอร์
-function enableGzipCompression() {
-    console.log('Gzip Compression enabled');
-}
-
-// ฟังก์ชันลดการใช้ทรัพยากร
-function reduceResourceUsage() {
-    console.log('Reduced resource usage without interfering with HTML, CSS, and JS');
-}
-
-// ฟังก์ชันตรวจสอบความเสถียรของอินเทอร์เน็ตและปรับปรุงการเชื่อมต่อ
+// ฟังก์ชันตรวจสอบการเชื่อมต่ออินเทอร์เน็ต
 async function stabilizeInternetConnection() {
     try {
         const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        await fetch('path/to/resource', { cache: 'no-store' });
-        console.log('Resources pulled successfully.');
+        console.log('Network information:', connection);
+
+        const response = await fetch('/health-check', { cache: 'no-store' });
+        if (response.ok) {
+            console.log('Connection stable.');
+        } else {
+            console.warn('Connection check failed with status:', response.status);
+        }
     } catch (error) {
         console.error('Error stabilizing internet connection:', error);
     }
 }
 
-// เพิ่มการใช้ Web Workers สำหรับการประมวลผลที่หนักหน่วง
-function useWebWorkers() {
-    if (window.Worker) {
-        const worker = new Worker('worker.js');
-        worker.postMessage({ data: 'heavy-data' });
-
-        worker.onmessage = function(e) {
-            console.log('Data from worker:', e.data);
-        };
-    }
-}
-
-// ฟังก์ชันช่วยโหลดที่ปรับปรุงแล้ว
+// การโหลดทรัพยากรอย่างยืดหยุ่น
 async function loadResources() {
     try {
-        await Promise.all([enablePrefetching(), enableLazyLoading()]);
-        enableContentCompression();
+        enablePrefetching();
+        enableLazyLoading();
+        await enableContentCompression();
         console.log('Resources loaded successfully.');
     } catch (error) {
         console.error('Error loading resources:', error);
     }
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
+// การเริ่มต้นระบบ
+document.addEventListener('DOMContentLoaded', async () => {
     try {
-        await unregisterServiceWorkers();
         setCacheControlHeaders();
-        cleanWebStorage();
+        await unregisterServiceWorkers();
+        clearStorage('local');
+        clearStorage('session');
         await loadResources();
-        enableHTTP2();
-        enableGzipCompression();
-        reduceResourceUsage();
-        await stabilizeInternetConnection();
-        useWebWorkers();
+        console.log('Initialization complete.');
     } catch (error) {
         console.error('Error during initialization:', error);
     }

@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="content.css">
     <link rel="stylesheet" href="loading.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <title>FanTrove</title>
@@ -60,18 +61,21 @@
     <!-- Category Bar -->
     <div class="category-bar">
         <div class="category-container">
-            <button class="category-button" role="category-button-emoji" data-category="emoji">อีโมจิ</button>
-            <button class="category-button" role="category-button-specialchar" data-category="specialchar">อักษรพิเศษ</button>
+            <button class="category-button" role="link" data-category="emoji">อีโมจิ</button>
+            <button class="category-button" role="link" data-category="specialchar">อักษรพิเศษ</button>
         </div>
     </div>
 
     <!-- Content -->
-    <div id="content">
-        <!-- เนื้อหาจะถูกโหลดมาแสดงในส่วนนี้ -->
-    </div>
-
-    <div class="loading-container">
-    </div>
+    <div id="loader" style="display: none;">กำลังโหลด...</div>
+    <div id="loading-container-c" class="loading-container-c">
+     <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        <circle class="path" fill="none" stroke-width="5" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+      </svg>
+  </div>
+  
+</div>
+    <div id="content"></div>
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -82,13 +86,6 @@
     </div>
 
     <div class="overlay" id="overlay"></div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 FanTrove. All Rights Reserved.</p>
-        </div>
-    </footer>
 
     <!-- Scripts -->
     <script src="nav.js"></script>
