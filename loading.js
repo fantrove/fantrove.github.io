@@ -36,7 +36,7 @@ function hideLoading() {
 
 // เมื่อโหลดเสร็จให้ซ่อนหน้าโหลด
 window.addEventListener('load', () => {
-  setTimeout(hideLoading, 500); // แสดงหน้าโหลดอย่างน้อย 500ms ก่อนซ่อน
+  setTimeout(hideLoading, 50); // แสดงหน้าโหลดอย่างน้อย 50ms ก่อนซ่อน
 });
 
 // แสดงหน้าโหลดเมื่อเข้าเว็บไซต์ครั้งแรก (เมื่อโหลดหน้าใหม่)

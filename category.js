@@ -14,22 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
  // ฟังก์ชันเปิดหน้าใหม่แทนการโหลดเนื้อหา
  function openNewPage(hash) {
-  const page = hash === 'index' ? 'emoji.html' : `${hash}.html`;
-  // เปิดหน้าใหม่เลย
+  // เมื่อเปิดหน้าใหม่จะเติม .html ให้โดยอัตโนมัติ
+  const page = `${hash}.html`;
   window.location.href = page;
  }
 
  // ฟังก์ชันตรวจสอบ URL และตั้งสถานะ active
  function checkURL() {
-  const currentHash = window.location.hash ? window.location.hash.slice(1) : '';
+  let currentHash = window.location.hash ? window.location.hash.slice(1) : '';
 
-  // ตรวจสอบว่า URL เป็น index หรือไม่
-  if (window.location.pathname === '/index.html' || currentHash === '') {
-   return; // ไม่ต้องทำอะไรเมื่ออยู่ใน index.html
+  // ตรวจสอบว่า URL มี hash หรือไม่ ถ้าไม่มีให้ใช้ path ชื่อไฟล์หลัก
+  if (!currentHash && window.location.pathname !== '/') {
+   currentHash = window.location.pathname.split('/').pop().split('.')[0]; // ดึงชื่อไฟล์จาก path
   }
 
-  const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === currentHash);
+  // ถ้าหากอยู่ในหน้า index หรือไม่มี hash ก็ไม่ต้องทำอะไร
+  if (window.location.pathname === '/index.html' || currentHash === '') {
+   return; 
+  }
 
+  // หา button ที่ตรงกับ hash หรือชื่อไฟล์ใน URL
+  const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === currentHash);
+  
   if (activeButton) {
    activateCategoryButton(activeButton);
   } else {
@@ -69,11 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
  // ฟังก์ชันตรวจสอบและตั้งค่า active ปุ่มทันทีที่โหลดหน้า
  function prepareActiveButtonOnLoad() {
-  const currentHash = window.location.hash ? window.location.hash.slice(1) : '';
+  let currentHash = window.location.hash ? window.location.hash.slice(1) : '';
 
-  // ตรวจสอบว่า URL เป็น index หรือไม่
+  // ตรวจสอบว่า URL มี hash หรือไม่ ถ้าไม่มีให้ใช้ path ชื่อไฟล์หลัก
+  if (!currentHash && window.location.pathname !== '/') {
+   currentHash = window.location.pathname.split('/').pop().split('.')[0]; // ดึงชื่อไฟล์จาก path
+  }
+
+  // ถ้าหากอยู่ในหน้า index หรือไม่มี hash ก็ไม่ต้องทำอะไร
   if (window.location.pathname === '/index.html' || currentHash === '') {
-   return; // ไม่ต้องทำอะไรเมื่ออยู่ใน index.html
+   return;
   }
 
   const activeButton = categoryButtons.find(btn => btn.getAttribute('data-category') === currentHash);
@@ -85,6 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
  }
 
+ // เรียกใช้ฟังก์ชันตรวจสอบ URL ทันทีเมื่อโหลดหน้า
  checkURL();
  prepareActiveButtonOnLoad();
+
+ // ฟังก์ชันตรวจสอบ URL ที่เปลี่ยนแปลงเมื่อมีการโหลดใหม่จาก hash
+ window.addEventListener('hashchange', checkURL);
 });

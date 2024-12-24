@@ -1,0 +1,44 @@
+:root {
+    --wave-opacity-start: 0.4; /* ความโปร่งใสเริ่มต้น */
+    --wave-opacity-end: 0;    /* ความโปร่งใสสุดท้าย */
+    --wave-duration: 0.4s;   /* ระยะเวลาอนิเมชัน */
+    --wave-color: rgba(0, 0, 0, 0.29); /* สีของคลื่น */
+    --wave-scale: 3;         /* ขนาดสุดท้ายของคลื่น */
+    --max-waves: 4;          /* จำนวนคลื่นสูงสุด */
+}
+
+.wave-effect {
+    position: relative;
+    overflow: hidden;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.wave {
+    position: absolute;
+    pointer-events: none;
+    transform: scale(0); /* หมุนคลื่นเล็กน้อย */
+    opacity: var(--wave-opacity-start);
+    background: var(--wave-color);
+    border-radius: 50%; /* ทำให้คลื่นเป็นวงกลม */
+    animation: wave-animation var(--wave-duration) ease-out forwards;
+}
+
+@keyframes wave-animation {
+    0% {
+        transform: scale(0);
+        opacity: var(--wave-opacity-start);
+        filter: blur(25px);
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0.2;
+        filter: blur(20px);
+    }
+    100% {
+        transform: scale(var(--wave-scale));
+        opacity: var(--wave-opacity-end);
+        filter: blur(10px);
+    }
+}

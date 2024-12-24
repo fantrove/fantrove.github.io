@@ -11,13 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     backButton.addEventListener('pointerup', () => {
       if (isPointerDown) {
-        try {
-          window.history.back(); // การย้อนกลับ
-        } catch (error) {
-          console.error('เกิดข้อผิดพลาดในการทำงานของปุ่มย้อนกลับ:', error);
-        } finally {
-          isPointerDown = false; // รีเซ็ตสถานะ
+        // ตรวจสอบว่าเป็นการย้อนกลับที่ไม่มีประวัติ
+        if (window.history.length > 1) {
+          try {
+            window.history.back(); // การย้อนกลับ
+          } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการทำงานของปุ่มย้อนกลับ:', error);
+          }
+        } else {
+          // ไม่มีประวัติในการย้อนกลับ จะทำการเปิด index.html แทน
+          window.location.replace('index.html'); // ไปที่ index.html และลบประวัติการเข้าชม
         }
+        isPointerDown = false; // รีเซ็ตสถานะ
       }
     });
 

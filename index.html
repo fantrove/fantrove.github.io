@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="category.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="loading.css">
+    <link rel="stylesheet" href="wake-effect.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -49,7 +50,7 @@
 
     <!-- Navbar -->
     <nav class="navbar" id="navbar" role="navigation">
-        <div class="navbar-title">FanTrove</div>
+        <div class="navbar-title">𝔉𝔞𝔫𝔗𝔯𝔬𝔳𝔢</div>
         <div class="navbar-toggle" id="navbarToggle">
             <div class="bar"></div>
             <div class="bar"></div>
@@ -60,25 +61,17 @@
     <!-- Category Bar -->
     <div class="category-bar">
         <div class="category-container">
-            <button class="category-button" role="link" data-category="emoji">อีโมจิ</button>
-            <button class="category-button" role="link" data-category="specialchar">อักษรพิเศษ</button>
+            <button class="category-button" data-category="emoji" wake="">อีโมจิ</button>
+            <button class="category-button" data-category="specialchar" wake="">อักษรพิเศษ</button>
         </div>
     </div>
 
-    <!-- Content -->
-    <div id="loader" style="display: none;">กำลังโหลด...</div>
-    <div id="loading-container-c" class="loading-container-c">
-     <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-        <circle class="path" fill="none" stroke-width="5" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-      </svg>
-  </div>
-
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <button class="nav-button" onclick="navigate('index.html')">หน้าแรก</button>
-        <button class="nav-button" onclick="navigate('about.html')">เกี่ยวกับ</button>
-        <button class="nav-button" onclick="navigate('services.html')">บริการ</button>
-        <button class="nav-button" onclick="navigate('contact.html')">ติดต่อ</button>
+        <button class="nav-button" onclick="navigate('index.html')" wake="">หน้าแรก</button>
+        <button class="nav-button" onclick="navigate('about.html')" wake="">เกี่ยวกับ</button>
+        <button class="nav-button" onclick="navigate('services.html')" wake="">บริการ</button>
+        <button class="nav-button" onclick="navigate('contact.html')" wake="">ติดต่อ</button>
     </div>
 
     <div class="overlay" id="overlay"></div>
@@ -95,6 +88,9 @@
             <p>&copy; 2024 FanTrove. All Rights Reserved.</p>
         </div>
     </footer>
+    <script src="main.js"></script>
+    <script src="Intelligent-system.js"></script>
+    <script src="wake-effect.js"></script>
 </body>
 
 </html>

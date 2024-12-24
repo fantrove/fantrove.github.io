@@ -1,4 +1,9 @@
-@import url('about.css');
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 90px 20px 90px;
+    background-color: #f4f4f9; /* พื้นหลังสีอ่อน */
+}
 
 /* กำหนดสไตล์หลักให้ดูทันสมัยมากขึ้น */
 .content-container {
@@ -36,6 +41,7 @@
   transition: all 0.3s ease;
   text-align: center;
   white-space: nowrap; /* ป้องกันการตัดคำในปุ่ม */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .content-button:focus {
@@ -93,4 +99,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   display: none;
   z-index: 9999;
+}
+
+.custom-alert.show {
+    display: block; /* แสดงข้อความแจ้งเตือนเมื่อคลาส "show" ถูกเพิ่ม */
 }
