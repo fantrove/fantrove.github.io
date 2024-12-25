@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
  // ฟังก์ชันเปิดหน้าใหม่แทนการโหลดเนื้อหา
  function openNewPage(hash) {
-  // เมื่อเปิดหน้าใหม่จะเติม .html ให้โดยอัตโนมัติ
+  if (hash.includes('#')) {
+   console.warn('URLs with "#" are not supported.');
+   return;
+  }
   const page = `${hash}.html`;
   window.location.href = page;
  }
@@ -23,9 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
  function checkURL() {
   let currentHash = window.location.hash ? window.location.hash.slice(1) : '';
 
+  // ป้องกันการใช้งาน URL ที่มี #
+  if (currentHash.includes('#')) {
+   console.warn('URLs with "#" are not supported.');
+   return;
+  }
+
   // ตรวจสอบว่า URL มี hash หรือไม่ ถ้าไม่มีให้ใช้ path ชื่อไฟล์หลัก
   if (!currentHash && window.location.pathname !== '/') {
-   currentHash = window.location.pathname.split('/').pop().split('.')[0]; // ดึงชื่อไฟล์จาก path
+   currentHash = window.location.pathname.split('/').pop().split('.')[0];
   }
 
   // ถ้าหากอยู่ในหน้า index หรือไม่มี hash ก็ไม่ต้องทำอะไร
@@ -59,13 +68,19 @@ document.addEventListener('DOMContentLoaded', () => {
    isPressed = false;
 
    const hash = button.getAttribute('data-category');
+   if (hash.includes('#')) {
+    console.warn('Buttons with "#" in data-category are not supported.');
+    event.preventDefault();
+    return;
+   }
+
    if (button.classList.contains('active')) {
     event.preventDefault();
     return;
    }
 
    activateCategoryButton(button);
-   openNewPage(hash); // เปิดหน้าใหม่เมื่อเปลี่ยนหมวดหมู่
+   openNewPage(hash);
   });
 
   button.addEventListener('pointerleave', () => {
@@ -77,12 +92,16 @@ document.addEventListener('DOMContentLoaded', () => {
  function prepareActiveButtonOnLoad() {
   let currentHash = window.location.hash ? window.location.hash.slice(1) : '';
 
-  // ตรวจสอบว่า URL มี hash หรือไม่ ถ้าไม่มีให้ใช้ path ชื่อไฟล์หลัก
-  if (!currentHash && window.location.pathname !== '/') {
-   currentHash = window.location.pathname.split('/').pop().split('.')[0]; // ดึงชื่อไฟล์จาก path
+  // ป้องกันการใช้งาน URL ที่มี #
+  if (currentHash.includes('#')) {
+   console.warn('URLs with "#" are not supported.');
+   return;
   }
 
-  // ถ้าหากอยู่ในหน้า index หรือไม่มี hash ก็ไม่ต้องทำอะไร
+  if (!currentHash && window.location.pathname !== '/') {
+   currentHash = window.location.pathname.split('/').pop().split('.')[0];
+  }
+
   if (window.location.pathname === '/index.html' || currentHash === '') {
    return;
   }
@@ -96,10 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
  }
 
- // เรียกใช้ฟังก์ชันตรวจสอบ URL ทันทีเมื่อโหลดหน้า
  checkURL();
  prepareActiveButtonOnLoad();
 
- // ฟังก์ชันตรวจสอบ URL ที่เปลี่ยนแปลงเมื่อมีการโหลดใหม่จาก hash
  window.addEventListener('hashchange', checkURL);
 });
