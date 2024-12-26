@@ -1,7 +1,7 @@
 // ฟังก์ชัน highlightNavButton เพื่อทำให้ปุ่ม active
 function highlightNavButton() {
  const navButtons = document.querySelectorAll('.category-button');
- const currentLocation = window.location.pathname.split('/').pop();
+ const currentLocation = window.location.pathname.split('/emoji.html').pop();
 
  navButtons.forEach(button => {
   const buttonPath = button.getAttribute('onclick')?.match(/'([^']+)'/);
