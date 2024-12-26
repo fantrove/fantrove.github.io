@@ -8,7 +8,7 @@ body {
 /* กำหนดสไตล์หลักให้ดูทันสมัยมากขึ้น */
 .content-container {
   padding: 18px; /* ลดขนาด padding */
-  border: 2px solid #8A2BE2; /* กรอบสีม่วง */
+  border: 0.12rem solid #8A2BE2; /* กรอบสีม่วง */
   border-radius: 14px; /* ลดความโค้งมน */
   margin-bottom: 24px; /* ลดระยะห่างระหว่างกล่อง */
   background-color: #FFFFFF; /* สีพื้นหลังขาว */
@@ -21,16 +21,16 @@ body {
   font-weight: 600; /* ลดน้ำหนักของฟอนต์ */
   color: #8A2BE2; /* หัวข้อสีม่วง */
   text-align: left;
-  border-bottom: 2px solid #8A2BE2; /* เส้นคั่นหัวข้อ */
+  border-bottom: 0.1rem solid #8A2BE2; /* เส้นคั่นหัวข้อ */
   padding-bottom: 8px; /* ลดระยะห่างด้านล่าง */
   margin-bottom: 16px; /* ลดระยะห่างระหว่างหัวข้อกับเนื้อหา */
 }
 
 .content-button {
   display: inline-block;
-  margin: 6px; /* ลดระยะห่างระหว่างปุ่ม */
+  margin: 6px 9.2px; /* ลดระยะห่างระหว่างปุ่ม */
   padding: 10px 18px; /* ขนาดปุ่มลดลง */
-  border: 2px solid #8A2BE2;
+  border: 0.07rem solid #8A2BE2;
   background-color: #F4F4F4;
   color: #8A2BE2;
   border-radius: 8px; /* ลดความโค้งมนของปุ่ม */
