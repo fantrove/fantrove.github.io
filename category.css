@@ -40,11 +40,6 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.category-button:active {
-    transform: translateY(2px); /* ลดตำแหน่งเมื่อกด */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
 .category-button.active {
     background-color: #2575fc; /* พื้นหลังเมื่อ active */
     color: white;
