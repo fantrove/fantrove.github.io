@@ -1,12 +1,12 @@
 // ฟังก์ชัน highlightNavButton เพื่อทำให้ปุ่ม active
 function highlightNavButton() {
  const navButtons = document.querySelectorAll('.category-button');
- const currentLocation = window.location.pathname.split('/emoji.html').pop();
+ const currentLocation = window.location.pathname.split('/').pop();
 
  navButtons.forEach(button => {
   const buttonPath = button.getAttribute('onclick')?.match(/'([^']+)'/);
   if (buttonPath) {
-   const isActive = (currentLocation === buttonPath[1] || (currentLocation === '' && buttonPath[1] === 'emoji.html'));
+   const isActive = (currentLocation === buttonPath[1] || (currentLocation === '' && buttonPath[1] === 'index.html'));
    button.classList.toggle('active', isActive);
    button.disabled = isActive;
 
