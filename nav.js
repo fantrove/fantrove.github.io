@@ -22,6 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
  const overlay = document.getElementById('overlay');
  const navButtons = document.querySelectorAll('.nav-button');
 
+ // ฟังก์ชันสำหรับเพิ่มประวัติเมื่อเปิดเมนู
+ function addHistoryState() {
+  if (!window.history.state || window.history.state.menuOpen !== true) {
+   window.history.pushState({ menuOpen: true }, '', '#menu');
+  }
+ }
+
+ // ฟังก์ชันสำหรับลบประวัติเมื่อปิดเมนู
+ function removeHistoryState() {
+  if (window.history.state && window.history.state.menuOpen === true) {
+   window.history.back(); // ย้อนกลับไปยังประวัติก่อนหน้า
+  }
+ }
+
  // ฟังก์ชันเพื่อเปลี่ยนหน้า
  function navigate(page) {
   clearAllStates(); // เรียกใช้ฟังก์ชันล้างการทำงานก่อนเปลี่ยนหน้า
@@ -33,16 +47,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const isOpen = navbarToggle.classList.toggle('open');
   sidebar.classList.toggle('open-sidebar', isOpen);
 
-  if (overlay.classList.contains('show-overlay')) {
-   overlay.classList.remove('show-overlay');
-   document.body.style.overflow = ''; // ปลดบล็อกการเลื่อน
-   setTimeout(() => overlay.style.display = 'none', 400);
-  } else {
+  if (isOpen) {
    overlay.style.display = 'block';
    setTimeout(() => {
     overlay.classList.add('show-overlay');
     document.body.style.overflow = 'hidden'; // บล็อกการเลื่อน
-   }, 10); // หน่วงเวลาเล็กน้อยเพื่อให้ transition ทำงาน
+   }, 10);
+
+   // เพิ่มสถานะในประวัติ
+   addHistoryState();
+  } else {
+   overlay.classList.remove('show-overlay');
+   document.body.style.overflow = ''; // ปลดบล็อกการเลื่อน
+   setTimeout(() => overlay.style.display = 'none', 400);
+
+   // ลบสถานะในประวัติ
+   removeHistoryState();
   }
  }
 
@@ -53,8 +73,18 @@ document.addEventListener('DOMContentLoaded', () => {
   overlay.classList.remove('show-overlay');
   document.body.style.overflow = ''; // ปลดบล็อกการเลื่อน
   setTimeout(() => overlay.style.display = 'none', 400);
-  navButtons.forEach(button => button.classList.remove('hover'));
+
+  // ลบสถานะในประวัติ
+  removeHistoryState();
  }
+
+ // จัดการ Event เมื่อเปลี่ยนประวัติ
+ window.addEventListener('popstate', (event) => {
+  if (!event.state || !event.state.menuOpen) {
+   // ถ้าไม่มีสถานะเมนูเปิดอยู่ ให้ปิดเมนู
+   clearAllStates();
+  }
+ });
 
  // เรียกใช้ฟังก์ชัน highlightNavButton เมื่อโหลดหน้า
  highlightNavButton();
