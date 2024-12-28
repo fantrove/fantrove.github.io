@@ -36,10 +36,10 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="nav.css">
-    <link rel="stylesheet" href="category.css">
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="bg.css">
     <link rel="stylesheet" href="wake-effect.css">
+    <link rel="stylesheet" href="index.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -58,14 +58,6 @@
         </div>
     </nav>
 
-    <!-- Category Bar -->
-    <div class="category-bar">
-        <div class="category-container">
-            <button class="category-button" onclick="navigate('emoji.html')" wake="">อีโมจิ</button>
-            <button class="category-button" onclick="navigate('specialchar.html')" wake="">อักษรพิเศษ</button>
-        </div>
-    </div>
-
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <button class="nav-button" onclick="navigate('index.html')" wake="">หน้าแรก</button>
@@ -76,19 +68,26 @@
 
     <div class="overlay" id="overlay"></div>
 
+    <main>
+     <h1>Welcome to FanTrove</h1>
+     <p>Explore Emojis and Special Characters from all platforms</p>
+     <div class="buttons">
+      <button onclick="navigateTo('emoji.html')">Explore Emojis</button>
+      <button onclick="navigateTo('specialchar.html')">Explore Special Characters</button>
+     </div>
+    </main>
+
+    <footer>
+     <p>&copy; 2024 FanTrove. All rights reserved.</p>
+    </footer>
+
     <!-- Scripts -->
     <script src="nav.js"></script>
-    <script src="category.js"></script>
     <script src="Intelligent-system.js"></script>
-
-     <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 FanTrove. All Rights Reserved.</p>
-        </div>
-    </footer>
     <script src="main.js"></script>
     <script src="Intelligent-system.js"></script>
     <script src="wake-effect.js"></script>
+    <script src="index.js"></script>
+
 </body>
 </html>
