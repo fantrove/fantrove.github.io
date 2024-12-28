@@ -1,13 +1,16 @@
-function resetHover() {
-  // ลบคลาส hover หรือสไตล์ hover ทั้งหมด
-  const elementsWithHover = document.querySelectorAll('.hover');
-  elementsWithHover.forEach(element => {
-    element.classList.remove('hover');  // ถ้ามีคลาส hover
-    element.style = '';  // ถ้ามีการใช้ inline style
-  });
+function navigateTo(page) {
+    // ล้าง :hover ทุกองค์ประกอบ
+    document.querySelectorAll('*').forEach(element => {
+        element.classList.remove('hover');
+    });
+
+    // เปลี่ยนหน้า
+    window.location.href = page;
 }
 
-function navigateTo(page) {
-  resetHover();  // ล้างค่า hover ก่อนเปลี่ยนหน้า
-  window.location.href = page;
-}
+window.onbeforeunload = function() {
+    // ล้าง :hover ทุกองค์ประกอบเมื่อออกจากหน้า
+    document.querySelectorAll('*').forEach(element => {
+        element.classList.remove('hover');
+    });
+};
