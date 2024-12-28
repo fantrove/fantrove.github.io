@@ -1,18 +1,21 @@
 let languagesConfig = {}; // เก็บข้อมูลภาษาทั้งหมดในหน่วยความจำ
 let languageOverlay, languageDropdown, languageButton;
+let selectedLang = localStorage.getItem('selectedLang') || ''; // ภาษาเริ่มต้นจาก localStorage
 
 // ฟังก์ชันดึงข้อมูลจาก language.json
 async function loadLanguagesConfig() {
-    // ตรวจสอบว่ามีข้อมูลภาษาในหน่วยความจำแล้ว
-    if (Object.keys(languagesConfig).length === 0) {
+    if (Object.keys(languagesConfig).length === 0) { // ตรวจสอบว่ามีข้อมูลภาษาหรือยัง
         try {
             const response = await fetch('language.json');
-            if (!response.ok) {
-                throw new Error(`Failed to fetch languages config: ${response.statusText}`);
-            }
+            if (!response.ok) throw new Error(`Failed to fetch languages config: ${response.statusText}`);
             languagesConfig = await response.json();
+
+            if (Object.keys(languagesConfig).length === 0) {
+                throw new Error('Language configuration is empty');
+            }
         } catch (error) {
             console.error('Error loading languages config:', error);
+            showAlertAndRefresh('เกิดข้อผิดพลาดในการโหลดข้อมูลภาษา กรุณาลองใหม่');
             return;
         }
     }
@@ -21,51 +24,62 @@ async function loadLanguagesConfig() {
     handleInitialLanguage(); // กำหนดภาษาที่เลือกในตอนเริ่มต้น
 }
 
+// ฟังก์ชันแสดงหน้าต่างแจ้งเตือนข้อผิดพลาด
+function showAlertAndRefresh(message) {
+    alert(message); // แสดงการแจ้งเตือน
+    setTimeout(() => {
+        location.reload(); // รีเฟรชหน้าเว็บ
+    }, 500); // รอให้แจ้งเตือนปิดก่อนการรีเฟรช
+}
+
 // ฟังก์ชันสร้างหน้าต่างตัวเลือกภาษา
 function initializeCustomLanguageSelector() {
     const languageContainer = document.getElementById('language-selector-container');
 
     // สร้างพื้นหลังสีดำ
-    languageOverlay = document.createElement('div');
-    languageOverlay.id = 'language-overlay';
-    languageOverlay.style.display = 'none'; // ซ่อนเริ่มต้น
-    document.body.appendChild(languageOverlay);
+    if (!languageOverlay) {
+        languageOverlay = document.createElement('div');
+        languageOverlay.id = 'language-overlay';
+        document.body.appendChild(languageOverlay);
+        languageOverlay.addEventListener('click', closeLanguageDropdown); // เพิ่มการปิด dropdown เมื่อคลิกพื้นหลังสีดำ
+    }
 
     // สร้างปุ่มสำหรับการเลือกภาษา
-    languageButton = document.createElement('button');
-    languageButton.id = 'language-button';
-    languageButton.textContent = languagesConfig[localStorage.getItem('selectedLang') || 'en']?.buttonText || 'Select Language';
-    languageButton.addEventListener('click', toggleLanguageDropdown);
-    languageContainer.appendChild(languageButton);
+    if (!languageButton) {
+        languageButton = document.createElement('button');
+        languageButton.id = 'language-button';
+        updateButtonText(languageButton); // อัพเดตข้อความปุ่มตามภาษาที่เลือก
+        languageButton.addEventListener('click', toggleLanguageDropdown);
+        languageContainer.appendChild(languageButton);
+    }
 
     // สร้างหน้าต่างตัวเลือกภาษา
-    languageDropdown = document.createElement('div');
-    languageDropdown.id = 'language-dropdown';
-    languageDropdown.style.display = 'none'; // ซ่อนเริ่มต้น
-    document.body.appendChild(languageDropdown);
+    if (!languageDropdown) {
+        languageDropdown = document.createElement('div');
+        languageDropdown.id = 'language-dropdown';
+        document.body.appendChild(languageDropdown);
 
-    // เพิ่มตัวเลือกภาษาในหน้าต่าง
-    Object.entries(languagesConfig).forEach(([language, config]) => {
-        const option = document.createElement('div');
-        option.className = 'language-option';
-        option.textContent = config.label;
-        option.dataset.language = language;
-        option.addEventListener('click', () => selectLanguage(language));
-        languageDropdown.appendChild(option);
-    });
+        Object.entries(languagesConfig).forEach(([language, config]) => {
+            const option = document.createElement('div');
+            option.className = 'language-option';
+            option.textContent = config.label;
+            option.dataset.language = language;
+            option.addEventListener('click', () => selectLanguage(language));
+            languageDropdown.appendChild(option);
+        });
+    }
+}
 
-    // เพิ่มการปิด dropdown เมื่อคลิกพื้นหลังสีดำ
-    languageOverlay.addEventListener('click', closeLanguageDropdown);
+// ฟังก์ชันอัพเดตข้อความในปุ่มตามภาษาที่เลือก
+function updateButtonText(button) {
+    const buttonText = languagesConfig[selectedLang]?.buttonText || 'Select Language';
+    button.textContent = buttonText;
 }
 
 // ฟังก์ชันเปิด/ปิด dropdown
 function toggleLanguageDropdown() {
     const isDropdownVisible = languageOverlay.style.display === 'block';
-    if (isDropdownVisible) {
-        closeLanguageDropdown();
-    } else {
-        openLanguageDropdown();
-    }
+    isDropdownVisible ? closeLanguageDropdown() : openLanguageDropdown();
 }
 
 // ฟังก์ชันเปิด dropdown
@@ -78,7 +92,7 @@ function openLanguageDropdown() {
     setTimeout(() => {
         languageOverlay.classList.add('fade-in');
         languageDropdown.classList.add('fade-in');
-    }, 10);
+    }, 10); // เพิ่มดีเลย์เล็กน้อยให้ transition ทำงาน
 }
 
 // ฟังก์ชันปิด dropdown
@@ -101,41 +115,45 @@ function selectLanguage(language) {
         language = 'en';
     }
 
-    const suffix = languagesConfig[language].suffix;
-    const currentFile = window.location.pathname.split('/').pop();
-    const baseFileName = currentFile.split('.')[0].split('_')[0];
-    const newFileName = baseFileName + (suffix ? suffix : '') + '.html';
+    const newFileName = languagesConfig[language].fileName;
 
     // บันทึกภาษาลง localStorage
     localStorage.setItem('selectedLang', language);
 
-    // เปลี่ยน URL ให้ตรงกับภาษา
-    const newURL = window.location.href.replace(currentFile, newFileName);
+    // ตรวจสอบว่า URL ปัจจุบันไม่มีการเพิ่มซ้ำของ URL เต็ม
+    const currentFile = window.location.pathname.split('/').pop();
+    const currentURL = window.location.href;
+    const newURL = window.location.origin + window.location.pathname.replace(currentFile, newFileName);
 
-    // ตรวจสอบว่า URL เปลี่ยนแปลงหรือไม่
-    if (window.location.href !== newURL) {
-        // ใช้ history.replaceState เพื่อไม่ให้เพิ่ม history ใหม่
+    // ป้องกันการซ้ำซ้อนของ URL
+    if (currentURL !== newURL) {
         history.replaceState({ lang: language }, '', newURL);
-
-        // รีเฟรชหน้าใหม่หลังจากการเปลี่ยนแปลงภาษา
         location.reload(); // รีเฟรชหน้าทันที
     }
 
     // ปิด dropdown หลังเลือกภาษา
     closeLanguageDropdown();
+
+    // อัพเดตข้อความของปุ่มหลังเลือกภาษา
+    updateButtonText(languageButton);
 }
 
 // ฟังก์ชันเริ่มต้นตรวจสอบภาษาและการโหลดไฟล์
 function handleInitialLanguage() {
     const currentFile = window.location.pathname.split('/').pop();
     const langFromUrl = currentFile.split('_')[1]?.split('.')[0];
-    let selectedLang = langFromUrl || localStorage.getItem('selectedLang') || 'en';
 
-    if (selectedLang !== 'en' && !languagesConfig[selectedLang]) {
-        selectedLang = 'en'; // หากภาษาที่เลือกไม่ถูกต้องจะใช้ภาษาอังกฤษ
+    // เลือกภาษาจาก URL หรือ localStorage
+    if (langFromUrl && languagesConfig[langFromUrl]) {
+        selectedLang = langFromUrl;
+    } else if (!localStorage.getItem('selectedLang')) {
+        const browserLang = navigator.language || navigator.userLanguage;
+        const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
+        selectedLang = matchingLang || 'en';
+    } else {
+        selectedLang = localStorage.getItem('selectedLang');
     }
 
-    // ตรวจสอบว่าไม่ต้องรีเฟรชหน้าถ้าภาษาถูกต้องแล้ว
     if (selectedLang !== localStorage.getItem('selectedLang')) {
         localStorage.setItem('selectedLang', selectedLang);
         selectLanguage(selectedLang); // เปลี่ยนภาษา
@@ -147,6 +165,6 @@ window.onload = loadLanguagesConfig;
 
 // ฟังก์ชันจัดการประวัติการย้อนกลับ
 window.onpopstate = function (event) {
-    const lang = event.state?.lang || localStorage.getItem('selectedLang') || 'en';
+    const lang = event.state?.lang || selectedLang || 'en';
     selectLanguage(lang);
 };
