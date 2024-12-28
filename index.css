@@ -1,3 +1,5 @@
+@import url('variables.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
+
 /* ตั้งค่าพื้นฐาน */
 * {
   margin: 0;
@@ -7,10 +9,9 @@
 
 body {
   font-family: 'Arial', sans-serif;
-  background: linear-gradient(180deg, #1e1e2f, #121214);
-  color: white;
   margin: 0;
   padding: 0;
+  color: #000;
   display: flex;
   justify-content: center; /* จัดให้อยู่กลางหน้าจอ */
   align-items: center; /* จัดให้อยู่กลางแนวตั้ง */
@@ -30,7 +31,7 @@ button {
 }
 
 button:hover {
-  color: #fff;
+  color: #FFFFFF;
 }
 
 /* ส่วนเนื้อหาหลัก */
@@ -81,16 +82,6 @@ main .buttons button {
 main .buttons button:hover {
   transform: scale(1.1);
   box-shadow: 0 8px 20px rgba(76, 212, 201, 0.7);
-}
-
-/* ส่วนท้าย */
-footer {
-  text-align: center;
-  padding: 15px;
-  background: #141414;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
 }
 
 /* การตอบสนองสำหรับหน้าจอ */

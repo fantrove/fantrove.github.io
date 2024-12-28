@@ -6,7 +6,7 @@
     --navbar-border: 1px solid rgba(255, 255, 255, 0.3);
     --sidebar-bg: linear-gradient(135deg, #4834A9 0%, #726AFF 100%);
     --nav-button-bg-active: #6E72FC;
-    --nav-button-color-active: #ffffff;
+    --nav-button-color-active: #FFFFFF;
     --nav-button-hover-bg: rgba(255, 255, 255, 0.3);
     --nav-button-hover-color: #ffffff;
 }
@@ -70,6 +70,7 @@
     right: -100%;
     width: 220px;
     height: 100%;
+    color: #fff;
     background-image: var(--main-color);
     transition: right 0.4s ease, background-color 0.4s ease;
     padding-top: 60px;
