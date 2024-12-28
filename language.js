@@ -1,4 +1,3 @@
-// language.js:
 let languagesConfig = {}; // เก็บข้อมูลภาษาทั้งหมดในหน่วยความจำ
 let languageOverlay, languageDropdown, languageButton;
 let selectedLang = localStorage.getItem('selectedLang') || ''; // ภาษาเริ่มต้นจาก localStorage
@@ -121,8 +120,22 @@ function selectLanguage(language) {
     // บันทึกภาษาลง localStorage
     localStorage.setItem('selectedLang', language);
 
-    // เปลี่ยนไปยังไฟล์ใหม่ทันที
-    window.location.href = newFileName;
+    // ตรวจสอบว่า URL ปัจจุบันไม่มีการเพิ่มซ้ำของ URL เต็ม
+    const currentFile = window.location.pathname.split('/').pop();
+    const currentURL = window.location.href;
+    const newURL = window.location.origin + window.location.pathname.replace(currentFile, newFileName);
+
+    // ป้องกันการซ้ำซ้อนของ URL
+    if (currentURL !== newURL) {
+        history.replaceState({ lang: language }, '', newURL);
+        location.reload(); // รีเฟรชหน้าทันที
+    }
+
+    // ปิด dropdown หลังเลือกภาษา
+    closeLanguageDropdown();
+
+    // อัพเดตข้อความของปุ่มหลังเลือกภาษา
+    updateButtonText(languageButton);
 }
 
 // ฟังก์ชันเริ่มต้นตรวจสอบภาษาและการโหลดไฟล์
@@ -143,9 +156,15 @@ function handleInitialLanguage() {
 
     if (selectedLang !== localStorage.getItem('selectedLang')) {
         localStorage.setItem('selectedLang', selectedLang);
+        selectLanguage(selectedLang); // เปลี่ยนภาษา
     }
-    updateButtonText(languageButton);
 }
 
 // เรียกใช้ฟังก์ชันโหลดภาษาเมื่อโหลดหน้า
 window.onload = loadLanguagesConfig;
+
+// ฟังก์ชันจัดการประวัติการย้อนกลับ
+window.onpopstate = function (event) {
+    const lang = event.state?.lang || selectedLang || 'en';
+    selectLanguage(lang);
+};
