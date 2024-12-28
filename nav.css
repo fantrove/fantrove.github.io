@@ -72,7 +72,7 @@
     height: 100%;
     color: #fff;
     background-image: var(--main-color);
-    transition: right 0.4s ease, background-color 0.4s ease;
+    transition: right 0.6s ease, background-color 0.6s ease;
     padding-top: 60px;
     z-index: 8001;
     box-shadow: 6px 0 15px rgba(0, 0, 0, 0.4);
@@ -119,7 +119,7 @@
     background-color: rgba(0, 0, 0, 0);
     display: none;
     z-index: 8000;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
+    transition: background-color 0.6s ease, opacity 0.6s ease;
     opacity: 0;
 }
 
@@ -168,6 +168,7 @@
     .sidebar {
         padding-top: 60px;
         width: 280px;
+        transition: right 0.7s ease, background-color 0.7s ease;
     }
 }
 
@@ -190,5 +191,6 @@
     .sidebar {
         padding-top: 80px;
         width: 300px;
+        transition: right 0.7s ease, background-color 0.7s ease;
     }
 }

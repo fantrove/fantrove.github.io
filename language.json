@@ -1,0 +1,12 @@
+{
+    "en": {
+        "label": "English",
+        "suffix": "",
+        "buttonText": "Select Language"
+    },
+    "th": {
+        "label": "ไทย",
+        "suffix": "_th",
+        "buttonText": "เลือกภาษา"
+    }
+}
