@@ -109,11 +109,12 @@ function selectLanguage(language) {
     // บันทึกภาษาลง localStorage
     localStorage.setItem('selectedLang', language);
 
-    // เปลี่ยน URL ให้ตรงกับภาษา
-    const newURL = window.location.href.replace(currentFile, newFileName);
+    // ตรวจสอบว่า URL ปัจจุบันไม่มีการเพิ่มซ้ำของ URL เต็ม
+    const currentURL = window.location.href;
+    const newURL = window.location.origin + window.location.pathname.replace(currentFile, newFileName);
 
     // ตรวจสอบว่า URL เปลี่ยนแปลงหรือไม่
-    if (window.location.href !== newURL) {
+    if (currentURL !== newURL) {
         // ใช้ history.replaceState เพื่อไม่ให้เพิ่ม history ใหม่
         history.replaceState({ lang: language }, '', newURL);
 
