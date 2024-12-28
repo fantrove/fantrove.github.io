@@ -1,4 +1,5 @@
 let languagesConfig = {}; // เก็บข้อมูลภาษาทั้งหมดในหน่วยความจำ
+let languageOverlay, languageDropdown, languageButton;
 
 // ฟังก์ชันดึงข้อมูลจาก language.json
 async function loadLanguagesConfig() {
@@ -25,23 +26,23 @@ function initializeCustomLanguageSelector() {
     const languageContainer = document.getElementById('language-selector-container');
 
     // สร้างพื้นหลังสีดำ
-    const overlay = document.createElement('div');
-    overlay.id = 'language-overlay';
-    overlay.style.display = 'none'; // ซ่อนเริ่มต้น
-    document.body.appendChild(overlay);
+    languageOverlay = document.createElement('div');
+    languageOverlay.id = 'language-overlay';
+    languageOverlay.style.display = 'none'; // ซ่อนเริ่มต้น
+    document.body.appendChild(languageOverlay);
 
     // สร้างปุ่มสำหรับการเลือกภาษา
-    const button = document.createElement('button');
-    button.id = 'language-button';
-    button.textContent = languagesConfig[localStorage.getItem('selectedLang') || 'en']?.buttonText || 'Select Language';
-    button.addEventListener('click', toggleLanguageDropdown);
-    languageContainer.appendChild(button);
+    languageButton = document.createElement('button');
+    languageButton.id = 'language-button';
+    languageButton.textContent = languagesConfig[localStorage.getItem('selectedLang') || 'en']?.buttonText || 'Select Language';
+    languageButton.addEventListener('click', toggleLanguageDropdown);
+    languageContainer.appendChild(languageButton);
 
     // สร้างหน้าต่างตัวเลือกภาษา
-    const dropdown = document.createElement('div');
-    dropdown.id = 'language-dropdown';
-    dropdown.style.display = 'none'; // ซ่อนเริ่มต้น
-    document.body.appendChild(dropdown);
+    languageDropdown = document.createElement('div');
+    languageDropdown.id = 'language-dropdown';
+    languageDropdown.style.display = 'none'; // ซ่อนเริ่มต้น
+    document.body.appendChild(languageDropdown);
 
     // เพิ่มตัวเลือกภาษาในหน้าต่าง
     Object.entries(languagesConfig).forEach(([language, config]) => {
@@ -50,54 +51,47 @@ function initializeCustomLanguageSelector() {
         option.textContent = config.label;
         option.dataset.language = language;
         option.addEventListener('click', () => selectLanguage(language));
-        dropdown.appendChild(option);
+        languageDropdown.appendChild(option);
     });
 
     // เพิ่มการปิด dropdown เมื่อคลิกพื้นหลังสีดำ
-    overlay.addEventListener('click', closeLanguageDropdown);
+    languageOverlay.addEventListener('click', closeLanguageDropdown);
 }
 
 // ฟังก์ชันเปิด/ปิด dropdown
 function toggleLanguageDropdown() {
-    const overlay = document.getElementById('language-overlay');
-    const dropdown = document.getElementById('language-dropdown');
-
-    if (overlay.style.display === 'none') {
-        overlay.style.display = 'block';
-        dropdown.style.display = 'block';
-        document.body.classList.add('no-scroll'); // ล็อกการเลื่อนหน้าเว็บ
-
-        // จางเข้า (Fade In)
-        setTimeout(() => {
-            overlay.classList.add('fade-in');
-            dropdown.classList.add('fade-in');
-        }, 10);
-
-        // เพิ่มประวัติใหม่ในประวัติของเบราว์เซอร์
-        history.pushState({ languageSelectorOpen: true }, '', window.location.href);
-    } else {
+    const isDropdownVisible = languageOverlay.style.display === 'block';
+    if (isDropdownVisible) {
         closeLanguageDropdown();
+    } else {
+        openLanguageDropdown();
     }
+}
+
+// ฟังก์ชันเปิด dropdown
+function openLanguageDropdown() {
+    languageOverlay.style.display = 'block';
+    languageDropdown.style.display = 'block';
+    document.body.classList.add('no-scroll'); // ล็อกการเลื่อนหน้าเว็บ
+
+    // จางเข้า (Fade In)
+    setTimeout(() => {
+        languageOverlay.classList.add('fade-in');
+        languageDropdown.classList.add('fade-in');
+    }, 10);
 }
 
 // ฟังก์ชันปิด dropdown
 function closeLanguageDropdown() {
-    const overlay = document.getElementById('language-overlay');
-    const dropdown = document.getElementById('language-dropdown');
-
-    // จางออก (Fade Out)
-    overlay.classList.remove('fade-in');
-    dropdown.classList.remove('fade-in');
+    languageOverlay.classList.remove('fade-in');
+    languageDropdown.classList.remove('fade-in');
 
     // รอให้การจางออกเสร็จสิ้นแล้วค่อยซ่อน
     setTimeout(() => {
-        overlay.style.display = 'none';
-        dropdown.style.display = 'none';
+        languageOverlay.style.display = 'none';
+        languageDropdown.style.display = 'none';
         document.body.classList.remove('no-scroll'); // ปลดล็อกการเลื่อนหน้าเว็บ
     }, 300); // 300ms ตามเวลาที่ใช้ในการจางออก
-
-    // ลบประวัติออกจากเบราว์เซอร์เมื่อปิดหน้าต่าง
-    history.replaceState(null, '', window.location.href);
 }
 
 // ฟังก์ชันเปลี่ยนภาษา
@@ -153,12 +147,6 @@ window.onload = loadLanguagesConfig;
 
 // ฟังก์ชันจัดการประวัติการย้อนกลับ
 window.onpopstate = function (event) {
-    if (event.state?.languageSelectorOpen) {
-        // ถ้าหน้าต่างตัวเลือกภาษาถูกเปิดไว้แล้ว ให้ปิดหน้าต่างแทนการย้อนกลับ
-        closeLanguageDropdown();
-    } else {
-        // หากไม่เปิดหน้าต่างเลือกภาษา ให้ทำการเปลี่ยนภาษา
-        const lang = event.state?.lang || localStorage.getItem('selectedLang') || 'en';
-        selectLanguage(lang);
-    }
+    const lang = event.state?.lang || localStorage.getItem('selectedLang') || 'en';
+    selectLanguage(lang);
 };
