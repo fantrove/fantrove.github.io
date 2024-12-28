@@ -20,6 +20,7 @@ body {
 /* เพิ่มคลาสเพื่อทำให้มันจางเข้า */
 #language-overlay.fade-in, #language-dropdown.fade-in {
     opacity: 1;
+    display: block; /* แสดงเมื่อ fade-in */
 }
 
 /* ปรับการล็อกการเลื่อน */
@@ -44,6 +45,7 @@ body.no-scroll {
     position: fixed;
     top: 50%;
     left: 50%;
+    width: 80%;
     transform: translate(-50%, -50%) scale(0.8); /* เริ่มต้นด้วยขนาดเล็กแล้วขยายเมื่อเปิด */
     background-color: #fff;
     padding: 20px;
@@ -51,8 +53,7 @@ body.no-scroll {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* เงาที่ละเอียด */
     z-index: 1000;
     overflow: hidden;
-    transition: transform 0.3s ease-in-out;
-    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 /* เอฟเฟกต์การขยายและจางเข้าเมื่อเปิด */

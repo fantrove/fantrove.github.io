@@ -1,6 +1,6 @@
 let languagesConfig = {}; // เก็บข้อมูลภาษาทั้งหมดในหน่วยความจำ
 let languageOverlay, languageDropdown, languageButton;
-let selectedLang = localStorage.getItem('selectedLang') || 'en'; // เลือกภาษาจาก localStorage หรือเป็น 'en' ถ้ายังไม่ได้เลือก
+let selectedLang = localStorage.getItem('selectedLang') || '';
 
 // ฟังก์ชันดึงข้อมูลจาก language.json
 async function loadLanguagesConfig() {
@@ -93,7 +93,7 @@ function openLanguageDropdown() {
     setTimeout(() => {
         languageOverlay.classList.add('fade-in');
         languageDropdown.classList.add('fade-in');
-    }, 10);
+    }, 300);
 }
 
 // ฟังก์ชันปิด dropdown
@@ -153,7 +153,15 @@ function handleInitialLanguage() {
     if (langFromUrl && languagesConfig[langFromUrl]) {
         selectedLang = langFromUrl;
     } else if (!localStorage.getItem('selectedLang')) {
-        selectedLang = 'en'; // หากไม่มีการตั้งค่าใน localStorage ใช้ภาษาอังกฤษเป็นค่าเริ่มต้น
+        // ตรวจสอบภาษาในเบราว์เซอร์ หากไม่มีใน localStorage
+        const browserLang = navigator.language || navigator.userLanguage;
+        const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
+        
+        if (matchingLang) {
+            selectedLang = matchingLang;
+        } else {
+            selectedLang = 'en'; // หากไม่พบภาษาที่ตรงกับเบราว์เซอร์
+        }
     } else {
         selectedLang = localStorage.getItem('selectedLang');
     }
