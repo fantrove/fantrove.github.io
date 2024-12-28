@@ -90,10 +90,10 @@ function openLanguageDropdown() {
     document.body.classList.add('no-scroll'); // ล็อกการเลื่อนหน้าเว็บ
 
     // จางเข้า (Fade In)
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         languageOverlay.classList.add('fade-in');
         languageDropdown.classList.add('fade-in');
-    }, 300);
+    });
 }
 
 // ฟังก์ชันปิด dropdown
