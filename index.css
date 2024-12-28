@@ -28,6 +28,9 @@ h1, h2, h3, p {
 button {
   color: #4a90e2;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+    user-select: none;
 }
 
 button:hover {
@@ -77,11 +80,6 @@ main .buttons button {
   cursor: pointer;
   box-shadow: 0 5px 15px rgba(76, 212, 201, 0.5);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-main .buttons button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(76, 212, 201, 0.7);
 }
 
 /* การตอบสนองสำหรับหน้าจอ */
