@@ -184,5 +184,15 @@ function handlePopState(event) {
     }
 }
 
+// ฟังก์ชันจัดการการเปลี่ยนเส้นทางหน้าแรก
+function handleRedirectToIndex() {
+    if (window.location.pathname === '/') {
+        window.location.replace('/index.html'); // เปลี่ยนเส้นทางไปที่ /index.html
+    }
+}
+
+// เรียกใช้ฟังก์ชันจัดการการเปลี่ยนเส้นทางหน้าแรก
+handleRedirectToIndex();
+
 // เรียกใช้ฟังก์ชันโหลดภาษาเมื่อโหลดหน้า
 window.onload = loadLanguagesConfig;
