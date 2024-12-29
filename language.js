@@ -1,10 +1,12 @@
+// language.js
+
 let languagesConfig = {}; // เก็บข้อมูลภาษาทั้งหมดในหน่วยความจำ
 let languageOverlay, languageDropdown, languageButton;
-let selectedLang = localStorage.getItem('selectedLang') || ''; // ภาษาเริ่มต้นจาก localStorage
+let selectedLang = ''; // ภาษาเริ่มต้น
 
 // ฟังก์ชันดึงข้อมูลจาก language.json
 async function loadLanguagesConfig() {
-    if (Object.keys(languagesConfig).length === 0) { // ตรวจสอบว่ามีข้อมูลภาษาหรือยัง
+    if (Object.keys(languagesConfig).length === 0) {
         try {
             const response = await fetch('language.json');
             if (!response.ok) throw new Error(`Failed to fetch languages config: ${response.statusText}`);
@@ -20,40 +22,35 @@ async function loadLanguagesConfig() {
         }
     }
 
-    initializeCustomLanguageSelector(); // สร้าง UI ของระบบเลือกภาษา
     handleInitialLanguage(); // กำหนดภาษาที่เลือกในตอนเริ่มต้น
+    initializeCustomLanguageSelector(); // สร้าง UI ของระบบเลือกภาษา
 }
 
 // ฟังก์ชันแสดงหน้าต่างแจ้งเตือนข้อผิดพลาด
 function showAlertAndRefresh(message) {
-    alert(message); // แสดงการแจ้งเตือน
-    setTimeout(() => {
-        location.reload(); // รีเฟรชหน้าเว็บ
-    }, 500); // รอให้แจ้งเตือนปิดก่อนการรีเฟรช
+    alert(message);
+    setTimeout(() => location.reload(), 500);
 }
 
 // ฟังก์ชันสร้างหน้าต่างตัวเลือกภาษา
 function initializeCustomLanguageSelector() {
     const languageContainer = document.getElementById('language-selector-container');
 
-    // สร้างพื้นหลังสีดำ
     if (!languageOverlay) {
         languageOverlay = document.createElement('div');
         languageOverlay.id = 'language-overlay';
         document.body.appendChild(languageOverlay);
-        languageOverlay.addEventListener('click', closeLanguageDropdown); // เพิ่มการปิด dropdown เมื่อคลิกพื้นหลังสีดำ
+        languageOverlay.addEventListener('click', closeLanguageDropdown);
     }
 
-    // สร้างปุ่มสำหรับการเลือกภาษา
     if (!languageButton) {
         languageButton = document.createElement('button');
         languageButton.id = 'language-button';
-        updateButtonText(languageButton); // อัพเดตข้อความปุ่มตามภาษาที่เลือก
+        updateButtonText(languageButton);
         languageButton.addEventListener('click', toggleLanguageDropdown);
         languageContainer.appendChild(languageButton);
     }
 
-    // สร้างหน้าต่างตัวเลือกภาษา
     if (!languageDropdown) {
         languageDropdown = document.createElement('div');
         languageDropdown.id = 'language-dropdown';
@@ -68,12 +65,15 @@ function initializeCustomLanguageSelector() {
             languageDropdown.appendChild(option);
         });
     }
+
+    // ปรับปรุงการทำงานของปุ่มย้อนกลับเมื่อหน้าต่างตัวเลือกภาษาปิด
+    window.addEventListener('popstate', handlePopState);
 }
 
 // ฟังก์ชันอัพเดตข้อความในปุ่มตามภาษาที่เลือก
 function updateButtonText(button) {
     const buttonText = languagesConfig[selectedLang]?.buttonText || 'Select Language';
-    button.textContent = buttonText;
+    if (button) button.textContent = buttonText;
 }
 
 // ฟังก์ชันเปิด/ปิด dropdown
@@ -86,13 +86,15 @@ function toggleLanguageDropdown() {
 function openLanguageDropdown() {
     languageOverlay.style.display = 'block';
     languageDropdown.style.display = 'block';
-    document.body.classList.add('no-scroll'); // ล็อกการเลื่อนหน้าเว็บ
+    document.body.classList.add('no-scroll');
 
-    // จางเข้า (Fade In)
     setTimeout(() => {
         languageOverlay.classList.add('fade-in');
         languageDropdown.classList.add('fade-in');
-    }, 10); // เพิ่มดีเลย์เล็กน้อยให้ transition ทำงาน
+    }, 10);
+
+    // เพิ่มสถานะในประวัติ
+    addLanguageHistoryState();
 }
 
 // ฟังก์ชันปิด dropdown
@@ -100,12 +102,28 @@ function closeLanguageDropdown() {
     languageOverlay.classList.remove('fade-in');
     languageDropdown.classList.remove('fade-in');
 
-    // รอให้การจางออกเสร็จสิ้นแล้วค่อยซ่อน
     setTimeout(() => {
         languageOverlay.style.display = 'none';
         languageDropdown.style.display = 'none';
-        document.body.classList.remove('no-scroll'); // ปลดล็อกการเลื่อนหน้าเว็บ
-    }, 300); // 300ms ตามเวลาที่ใช้ในการจางออก
+        document.body.classList.remove('no-scroll');
+
+        // ลบประวัติการเปิดหน้าต่าง
+        clearLanguageHistory();
+    }, 300);
+}
+
+// ฟังก์ชันเพิ่มสถานะประวัติเมื่อเปิดเมนู
+function addLanguageHistoryState() {
+    if (!window.history.state || window.history.state.languageMenuOpen !== true) {
+        window.history.pushState({ languageMenuOpen: true }, '', '#language-menu');
+    }
+}
+
+// ฟังก์ชันลบประวัติเมื่อปิดเมนู
+function clearLanguageHistory() {
+    if (window.history.state && window.history.state.languageMenuOpen === true) {
+        history.back(); // ย้อนกลับไปยังประวัติก่อนหน้า
+    }
 }
 
 // ฟังก์ชันเปลี่ยนภาษา
@@ -115,56 +133,56 @@ function selectLanguage(language) {
         language = 'en';
     }
 
-    const newFileName = languagesConfig[language].fileName;
-
-    // บันทึกภาษาลง localStorage
-    localStorage.setItem('selectedLang', language);
-
-    // ตรวจสอบว่า URL ปัจจุบันไม่มีการเพิ่มซ้ำของ URL เต็ม
     const currentFile = window.location.pathname.split('/').pop();
-    const currentURL = window.location.href;
-    const newURL = window.location.origin + window.location.pathname.replace(currentFile, newFileName);
+    const baseFileName = currentFile.split('.')[0].split('_')[0]; // เอาชื่อไฟล์พื้นฐาน
+    const newFileName = language === 'en' 
+        ? `${baseFileName}.html` 
+        : `${baseFileName}_${language}.html`;
 
-    // ป้องกันการซ้ำซ้อนของ URL
-    if (currentURL !== newURL) {
-        history.replaceState({ lang: language }, '', newURL);
-        location.reload(); // รีเฟรชหน้าทันที
+    localStorage.setItem('selectedLang', language);
+    
+    // ใช้ replaceState เพื่อไม่ให้สามารถย้อนกลับไปไฟล์ก่อนหน้าได้
+    history.replaceState(null, '', newFileName); // ปรับปรุง URL โดยไม่เพิ่มลงในประวัติ
+    window.location.replace(newFileName); // ทำการเปลี่ยนหน้าด้วยการโหลดหน้าใหม่
+
+    // เคลียร์ประวัติการเข้าชม
+    clearHistory();
+}
+
+// ฟังก์ชันเคลียร์ประวัติการเข้าชม
+function clearHistory() {
+    // เคลียร์ประวัติทั้งหมดหลังจากการเปลี่ยนภาษา
+    if (window.history && window.history.replaceState) {
+        history.replaceState(null, document.title, window.location.href);
     }
-
-    // ปิด dropdown หลังเลือกภาษา
-    closeLanguageDropdown();
-
-    // อัพเดตข้อความของปุ่มหลังเลือกภาษา
-    updateButtonText(languageButton);
 }
 
 // ฟังก์ชันเริ่มต้นตรวจสอบภาษาและการโหลดไฟล์
 function handleInitialLanguage() {
     const currentFile = window.location.pathname.split('/').pop();
-    const langFromUrl = currentFile.split('_')[1]?.split('.')[0];
+    const langFromUrl = currentFile.includes('_') 
+        ? currentFile.split('_')[1]?.split('.')[0] 
+        : 'en'; // ภาษาเริ่มต้นหากไม่มี _
 
-    // เลือกภาษาจาก URL หรือ localStorage
     if (langFromUrl && languagesConfig[langFromUrl]) {
-        selectedLang = langFromUrl;
-    } else if (!localStorage.getItem('selectedLang')) {
+        selectedLang = langFromUrl; // ใช้ภาษาจาก URL
+    } else {
         const browserLang = navigator.language || navigator.userLanguage;
         const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
-        selectedLang = matchingLang || 'en';
-    } else {
-        selectedLang = localStorage.getItem('selectedLang');
+        selectedLang = matchingLang || 'en'; // ใช้ภาษาเริ่มต้นจากเบราว์เซอร์
     }
 
-    if (selectedLang !== localStorage.getItem('selectedLang')) {
-        localStorage.setItem('selectedLang', selectedLang);
-        selectLanguage(selectedLang); // เปลี่ยนภาษา
+    localStorage.setItem('selectedLang', selectedLang); // เก็บภาษาใน localStorage
+    updateButtonText(languageButton); // อัปเดตข้อความปุ่มตาม URL
+}
+
+// ฟังก์ชันจัดการการกดปุ่มย้อนกลับ (ปิดหน้าต่างภาษา)
+function handlePopState(event) {
+    if (languageOverlay.style.display === 'block') {
+        closeLanguageDropdown();
+        event.preventDefault(); // หยุดการทำงานของปุ่มย้อนกลับ
     }
 }
 
 // เรียกใช้ฟังก์ชันโหลดภาษาเมื่อโหลดหน้า
 window.onload = loadLanguagesConfig;
-
-// ฟังก์ชันจัดการประวัติการย้อนกลับ
-window.onpopstate = function (event) {
-    const lang = event.state?.lang || selectedLang || 'en';
-    selectLanguage(lang);
-};

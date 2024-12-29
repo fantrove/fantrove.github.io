@@ -1,12 +1,10 @@
 {
  "en": {
   "label": "English",
-  "buttonText": "Select Language",
-  "fileName": "index.html"
+  "buttonText": "Select Language"
  },
  "th": {
   "label": "Thai",
-  "buttonText": "เลือกภาษา",
-  "fileName": "index_th.html"
+  "buttonText": "เลือกภาษา"
  }
 }
