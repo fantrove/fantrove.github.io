@@ -1,13 +1,11 @@
-# _config.yml
-title: "Fan-Trove"
-baseurl: "" # หรือ baseurl ที่ตั้งค่าไว้
-url: "https://jeffy2600ii.github.io/Fan-Trove/"
-lang: "en" # ภาษาเริ่มต้น
+baseurl: "/" # หากโปรเจกต์ของคุณอยู่ใน subdirectory
+url: "https://jeffy2600ii.github.io/Fan-Trove" # เปลี่ยนเป็น URL ที่ใช้กับ GitHub Pages ของคุณ
 
-# กำหนดการตั้งค่าภาษา
-languages:
-  en: "/en"
-  th: "/th"
+# การตั้งค่าภาษา
+locales:
+  en: "/en/"
+  th: "/th/"
 
-# ตั้งค่าผู้ให้ข้อมูล
-locale: "en"
+# ตรงนี้จะทำให้ระบบเข้าใจว่าเรามีสองภาษา
+plugins:
+  - jekyll-multiple-languages-plugin
