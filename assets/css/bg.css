@@ -1,5 +1,5 @@
 body {
-    background-image: url('marble-texture.jpg'); /* รูปภาพพื้นหลัง */
+    background-image: url('/assets/images/marble-texture.jpg'); /* รูปภาพพื้นหลัง */
     background-repeat: repeat; /* ทำให้ลายภาพซ้ำไปเรื่อยๆ */
     background-size: auto; /* ไม่ต้องขยายภาพ */
     background-color: white; /* กำหนดสีพื้นหลังให้เป็นสีขาว */

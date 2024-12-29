@@ -35,62 +35,58 @@
     <link rel="canonical" href="https://jeffy2600ii.github.io/Fan-Trove/">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="nav.css">
-    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="/assets/css/nav.css">
+    <link rel="stylesheet" href="/assets/css/category.css">
+    <link rel="stylesheet" href="/assets/css/content.css">
+    <link rel="stylesheet" href="/assets/css/general.css">
+    <link rel="stylesheet" href="/assets/css/wake-effect.css">
     <link rel="stylesheet" href="bg.css">
-    <link rel="stylesheet" href="wake-effect.css">
-    <link rel="stylesheet" href="index.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <title>FanTrove</title>
 </head>
 
 <body>
-
     <!-- Navbar -->
     <nav class="navbar" id="navbar" role="navigation">
-        <div class="navbar-title">𝔉𝔞𝔫𝔗𝔯𝔬𝔳𝔢</div>
-        <div id="language-selector-container"></div>
-        <div class="navbar-toggle" id="navbarToggle">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
+     <div class="navbar-title">𝔉𝔞𝔫𝔗𝔯𝔬𝔳𝔢</div>
+     <div class="navbar-toggle" id="navbarToggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+     </div>
     </nav>
+
+    <!-- Category Bar -->
+    <div class="category-bar">
+     <div class="category-container">
+      <button class="category-button" onclick="navigate('emoji')" wake="">อีโมจิ</button>
+      <button class="category-button" onclick="navigate('specialchar')" wake="">อักษรพิเศษ</button>
+     </div>
+    </div>
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <button class="nav-button" onclick="navigate('index.html')" wake="">home</button>
-        <button class="nav-button" onclick="navigate('about.html')" wake="">about</button>
-        <button class="nav-button" onclick="navigate('services.html')" wake="">service</button>
-        <button class="nav-button" onclick="navigate('contact.html')" wake="">contact</button>
-
+     <button class="nav-button" onclick="navigate('index.html')" wake="">หน้าแรก</button>
+     <button class="nav-button" onclick="navigate('about.html')" wake="">เกี่ยวกับ</button>
+     <button class="nav-button" onclick="navigate('services.html')" wake="">บริการ</button>
+     <button class="nav-button" onclick="navigate('contact.html')" wake="">ติดต่อ</button>
     </div>
 
     <div class="overlay" id="overlay"></div>
 
-    <main>
-     <h1>Welcome to FanTrove</h1>
-     <p>Explore Emojis and Special Characters from all platforms</p>
-     <div class="buttons">
-      <button onclick="navigateTo('emoji.html')" wake="">Explore Emojis</button>
-      <button onclick="navigateTo('specialchar.html')" wake="">Explore Special Characters</button>
-     </div>
-    </main>
-
-    <footer>
-     <p>&copy; 2024 FanTrove. All rights reserved.</p>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="nav.js"></script>
-    <script src="Intelligent-system.js"></script>
-    <script src="main.js"></script>
-    <script src="Intelligent-system.js"></script>
-    <script src="wake-effect.js"></script>
-    <script src="index.js"></script>
-    <script src="language.js"></script>
+    <div
+     <section class="content-container">
+      <h2>อักษรพิเศษ</h2>
+      <div specialchar="★@c☆@c♬@c♪@c♠@c♥"></div>
+    </section>
+  </div>
+ 
+ <script src="/assets/js/Intelligent-system.js"></script>
+ <script src="/assets/js/content.js"></script>
+ <script src="/assets/js/nav.js"></script>
+ <script src="/assets/js/category.js"></script>
+ <script src="/assets/js/wake-effect.js"></script>
 
 </body>
 </html>

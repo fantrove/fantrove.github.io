@@ -1,0 +1,13 @@
+# _config.yml
+title: "Fan-Trove"
+baseurl: "" # หรือ baseurl ที่ตั้งค่าไว้
+url: "https://jeffy2600ii.github.io/Fan-Trove/"
+lang: "en" # ภาษาเริ่มต้น
+
+# กำหนดการตั้งค่าภาษา
+languages:
+  en: "/en"
+  th: "/th"
+
+# ตั้งค่าผู้ให้ข้อมูล
+locale: "en"
