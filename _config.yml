@@ -1,10 +1,10 @@
 baseurl: "/Fan-Trove" # หากโปรเจกต์ของคุณอยู่ใน subdirectory
-url: "https://jeffy2600ii.github.io/Fan-Trove" # เปลี่ยนเป็น URL ที่ใช้กับ GitHub Pages ของคุณ
+url: "https://jeffy2600ii.github.io/Fan-Trove/" # เปลี่ยนเป็น URL ที่ใช้กับ GitHub Pages ของคุณ
 
 # การตั้งค่าภาษา
 locales:
-  en: "/en/"
-  th: "/th/"
+  en: "en/"
+  th: "th/"
 
 # ตรงนี้จะทำให้ระบบเข้าใจว่าเรามีสองภาษา
 plugins:
