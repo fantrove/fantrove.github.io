@@ -21,6 +21,7 @@ async function loadLanguagesConfig() {
     }
 
     handleInitialLanguage(); // ตั้งค่าภาษาเริ่มต้น
+    redirectIfInvalidLanguage(); // เปลี่ยนเส้นทาง URL หากภาษาปัจจุบันไม่ถูกต้อง
     initializeCustomLanguageSelector(); // สร้าง UI ตัวเลือกภาษา
 }
 
@@ -136,16 +137,7 @@ function selectLanguage(language) {
 
 function updatePageLanguage(language) {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
-
-    // ตรวจสอบว่ามีเส้นทางที่ 1 หรือไม่
-    if (urlParts.length >= 2) {
-        urlParts[1] = language; // แทนที่เส้นทางที่ 2 ด้วยรหัสภาษาใหม่
-    } else if (urlParts.length === 1) {
-        urlParts.push(language); // เพิ่มรหัสภาษาในตำแหน่งที่ 2
-    } else {
-        urlParts.push('', language); // กรณีไม่มีเส้นทาง เพิ่มทั้งสองตำแหน่ง
-    }
-
+    urlParts[1] = language; // อัปเดตรหัสภาษาในเส้นทาง
     const newPath = '/' + urlParts.join('/');
     history.replaceState(null, '', newPath);
     window.location.replace(newPath);
@@ -160,6 +152,21 @@ function handleInitialLanguage() {
     selectedLang = languagesConfig[currentLang] ? currentLang : matchingLang || 'en';
     localStorage.setItem('selectedLang', selectedLang);
     updateButtonText(languageButton);
+}
+
+function redirectIfInvalidLanguage() {
+    const urlParts = window.location.pathname.split('/').filter(Boolean);
+    const currentLang = urlParts[1];
+    
+    if (!languagesConfig[currentLang]) {
+        const browserLang = navigator.language || navigator.userLanguage;
+        const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
+        const redirectLang = matchingLang || 'en';
+
+        urlParts[1] = redirectLang; // ตั้งค่าภาษาที่เหมาะสม
+        const newPath = '/' + urlParts.join('/');
+        window.location.replace(newPath);
+    }
 }
 
 function handlePopState(event) {
