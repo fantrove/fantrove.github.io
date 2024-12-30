@@ -135,21 +135,18 @@ function selectLanguage(language) {
 }
 
 function updatePageLanguage(language) {
-    const urlParts = window.location.pathname.split('/').filter(Boolean); // แยกเส้นทางทั้งหมด
-    const currentLang = urlParts[0]; // ภาษาเดิม
-    if (languagesConfig[currentLang]) {
-        urlParts[0] = language; // แทนที่ภาษาเดิมด้วยภาษาใหม่
-    } else {
-        urlParts.unshift(language); // เพิ่มภาษาใหม่หากไม่มี
-    }
-    const newPath = `/${urlParts.join('/')}`;
+    const urlParts = window.location.pathname.split('/').filter(Boolean);
+    const basePath = urlParts.length > 1 ? `/${urlParts[0]}` : '';
+    urlParts[1] = language; // แทนที่ภาษาที่ตำแหน่งที่ 2
+
+    const newPath = `${basePath}/${urlParts.slice(1).join('/')}`;
     history.replaceState(null, '', newPath);
     window.location.replace(newPath);
 }
 
 function handleInitialLanguage() {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
-    const currentLang = urlParts[0];
+    const currentLang = urlParts[1];
     const browserLang = navigator.language || navigator.userLanguage;
     const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
 
