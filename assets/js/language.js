@@ -138,33 +138,38 @@ function updatePageLanguage(language) {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
 
     // ตรวจสอบว่ามีเส้นทางที่ 1 หรือไม่
-    if (urlParts.length >= 2) {
-        urlParts[1] = language; // แทนที่เส้นทางที่ 2 ด้วยรหัสภาษาใหม่
-    } else if (urlParts.length === 1) {
-        urlParts.push(language); // เพิ่มรหัสภาษาในตำแหน่งที่ 2
+    if (urlParts.length >= 1 && urlParts[0] !== "") {
+        // กรณีมีเส้นทางที่ 1 เช่น "/en/", "/th/"
+        urlParts[0] = language; // แทนที่เส้นทางที่ 1 ด้วยรหัสภาษาใหม่
     } else {
-        urlParts.push('', language); // กรณีไม่มีเส้นทาง เพิ่มทั้งสองตำแหน่ง
+        // กรณีไม่มีเส้นทางที่ 1 เช่น "localhost"
+        urlParts.unshift(language); // เพิ่มรหัสภาษาที่ส่วนแรก
     }
 
     const newPath = '/' + urlParts.join('/');
-    history.replaceState(null, '', newPath);
-    window.location.replace(newPath);
+    
+    // ลบประวัติทั้งหมดก่อนที่จะเปลี่ยนเส้นทาง
+    history.replaceState(null, '', newPath); // แทนที่ประวัติด้วย URL ใหม่
+    window.location.replace(newPath); // เปลี่ยนเส้นทางไปยัง URL ใหม่
 }
 
 function handleInitialLanguage() {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
-    const currentLang = urlParts[1];
+    const currentLang = urlParts[0]; // ภาษาในเส้นทางที่ 1 ถ้ามี
     const browserLang = navigator.language || navigator.userLanguage;
     const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
 
+    // กรณีไม่มีเส้นทางที่ 1 จะตั้งค่าเป็นภาษาเริ่มต้น
     selectedLang = languagesConfig[currentLang] ? currentLang : matchingLang || 'en';
+    
+    // ตรวจสอบภาษาจาก localStorage หากมีการเลือกไว้
+    const savedLang = localStorage.getItem('selectedLang');
+    if (savedLang && languagesConfig[savedLang]) {
+        selectedLang = savedLang;
+    }
+    
     localStorage.setItem('selectedLang', selectedLang);
     updateButtonText(languageButton);
-
-    // ตรวจสอบว่าผู้ใช้เข้าใช้งานหน้าเว็บที่ถูกต้อง
-    if (languagesConfig[selectedLang] && currentLang !== selectedLang) {
-        updatePageLanguage(selectedLang);
-    }
 }
 
 function handlePopState(event) {
@@ -175,15 +180,4 @@ function handlePopState(event) {
     }
 }
 
-// ฟังก์ชันในการบล็อกการเข้าใช้งานหน้าเว็บที่ไม่ตรงกับภาษา
-window.addEventListener('DOMContentLoaded', () => {
-    const selectedLangFromStorage = localStorage.getItem('selectedLang') || 'en';
-    if (languagesConfig[selectedLangFromStorage]) {
-        selectedLang = selectedLangFromStorage;
-    } else {
-        selectedLang = 'en';
-    }
-
-    handleInitialLanguage();  // เช็คเส้นทางเมื่อโหลดหน้าเว็บ
-    loadLanguagesConfig();
-});
+window.addEventListener('DOMContentLoaded', loadLanguagesConfig);
