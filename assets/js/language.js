@@ -6,7 +6,7 @@ async function loadLanguagesConfig() {
     if (Object.keys(languagesConfig).length > 0) return;
 
     try {
-        const response = await fetch('/_data/language.json');
+        const response = await fetch('https://jeffy2600ii.github.io/Fan-Trove/assets/js/language.json');
         if (!response.ok) throw new Error(`Failed to fetch languages config: ${response.statusText}`);
         
         languagesConfig = await response.json();
