@@ -6,7 +6,7 @@ async function loadLanguagesConfig() {
     if (Object.keys(languagesConfig).length > 0) return;
 
     try {
-        const response = await fetch('https://jeffy2600ii.github.io/Fan-Trove/assets/js/language.json');
+        const response = await fetch('/_data/language.json');
         if (!response.ok) throw new Error(`Failed to fetch languages config: ${response.statusText}`);
         
         languagesConfig = await response.json();
@@ -136,10 +136,17 @@ function selectLanguage(language) {
 
 function updatePageLanguage(language) {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
-    const basePath = urlParts.length > 1 ? `/${urlParts[0]}` : '';
-    urlParts[1] = language; // แทนที่ภาษาที่ตำแหน่งที่ 2
 
-    const newPath = `${basePath}/${urlParts.slice(1).join('/')}`;
+    // ตรวจสอบว่ามีเส้นทางที่ 1 หรือไม่
+    if (urlParts.length >= 2) {
+        urlParts[1] = language; // แทนที่เส้นทางที่ 2 ด้วยรหัสภาษาใหม่
+    } else if (urlParts.length === 1) {
+        urlParts.push(language); // เพิ่มรหัสภาษาในตำแหน่งที่ 2
+    } else {
+        urlParts.push('', language); // กรณีไม่มีเส้นทาง เพิ่มทั้งสองตำแหน่ง
+    }
+
+    const newPath = '/' + urlParts.join('/');
     history.replaceState(null, '', newPath);
     window.location.replace(newPath);
 }
