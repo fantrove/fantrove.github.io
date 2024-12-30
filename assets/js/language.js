@@ -21,6 +21,7 @@ async function loadLanguagesConfig() {
     }
 
     handleInitialLanguage(); // ตั้งค่าภาษาเริ่มต้น
+    redirectIfInvalidLanguage(); // เปลี่ยนเส้นทาง URL หากภาษาปัจจุบันไม่ถูกต้อง
     initializeCustomLanguageSelector(); // สร้าง UI ตัวเลือกภาษา
 }
 
@@ -136,40 +137,36 @@ function selectLanguage(language) {
 
 function updatePageLanguage(language) {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
-
-    // ตรวจสอบว่ามีเส้นทางที่ 1 หรือไม่
-    if (urlParts.length >= 1 && urlParts[0] !== "") {
-        // กรณีมีเส้นทางที่ 1 เช่น "/en/", "/th/"
-        urlParts[0] = language; // แทนที่เส้นทางที่ 1 ด้วยรหัสภาษาใหม่
-    } else {
-        // กรณีไม่มีเส้นทางที่ 1 เช่น "localhost"
-        urlParts.unshift(language); // เพิ่มรหัสภาษาที่ส่วนแรก
-    }
-
+    urlParts[1] = language; // อัปเดตรหัสภาษาในเส้นทาง
     const newPath = '/' + urlParts.join('/');
-    
-    // ลบประวัติทั้งหมดก่อนที่จะเปลี่ยนเส้นทาง
-    history.replaceState(null, '', newPath); // แทนที่ประวัติด้วย URL ใหม่
-    window.location.replace(newPath); // เปลี่ยนเส้นทางไปยัง URL ใหม่
+    history.replaceState(null, '', newPath);
+    window.location.replace(newPath);
 }
 
 function handleInitialLanguage() {
     const urlParts = window.location.pathname.split('/').filter(Boolean);
-    const currentLang = urlParts[0]; // ภาษาในเส้นทางที่ 1 ถ้ามี
+    const currentLang = urlParts[1];
     const browserLang = navigator.language || navigator.userLanguage;
     const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
 
-    // กรณีไม่มีเส้นทางที่ 1 จะตั้งค่าเป็นภาษาเริ่มต้น
     selectedLang = languagesConfig[currentLang] ? currentLang : matchingLang || 'en';
-    
-    // ตรวจสอบภาษาจาก localStorage หากมีการเลือกไว้
-    const savedLang = localStorage.getItem('selectedLang');
-    if (savedLang && languagesConfig[savedLang]) {
-        selectedLang = savedLang;
-    }
-    
     localStorage.setItem('selectedLang', selectedLang);
     updateButtonText(languageButton);
+}
+
+function redirectIfInvalidLanguage() {
+    const urlParts = window.location.pathname.split('/').filter(Boolean);
+    const currentLang = urlParts[1];
+    
+    if (!languagesConfig[currentLang]) {
+        const browserLang = navigator.language || navigator.userLanguage;
+        const matchingLang = Object.keys(languagesConfig).find(lang => browserLang.startsWith(lang));
+        const redirectLang = matchingLang || 'en';
+
+        urlParts[1] = redirectLang; // ตั้งค่าภาษาที่เหมาะสม
+        const newPath = '/' + urlParts.join('/');
+        window.location.replace(newPath);
+    }
 }
 
 function handlePopState(event) {
