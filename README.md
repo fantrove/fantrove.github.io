@@ -22,7 +22,7 @@ FanTrove is still evolving, and in the future, we plan to add exciting features 
 FanTrove is developed without any funding, and the developer has taken on the entire project independently.  
 If you find this website useful or appreciate the work being done, you can show your support here:  
 
-[**https://www.patreon.com/LedpAeroWings**]  
+**https://www.patreon.com/LedpAeroWings**
 
 Every bit of support helps keep this project running and growing! 🚀  
 
