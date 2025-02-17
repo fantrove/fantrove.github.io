@@ -26,4 +26,9 @@ If you find this website useful or appreciate the work being done, you can show 
 
 Every bit of support helps keep this project running and growing! 🚀  
 
+## 📬 Stay Connected  
+Follow us for updates and join the community:  
+🌍 **Facebook Page:** [Ledp Aero Wings on Facebook](https://www.facebook.com/share/1HJRyK9kYr/)  
+💬 **Discord Server:** [Join LedpLand](https://discord.com/invite/Xn6GFvqyYf)  
+
 📢 **Stay tuned for upcoming updates!**
