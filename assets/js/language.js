@@ -190,13 +190,20 @@ handleInitialLanguage() {
     });
   }
 
-  async updatePageLanguage(language) {
+async updatePageLanguage(language) {
     if (this.isUpdatingLanguage) return;
     this.isUpdatingLanguage = true;
+
+    // ตรวจสอบว่าภาษามีอยู่ใน config หรือไม่ ถ้าไม่มีให้ fallback เป็น 'en'
+    if (!this.languagesConfig[language]) {
+        console.warn(`Unsupported language: ${language}. Falling back to English.`);
+        language = 'en';
+    }
 
     // อัปเดตค่า lang ใน <html>
     document.documentElement.lang = language;
 
+    // ถ้าเป็นภาษาอังกฤษให้คืนค่าข้อความต้นฉบับ
     if (language === 'en') {
         this.resetToEnglishContent();
         this.updateButtonText(); 
@@ -204,6 +211,7 @@ handleInitialLanguage() {
         return;
     }
 
+    // โหลดข้อมูลภาษาใหม่ถ้ายังไม่มีในแคช
     if (!this.languageCache[language]) {
         const languageData = await this.loadLanguageData(language);
         if (Object.keys(languageData).length === 0) {
@@ -217,6 +225,7 @@ handleInitialLanguage() {
 
     const languageData = this.languageCache[language];
 
+    // อัปเดตข้อความที่มี data-translate
     document.querySelectorAll('[data-translate]').forEach(el => {
         const key = el.getAttribute('data-translate');
         if (languageData[key]) {
@@ -226,7 +235,7 @@ handleInitialLanguage() {
 
     this.updateButtonText();
     this.isUpdatingLanguage = false;
-  }
+}
 
   async loadLanguageData(languageCode) {
     try {
