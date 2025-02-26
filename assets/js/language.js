@@ -175,79 +175,73 @@ handleInitialLanguage() {
     }, 300);    
   }    
     
-  async selectLanguage(language) {    
-    if (!this.languagesConfig[language]) {    
-      console.warn(`Unsupported language: ${language}. Falling back to English.`);    
-      language = 'en';    
-    }    
-    
-    this.selectedLang = language;    
-    this.updateButtonText();    
-    await this.updatePageLanguage(language);    
-    
-    const url = new URL(window.location);    
-    url.searchParams.set('lang', language);    
-    history.replaceState({}, '', url);    
-    
-    // บันทึกภาษาที่เลือกลงใน localStorage ด้วยคีย์เดียว    
-    localStorage.setItem('selectedLang', language);    
-    
-    this.closeLanguageDropdown();    
-  }    
-    
-  resetToEnglishContent() {    
-    document.querySelectorAll('[data-translate]').forEach(el => {    
-      const originalText = el.getAttribute('data-original-text');    
-      if (originalText) el.textContent = originalText;    
-    });    
-  }    
-    
-async updatePageLanguage(language) {    
-    if (this.isUpdatingLanguage) return;    
-    this.isUpdatingLanguage = true;    
-    
-    // ตรวจสอบว่าภาษามีอยู่ใน config หรือไม่ ถ้าไม่มีให้ fallback เป็น 'en'    
-    if (!this.languagesConfig[language]) {    
-        console.warn(`Unsupported language: ${language}. Falling back to English.`);    
-        language = 'en';    
-    }    
-    
-    // อัปเดตค่า lang ใน <html>    
-    document.documentElement.lang = language;    
-    
-    // ถ้าเป็นภาษาอังกฤษให้คืนค่าข้อความต้นฉบับ    
-    if (language === 'en') {    
-        this.resetToEnglishContent();    
-        this.updateButtonText();     
-        this.isUpdatingLanguage = false;    
-        return;    
-    }    
-    
-    // โหลดข้อมูลภาษาใหม่ถ้ายังไม่มีในแคช    
-    if (!this.languageCache[language]) {    
-        const languageData = await this.loadLanguageData(language);    
-        if (Object.keys(languageData).length === 0) {    
-            this.resetToEnglishContent();    
-            this.updateButtonText();    
-            this.isUpdatingLanguage = false;    
-            return;    
-        }    
-        this.languageCache[language] = languageData;    
-    }    
-    
-    const languageData = this.languageCache[language];    
-    
-    // อัปเดตข้อความที่มี data-translate    
-    document.querySelectorAll('[data-translate]').forEach(el => {    
-        const key = el.getAttribute('data-translate');    
-        if (languageData[key]) {    
-            this.replaceTextOnly(el, languageData[key]);    
-        }    
-    });    
-    
-    this.updateButtonText();    
-    this.isUpdatingLanguage = false;    
-}    
+async selectLanguage(language) {
+    if (!this.languagesConfig[language]) {
+        console.warn(`Unsupported language: ${language}. Falling back to English.`);
+        language = 'en';
+    }
+
+    this.selectedLang = language;
+    this.updateButtonText();
+
+    // อัปเดต URL โดยไม่ต้องโหลดใหม่
+    const url = new URL(window.location);
+    url.searchParams.set('lang', language);
+    history.replaceState({}, '', url);
+
+    // บันทึกภาษาที่เลือกลงใน localStorage
+    localStorage.setItem('selectedLang', language);
+
+    // อัปเดตค่า lang ของ <html>
+    document.documentElement.lang = language;
+
+    // โหลดและอัปเดตเนื้อหาภาษาทันที
+    await this.updatePageLanguage(language);
+
+    this.closeLanguageDropdown();
+}
+
+async updatePageLanguage(language) {
+    if (this.isUpdatingLanguage) return;
+    this.isUpdatingLanguage = true;
+
+    if (!this.languagesConfig[language]) {
+        console.warn(`Unsupported language: ${language}. Falling back to English.`);
+        language = 'en';
+    }
+
+    document.documentElement.lang = language;
+
+    if (language === 'en') {
+        this.resetToEnglishContent();
+        this.updateButtonText();
+        this.isUpdatingLanguage = false;
+        return;
+    }
+
+    if (!this.languageCache[language]) {
+        const languageData = await this.loadLanguageData(language);
+        if (Object.keys(languageData).length === 0) {
+            this.resetToEnglishContent();
+            this.updateButtonText();
+            this.isUpdatingLanguage = false;
+            return;
+        }
+        this.languageCache[language] = languageData;
+    }
+
+    const languageData = this.languageCache[language];
+
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (languageData[key]) {
+            this.replaceTextOnly(el, languageData[key]);
+        }
+    });
+
+    this.updateButtonText();
+    this.isUpdatingLanguage = false;
+}
     
   async loadLanguageData(languageCode) {    
     try {    
