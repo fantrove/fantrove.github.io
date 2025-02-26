@@ -44,25 +44,32 @@ class LanguageManager {
   }
 
 handleInitialLanguage() {
- document.querySelectorAll('[data-translate]').forEach(el => el.setAttribute('data-original-text', el.textContent));
- 
- const urlParams = new URLSearchParams(window.location.search);
- const langFromUrl = urlParams.get('lang');
- 
- const detectedLang = langFromUrl && this.languagesConfig[langFromUrl] ?
-  langFromUrl :
-  localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
- 
- if (localStorage.getItem('selectedLang') !== detectedLang) {
-  localStorage.setItem('selectedLang', detectedLang);
-  this.selectedLang = detectedLang;
-  document.documentElement.lang = this.selectedLang;
-  this.updatePageLanguage(this.selectedLang);
- } else {
-  this.selectedLang = detectedLang;
-  document.documentElement.lang = this.selectedLang;
-  this.updatePageLanguage(this.selectedLang);
- }
+    document.querySelectorAll('[data-translate]').forEach(el => el.setAttribute('data-original-text', el.textContent));
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const langFromUrl = urlParams.get('lang');
+
+    // ตรวจสอบภาษาในลำดับที่รวดเร็วขึ้น
+    const detectedLang = langFromUrl && this.languagesConfig[langFromUrl] 
+        ? langFromUrl 
+        : localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
+
+    // ถ้าภาษาเปลี่ยนไปจากเดิม ให้เปลี่ยนและบันทึกใหม่
+    if (localStorage.getItem('selectedLang') !== detectedLang) {
+        localStorage.setItem('selectedLang', detectedLang);
+        this.selectedLang = detectedLang;
+        document.documentElement.lang = this.selectedLang;  // อัปเดต lang ของ <html> ทันที
+        this.updatePageLanguage(this.selectedLang);
+
+        // **Force reload เฉพาะเนื้อหาโดยไม่โหลดหน้าใหม่**
+        setTimeout(() => {
+            window.location.reload(); 
+        }, 50);
+    } else {
+        this.selectedLang = detectedLang;
+        document.documentElement.lang = this.selectedLang;
+        this.updatePageLanguage(this.selectedLang);
+    }
 }
 
   showAlertAndRefresh(message) {
@@ -168,27 +175,25 @@ handleInitialLanguage() {
     }, 300);
   }
 
-async selectLanguage(language) {
-  if (!this.languagesConfig[language]) {
-    console.warn(`Unsupported language: ${language}. Falling back to English.`);
-    language = 'en';
+  async selectLanguage(language) {
+    if (!this.languagesConfig[language]) {
+      console.warn(`Unsupported language: ${language}. Falling back to English.`);
+      language = 'en';
+    }
+
+    this.selectedLang = language;
+    this.updateButtonText();
+    await this.updatePageLanguage(language);
+
+    const url = new URL(window.location);
+    url.searchParams.set('lang', language);
+    history.replaceState({}, '', url);
+
+    // บันทึกภาษาที่เลือกลงใน localStorage ด้วยคีย์เดียว
+    localStorage.setItem('selectedLang', language);
+
+    this.closeLanguageDropdown();
   }
-
-  this.selectedLang = language;
-  this.updateButtonText();
-  await this.updatePageLanguage(language);
-
-  const url = new URL(window.location);
-  url.searchParams.set('lang', language);
-  history.replaceState({}, '', url);
-
-  localStorage.setItem('selectedLang', language);
-
-  // อัปเดตเนื้อหาทันทีโดยไม่ต้องโหลดหน้าใหม่
-  this.updatePageLanguage(language);
-
-  this.closeLanguageDropdown();
-}
 
   resetToEnglishContent() {
     document.querySelectorAll('[data-translate]').forEach(el => {
