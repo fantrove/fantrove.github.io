@@ -49,6 +49,7 @@ class LanguageManager {
     const urlParams = new URLSearchParams(window.location.search);
     const langFromUrl = urlParams.get('lang');
 
+    // เปลี่ยนการตั้งค่าภาษาให้เป็นคีย์เดียว
     this.selectedLang = langFromUrl && this.languagesConfig[langFromUrl]
       ? langFromUrl
       : localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
@@ -172,6 +173,8 @@ class LanguageManager {
     const url = new URL(window.location);
     url.searchParams.set('lang', language);
     history.replaceState({}, '', url);
+
+    // บันทึกภาษาที่เลือกลงใน localStorage ด้วยคีย์เดียว
     localStorage.setItem('selectedLang', language);
 
     this.closeLanguageDropdown();
@@ -188,31 +191,34 @@ class LanguageManager {
     if (this.isUpdatingLanguage) return;
     this.isUpdatingLanguage = true;
 
+    // อัปเดตค่า lang ใน <html>
+    document.documentElement.lang = language;
+
     if (language === 'en') {
-      this.resetToEnglishContent();
-      this.updateButtonText(); 
-      this.isUpdatingLanguage = false;
-      return;
+        this.resetToEnglishContent();
+        this.updateButtonText(); 
+        this.isUpdatingLanguage = false;
+        return;
     }
 
     if (!this.languageCache[language]) {
-      const languageData = await this.loadLanguageData(language);
-      if (Object.keys(languageData).length === 0) {
-        this.resetToEnglishContent();
-        this.updateButtonText();
-        this.isUpdatingLanguage = false;
-        return;
-      }
-      this.languageCache[language] = languageData;
+        const languageData = await this.loadLanguageData(language);
+        if (Object.keys(languageData).length === 0) {
+            this.resetToEnglishContent();
+            this.updateButtonText();
+            this.isUpdatingLanguage = false;
+            return;
+        }
+        this.languageCache[language] = languageData;
     }
 
     const languageData = this.languageCache[language];
 
     document.querySelectorAll('[data-translate]').forEach(el => {
-      const key = el.getAttribute('data-translate');
-      if (languageData[key]) {
-        this.replaceTextOnly(el, languageData[key]);
-      }
+        const key = el.getAttribute('data-translate');
+        if (languageData[key]) {
+            this.replaceTextOnly(el, languageData[key]);
+        }
     });
 
     this.updateButtonText();
