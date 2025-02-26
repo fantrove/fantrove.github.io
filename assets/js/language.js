@@ -49,13 +49,13 @@ handleInitialLanguage() {
     const urlParams = new URLSearchParams(window.location.search);
     const langFromUrl = urlParams.get('lang');
 
-    // เปลี่ยนการตั้งค่าภาษาให้เป็นคีย์เดียว
     this.selectedLang = langFromUrl && this.languagesConfig[langFromUrl]
-      ? langFromUrl
-      : localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
+        ? langFromUrl
+        : localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
 
-    // บันทึกภาษาที่เลือกใน localStorage
+    // บันทึกภาษาและอัปเดต <html lang="">
     localStorage.setItem('selectedLang', this.selectedLang);
+    document.documentElement.lang = this.selectedLang;
 
     this.selectedLang === 'en' ? this.updateButtonText() : this.updatePageLanguage(this.selectedLang);
 }
