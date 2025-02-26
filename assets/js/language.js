@@ -49,15 +49,27 @@ handleInitialLanguage() {
  const urlParams = new URLSearchParams(window.location.search);
  const langFromUrl = urlParams.get('lang');
  
- this.selectedLang = langFromUrl && this.languagesConfig[langFromUrl] ?
+ // ตรวจสอบภาษาในลำดับที่รวดเร็วขึ้น
+ const detectedLang = langFromUrl && this.languagesConfig[langFromUrl] ?
   langFromUrl :
   localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
  
- // บันทึกภาษาและอัปเดต <html lang="">
- localStorage.setItem('selectedLang', this.selectedLang);
- document.documentElement.lang = this.selectedLang;
- 
- this.selectedLang === 'en' ? this.updateButtonText() : this.updatePageLanguage(this.selectedLang);
+ // ถ้าภาษาเปลี่ยนไปจากเดิม ให้เปลี่ยนและบันทึกใหม่
+ if (localStorage.getItem('selectedLang') !== detectedLang) {
+  localStorage.setItem('selectedLang', detectedLang);
+  this.selectedLang = detectedLang;
+  document.documentElement.lang = this.selectedLang; // อัปเดต lang ของ <html> ทันที
+  this.updatePageLanguage(this.selectedLang);
+  
+  // **Force reload เฉพาะเนื้อหาโดยไม่โหลดหน้าใหม่**
+  setTimeout(() => {
+   window.location.reload();
+  }, 50);
+ } else {
+  this.selectedLang = detectedLang;
+  document.documentElement.lang = this.selectedLang;
+  this.updatePageLanguage(this.selectedLang);
+ }
 }
 
   showAlertAndRefresh(message) {
