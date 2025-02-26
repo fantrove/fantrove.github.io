@@ -43,7 +43,7 @@ class LanguageManager {
     return browserLanguages.map(lang => lang.split('-')[0]).find(lang => this.languagesConfig[lang]) || 'en';
   }
 
-  handleInitialLanguage() {
+handleInitialLanguage() {
     document.querySelectorAll('[data-translate]').forEach(el => el.setAttribute('data-original-text', el.textContent));
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -54,8 +54,11 @@ class LanguageManager {
       ? langFromUrl
       : localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
 
+    // บันทึกภาษาที่เลือกใน localStorage
+    localStorage.setItem('selectedLang', this.selectedLang);
+
     this.selectedLang === 'en' ? this.updateButtonText() : this.updatePageLanguage(this.selectedLang);
-  }
+}
 
   showAlertAndRefresh(message) {
     alert(message);
