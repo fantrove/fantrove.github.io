@@ -44,20 +44,20 @@ class LanguageManager {
   }
 
 handleInitialLanguage() {
-    document.querySelectorAll('[data-translate]').forEach(el => el.setAttribute('data-original-text', el.textContent));
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const langFromUrl = urlParams.get('lang');
-
-    this.selectedLang = langFromUrl && this.languagesConfig[langFromUrl]
-        ? langFromUrl
-        : localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
-
-    // บันทึกภาษาและอัปเดต <html lang="">
-    localStorage.setItem('selectedLang', this.selectedLang);
-    document.documentElement.lang = this.selectedLang;
-
-    this.selectedLang === 'en' ? this.updateButtonText() : this.updatePageLanguage(this.selectedLang);
+ document.querySelectorAll('[data-translate]').forEach(el => el.setAttribute('data-original-text', el.textContent));
+ 
+ const urlParams = new URLSearchParams(window.location.search);
+ const langFromUrl = urlParams.get('lang');
+ 
+ this.selectedLang = langFromUrl && this.languagesConfig[langFromUrl] ?
+  langFromUrl :
+  localStorage.getItem('selectedLang') || this.detectBrowserLanguage();
+ 
+ // บันทึกภาษาและอัปเดต <html lang="">
+ localStorage.setItem('selectedLang', this.selectedLang);
+ document.documentElement.lang = this.selectedLang;
+ 
+ this.selectedLang === 'en' ? this.updateButtonText() : this.updatePageLanguage(this.selectedLang);
 }
 
   showAlertAndRefresh(message) {
