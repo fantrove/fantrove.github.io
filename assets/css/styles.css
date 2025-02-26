@@ -1,0 +1,195 @@
+/* ปุ่มย่อย */
+.button-sub {
+  margin: 0 -5px 0 0;
+  padding: 6px 14px;
+  background: none;
+  color: #383838;
+  border: 1px solid #D5D5D5;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: all 0.1s ease-in-out;
+}
+
+.button-sub.active {
+ color: #000000;
+ background: #EDE9FF;
+ border: 1px solid #EDE9FF;
+}
+
+.button-sub:active {
+ transform: scale(0.95);
+}
+
+/* ปุ่มในเนื้อหา */
+.button-content {
+  display: inline-block;
+  margin: 6px 0px; /* ลดระยะห่างระหว่างปุ่ม */
+  padding: 10px 18px; /* ขนาดปุ่มลดลง */
+  border: 0.07rem solid #8A2BE2;
+  background-color: #F4F4F4;
+  color: #8A2BE2;
+  border-radius: 8px; /* ลดความโค้งมนของปุ่ม */
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 16px; /* ขนาดฟอนต์ในปุ่มลดลง */
+  font-weight: 500; /* ลดน้ำหนักของฟอนต์ */
+  transition: all 0.3s ease;
+  text-align: center;
+  white-space: nowrap; /* ป้องกันการตัดคำในปุ่ม */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button-content:focus {
+  outline: none; /* เอาขอบออกเมื่อเลือก */
+  box-shadow: 0 0 5px rgba(138, 43, 226, 0.8); /* เพิ่มเงาเมื่อโฟกัส */
+}
+
+.button-content:hover {
+  background-color: #8A2BE2; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4); /* เงาเพิ่มมิติ */
+  transform: scale(1.05); /* ขยายปุ่มเล็กน้อย */
+}
+
+.button-content:active {
+  transform: scale(1); /* กลับมาปกติเมื่อกด */
+  box-shadow: none;
+}
+
+#main-buttons-container {
+ display: flex;
+ overflow-x: auto;
+ white-space: nowrap;
+}
+
+/* ทำให้ปุ่มย่อยสามารถเลื่อนได้ */
+#sub-buttons-container {
+ display: flex;
+ overflow-x: auto;
+ white-space: nowrap;
+ gap: 10px;
+ padding: 10px;
+}
+
+#sub-buttons-container .button-sub {
+ flex-shrink: 0;
+}
+
+/* Button Content Container */
+.button-content-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+  padding: 20px;
+}
+
+/* Card Content Container */
+.card-content-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 150px;
+  margin: 4px;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: all 0.1s ease-in-out;
+}
+
+.card img:active {
+ pointer-events: none;
+}
+
+.card:active {
+  transform: scale(0.99);
+  color: #4A4A4A;
+}
+
+.card:active .card-title {
+ color: #ADADAD;
+}
+
+.card:active .card-description {
+  color: #C6C6C6; /* เปลี่ยนสีข้อความเมื่อการ์ดถูกคลิก */
+}
+
+.card:active img {
+  opacity: 0.3; /* ลดความเข้มของภาพ */
+}
+
+.card-title {
+  margin-top: 10px;
+  font-family: "Gill Sans", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #444444;
+  transition: all 0.1s ease-in-out;
+}
+
+.card-description {
+  font-size: 12px;
+  color: #555555;
+  margin-top: 4px;
+  transition: all 0.1s ease-in-out;
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  user-select: none;
+  position: relative;
+  background: #FFFFFF;
+  transition: all 0.1s ease-in-out;
+}
+
+/* เพิ่มการเลือนเข้าและเลือนออก */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+}
+
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 0.3s forwards;
+}
+
+.main {
+ padding: 0 0 0 0;
+}
+
+@keyframes fadeIn {
+  from {
+   transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+ .card-content-container {
+  justify-content: center;
+ }
+}

@@ -1,0 +1,114 @@
+@import url('https://jeffy2600ii.github.io/hub.fantrove/assets/css/variables.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
+
+body {
+ font-family: Arial, sans-serif;
+ margin: 0;
+ padding: 0;
+}
+
+/* Style สำหรับ Navigation Bar */
+nav {
+  display: flex;
+  justify-content: center; /* จัดตำแหน่งกลางแนวนอน */
+  align-items: center; /* จัดตำแหน่งกลางแนวตั้ง */
+  position: fixed; /* ทำให้ navbar ติดกับหน้าจอ */
+  top: 0; /* อยู่ที่ด้านบนสุดของหน้าจอ */
+  left: 0; /* อยู่ที่ขอบซ้ายสุด */
+  width: 100%; /* ให้ navbar ครอบคลุมทั้งความกว้างของหน้าจอ */
+  height: 50px; /* กำหนดความสูงของ navbar */
+  padding: 0 10px;
+  background-image: var(--main-color); /* สีพื้นหลังของ Navbar */
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05); /* เพิ่มเงาให้ navbar */
+  z-index: 1000; /* ให้ navbar อยู่เหนือเนื้อหาของหน้า */
+}
+
+/* จัดการการวางตำแหน่งของปุ่มย้อนกลับ */
+.back-button {
+  position: absolute; /* ทำให้ปุ่มย้อนกลับอยู่ที่ตำแหน่งสัมพัทธ์ */
+  left: 10px; /* วางไว้ที่ขอบซ้าย */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 1010; /* วางปุ่มไว้ด้านหน้าชื่อหน้า */
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 5px;
+  transition: all 0.1s ease;
+}
+
+.back-button:active {
+ background: rgba(255, 255, 255, 0.3);
+}
+
+.back-button:active svg {
+ transform: scale(0.9);
+}
+
+/* ปุ่มย้อนกลับ - SVG icon */
+.back-button svg {
+  width: 30px;
+  height: 30px;
+  color: #FFFFFF; /* สีของไอคอน */
+  transition: all 0.3s ease;
+}
+
+/* ชื่อหน้า (Page Title) */
+.page-title {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  color: #FFFFFF; /* สีของชื่อหน้า */
+  position: absolute;
+  left: 50%; /* กึ่งกลางในแนวนอน */
+  transform: translateX(-60%); /* แก้ตำแหน่งให้ชื่อหน้าอยู่กึ่งกลาง */
+}
+
+.date {
+ font-size: 10px;
+ font-weight: 500;
+}
+
+/* แท็บเล็ตแนวตั้ง */
+@media (min-width: 600px) {
+    body { font-size: 15px; }
+    .page-title { font-size: 16px; }
+    .back-button svg { width: 32px; height: 32px; }
+}
+
+/* แท็บเล็ตแนวนอน */
+@media (min-width: 768px) {
+    body { font-size: 16px; }
+    .page-title { font-size: 18px; }
+    .back-button { left: 15px; }
+    .back-button svg { width: 34px; height: 34px; }
+}
+
+/* เดสก์ท็อปเล็ก */
+@media (min-width: 1024px) {
+    body { font-size: 18px; }
+    .page-title { font-size: 20px; }
+    .back-button svg { width: 36px; height: 36px; }
+}
+
+/* เดสก์ท็อปกลาง */
+@media (min-width: 1280px) {
+    body { font-size: 19px; }
+    .page-title { font-size: 22px; }
+    .back-button { left: 20px; }
+    .back-button svg { width: 38px; height: 38px; }
+}
+
+/* เดสก์ท็อปใหญ่ */
+@media (min-width: 1440px) {
+    body { font-size: 20px; }
+    .page-title { font-size: 24px; }
+    .back-button svg { width: 40px; height: 40px; }
+}
+
+/* หน้าจอ 4K+ */
+@media (min-width: 1920px) {
+    body { font-size: 22px; }
+    .page-title { font-size: 26px; }
+    .back-button { left: 25px; }
+    .back-button svg { width: 42px; height: 42px; }
+}

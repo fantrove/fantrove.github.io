@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FanTrove Roadmap</title>
+
+    <!-- กำหนดสีของแถบส่วนหัว (สำหรับเบราว์เซอร์ทั่วไป) -->
+    <meta name="theme-color" content="#6A11CB">
+
+    <!-- กำหนดสีของแถบส่วนหัวสำหรับ Safari บน iOS -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+ 
+    <link rel="stylesheet" href="https://jeffy2600ii.github.io/hub.fantrove/assets/css/bg.css">
+    <link rel="stylesheet" href="https://jeffy2600ii.github.io/hub.fantrove/assets/css/roadmap.css">
+    <link rel="stylesheet" href="https://jeffy2600ii.github.io/hub.fantrove/assets/css/top-navigation-bar.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://jeffy2600ii.github.io/hub.fantrove/assets/css/general.css">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8233915433564101"
+     crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+   <!-- Navigation Bar -->
+  <nav>
+    <button class="back-button" id="back-button">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+    </svg>
+    </button>
+    <span class="page-title" data-translate="planned-features-button">Planned Features</span>
+  </nav>
+
+    <div class="container">
+        <header>
+            <h1>FanTrove Development Roadmap</h1>
+            <p>Explore the development progress and upcoming features for FanTrove.</p>
+            <a href="new.html">มีอะไรใหม่</a>
+        </header>
+        <section id="current-version">
+            <h2>Current Version: <span id="version-number"></span></h2>
+        </section>
+        <section id="features">
+            <h3>Features by Version</h3>
+            <ul id="feature-list">
+                <!-- ฟังก์ชันทั้งหมดจะถูกแสดงที่นี่ -->
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+     <p>&copy; 2025 FanTrove (Beta). All rights reserved.</p>
+    </footer>
+
+    <script src="https://jeffy2600ii.github.io/hub.fantrove/assets/js/roadmap.js"></script>
+    <script src="https://jeffy2600ii.github.io/hub.fantrove/assets/js/back-button.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://jeffy2600ii.github.io/hub.fantrove/assets/js/language.js" type="text/javascript" charset="utf-8"></script>
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function() {
+      // ฟังก์ชันสำหรับโหลดข้อมูลเวอร์ชัน
+      fetch('https://jeffy2600ii.github.io/hub.fantrove/assets/json/version.json')
+       .then(response => response.json())
+       .then(data => {
+        const currentVersion = data.version;
+        document.getElementById('version-number').textContent = currentVersion;
+       })
+       .catch(error => console.error('Error loading version:', error));
+       });
+    </script>
+
+</body>
+</html>

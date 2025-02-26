@@ -1,0 +1,40 @@
+{
+  "current_stage": 1,
+  "stages": [
+    {
+      "version": "2.1",
+      "stage_number": 5,
+      "features": [
+        { "feature": "Improved Search Functionality" }
+      ]
+    },
+    {
+      "version": "2.0",
+      "stage_number": 4,
+      "features": [
+        { "feature": "Emoji Suggestions" }
+      ]
+    },
+    {
+      "version": "1.2",
+      "stage_number": 3,
+      "features": [
+        { "feature": "Text Transformation" }
+      ]
+    },
+    {
+      "version": "1.1",
+      "stage_number": 2,
+      "features": [
+        { "feature": "Font Generator" }
+      ]
+    },
+    {
+      "version": "1.0",
+      "stage_number": 1,
+      "features": [
+        { "feature": "Launch and test website" }
+      ]
+    }
+  ]
+}

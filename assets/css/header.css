@@ -1,0 +1,252 @@
+@import url(https://jeffy2600ii.github.io/hub.fantrove/assets/css/variables.css);
+@import url('https://jeffy2600ii.github.io/hub.fantrove/assets/css/nav.css');
+
+:root {
+    --primary-color: #FFFFFF;
+    --hover-color: #CECECE14;
+    --background-color: #FFFFFF;
+    --text-color: #FFFFFF;
+    --active-border-color: #009C5F;
+    --shadow-color: rgba(0, 0, 0, 0.05); /* ลดความเข้มของ shadow */
+    --nav-bg-color: var(--background-color);
+}
+
+body {
+ font-family: Arial, sans-serif;
+ margin: 0;
+ padding: 0;
+ overflow-x: hidden;
+ background-color: #fafafa;
+}
+
+header {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--main-color);
+    border-bottom: none; /* เริ่มต้นด้วยการซ่อนเส้นใต้ */
+    position: sticky;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 9000;
+    padding: 4px 0 0 0;
+}
+
+.logo {
+    font-family: cursive;
+    font-size: var(--font-size); /* เพิ่มขนาดโลโก้ */
+    font-weight: 700;
+    padding: 8px 0 4.5px 11px;
+    white-space: nowrap;
+    color: var(--text-color);
+    text-shadow: 0 1px 2px var(--shadow-color);
+    pointer-events: none;
+    align-self: flex-start; /* เลื่อนโลโก้ไปด้านซ้าย */
+    margin-left: 58px; /* เพิ่มระยะห่างจากขอบซ้าย */
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.logo span {
+    pointer-events: auto;
+    user-select: text;
+}
+
+.logo img {
+    width: auto;
+    height: var(--height);
+    margin-left: 5px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+nav {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    background: none;
+    margin-top: 5px; /* ลดระยะห่างระหว่างโลโก้กับ nav ลง 7 พิกเซล */
+    padding: 3.5px 0 0 0; /* ลด padding ด้านบนของ nav */
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    padding: 0 5px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+nav ul::-webkit-scrollbar {
+    display: none;
+}
+
+nav ul li {
+    flex: none;
+}
+
+nav ul li button {
+    display: block;
+    padding: 10px 16px; /* ลดความกว้างของปุ่ม 2 พิกเซล */
+    text-align: center;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.3s ease-in-out; /* เพิ่มความมีชีวิตชีวา */
+    outline: none;
+    border-radius: 10px; /* ลดความมนโค้งของปุ่ม */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+nav ul li button:hover {
+    color: #C2DDFF;
+    background-color: var(--hover-color); /* สีของปุ่มเมื่อ active */
+}
+
+nav ul li button:active {
+    outline: none;
+    background-color: #CECECE36;
+}
+
+nav ul li button.active {
+    position: relative;
+    background: rgba(204, 255, 239, 0.27);
+    color: var(--primary-color);
+}
+
+nav ul li button.active::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 20px 20px 0 0; /* ปรับปรุงเส้นใต้ให้พรีเมี่ยมมากขึ้น */
+    box-shadow: inset 0 -2px 0 var(--primary-color);
+}
+
+.navbar-toggle {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+    outline: none;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    position: fixed; /* ใช้ absolute position */
+    left: 16px; /* จัดให้มันอยู่ทางขวา */
+    top: 25.3px; /* จัดให้มันอยู่กลางในแนวตั้ง */
+    transform: translateY(-50%); /* เลื่อนขึ้นลงให้มันกลางพอดี */
+    padding: 5px;
+    z-index: 10008;
+}
+
+/* แท็บเล็ตแนวตั้ง */
+@media (min-width: 600px) {
+    body { font-size: 16px; }
+    
+    .logo {
+        margin-left: 58px; /* คงที่ */
+    }
+
+    .navbar-toggle {
+        left: 16px;
+        top: 25.3px;
+    }
+
+    nav {
+        margin-top: 5px;
+    }
+}
+
+/* แท็บเล็ตแนวนอน */
+@media (min-width: 768px) {
+    body { font-size: 18px; }
+    
+    .logo {
+        margin-left: 58px;
+    }
+
+    .navbar-toggle {
+        left: 16px;
+        top: 25.3px;
+    }
+}
+
+/* เดสก์ท็อปเล็ก */
+@media (min-width: 1024px) {
+    body { font-size: 20px; }
+    
+    .logo {
+        margin-left: 58px;
+    }
+
+    .navbar-toggle {
+        left: 16px;
+        top: 25.3px;
+    }
+
+    nav {
+        margin-top: 5px;
+    }
+}
+
+/* เดสก์ท็อปกลาง */
+@media (min-width: 1280px) {
+    body { font-size: 22px; }
+    
+    .logo {
+        margin-left: 58px;
+    }
+
+    .navbar-toggle {
+        left: 16px;
+        top: 25.3px;
+    }
+}
+
+/* เดสก์ท็อปใหญ่ */
+@media (min-width: 1440px) {
+    body { font-size: 24px; }
+    
+    .logo {
+        margin-left: 58px;
+    }
+
+    .navbar-toggle {
+        left: 16px;
+        top: 25.3px;
+    }
+}
+
+/* หน้าจอ 4K+ */
+@media (min-width: 1920px) {
+    body { font-size: 26px; }
+    
+    .logo {
+        margin-left: 58px;
+    }
+
+    .navbar-toggle {
+        left: 16px;
+        top: 25.3px;
+    }
+}

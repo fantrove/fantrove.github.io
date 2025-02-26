@@ -1,0 +1,6 @@
+body {
+    background-image: linear-gradient(180deg, #F7F7FF 80%, #D4D8FF 100%); /* รูปภาพพื้นหลัง */
+    background-repeat: repeat; /* ทำให้ลายภาพซ้ำไปเรื่อยๆ */
+    background-size: auto; /* ไม่ต้องขยายภาพ */
+    background-attachment: fixed; /* ให้พื้นหลังไม่เลื่อนตามการเลื่อนหน้า */
+}

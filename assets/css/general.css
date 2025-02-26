@@ -1,0 +1,166 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f4f9; /* พื้นหลังสีอ่อน */
+}
+
+/* สไตล์พื้นฐานของ container */
+#language-selector-container {
+    position: relative;
+}
+
+/* ตั้งค่าให้พื้นหลังและ dropdown ซ่อนเริ่มต้น */
+#language-overlay, #language-dropdown {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* เอฟเฟกต์การจางเข้า/จางออกและการขยายตัว */
+}
+
+/* เพิ่มคลาสเพื่อทำให้มันจางเข้า */
+#language-overlay.fade-in, #language-dropdown.fade-in {
+    opacity: 1;
+    display: block; /* แสดงเมื่อ fade-in */
+}
+
+/* ปรับการล็อกการเลื่อน */
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* ตั้งค่าพื้นหลังสีดำ */
+#language-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* ใช้ความสูงของหน้าจอ */
+    background-color: rgba(0, 0, 0, 0.7); /* พื้นหลังดำ */
+    z-index: 19000; /* ให้อยู่บนสุด */
+    backdrop-filter: blur(10px); /* ทำให้พื้นหลังเบลอเพื่อเพิ่มความหรูหรา */
+}
+
+/* สไตล์สำหรับตัวเลือกภาษา */
+#language-dropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    transform: translate(-50%, -50%) scale(0.8); /* เริ่มต้นด้วยขนาดเล็กแล้วขยายเมื่อเปิด */
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* เงาที่ละเอียด */
+    z-index: 20000;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* เอฟเฟกต์การขยายและจางเข้าเมื่อเปิด */
+#language-dropdown.fade-in {
+    transform: translate(-50%, -50%) scale(1); /* ขยายให้เต็มขนาดเมื่อเปิด */
+    opacity: 1;
+}
+
+/* ปรับการออกแบบสำหรับตัวเลือกภาษา */
+.language-option {
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #f9f9f9;
+    color: #333;
+    transition: background-color 0.3s, transform 0.3s; /* เพิ่มเอฟเฟกต์เลื่อนปุ่ม */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* เอฟเฟกต์เมื่อเลื่อนเมาส์ */
+.language-option:hover {
+    background-color: #007bff; /* สีฟ้าเมื่อ hover */
+    color: #fff;
+    transform: translateX(5px); /* เคลื่อนที่เล็กน้อยเมื่อ hover */
+}
+
+/* ปุ่มเลือกภาษา */
+#language-button {
+    background-color: #007BFF; /* สีพื้นหลังของปุ่ม */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* เอฟเฟกต์ปุ่ม */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* เอฟเฟกต์ปุ่มเมื่อ active */
+#language-button:active {
+    background-color: #0056b3; /* สีเข้มขึ้นเมื่อ hover */
+    transform: scale(0.95);
+}
+
+/* Footer */
+footer {
+    width: 100%; /* ขยายให้เต็มความกว้าง */
+    padding: 20px 0; /* เพิ่ม padding ด้านบนและล่าง */
+    color: #42445A;
+    text-align: center;
+    left: 0; /* ให้ footer เริ่มต้นจากขอบซ้ายของหน้าจอ */
+}
+
+/* Footer Content */
+.footer-content {
+    margin: 0 auto; /* จัดตำแหน่งให้อยู่กลาง */
+}
+
+.footer-content p {
+    font-size: 1rem;
+}
+
+/* Mobile-First (ค่าเริ่มต้นใช้ได้กับมือถือ) */
+
+/* แท็บเล็ตแนวตั้ง */  
+@media (min-width: 600px) {  
+    body { font-size: 16px; }  
+    #language-dropdown { width: 80%; padding: 12px; }
+    .language-option { font-size: 15px; padding: 10px 18px; }
+}
+
+/* แท็บเล็ตแนวนอน */  
+@media (min-width: 768px) {  
+    body { font-size: 18px; }  
+    #language-dropdown { width: 70%; padding: 14px; }
+    .language-option { font-size: 16px; padding: 11px 20px; }
+}
+
+/* เดสก์ท็อปเล็ก */  
+@media (min-width: 1024px) {  
+    body { font-size: 20px; }  
+    #language-dropdown { width: 60%; padding: 16px; }
+    .language-option { font-size: 18px; padding: 12px 22px; }
+}
+
+/* เดสก์ท็อปกลาง */  
+@media (min-width: 1280px) {  
+    body { font-size: 22px; }  
+    #language-dropdown { width: 50%; padding: 18px; }
+    .language-option { font-size: 20px; padding: 14px 24px; }
+}
+
+/* เดสก์ท็อปใหญ่ */  
+@media (min-width: 1440px) {  
+    body { font-size: 24px; }  
+    #language-dropdown { width: 45%; padding: 20px; }
+    .language-option { font-size: 22px; padding: 16px 26px; }
+}
+
+/* หน้าจอ 4K+ */  
+@media (min-width: 1920px) {  
+    body { font-size: 26px; }  
+    #language-dropdown { width: 40%; padding: 22px; }
+    .language-option { font-size: 24px; padding: 18px 28px; }
+}

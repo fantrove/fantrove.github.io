@@ -1,0 +1,10 @@
+.navbar-toggle {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    left: 20px; /* ย้ายไปยังขอบซ้ายสุด */
+    padding: 5px;
+}

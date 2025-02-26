@@ -1,0 +1,135 @@
+.nav-button {
+ width: 100%;
+ padding: 12px 20px;
+ text-decoration: none;
+ font-size: 15px;
+ font-weight: 500;
+ color: #FFFFFF;
+ background: linear-gradient(45deg, #BDBAF342, #6C63FF26);
+ border: none;
+ text-align: left;
+ cursor: pointer;
+ transition: color 0.3s ease, border-radius 0.3s ease, transform 0.2s ease;
+ outline: none;
+ user-select: none;
+ border-radius: 2px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ -webkit-tap-highlight-color: transparent;
+ margin: 5px 0;
+}
+
+.nav-button svg, .button-buy svg {
+ height: 16px;
+ width: auto;
+ transition: transform 0.3s ease;
+}
+
+.nav-button:hover {
+ background: linear-gradient(60deg, #DF00FF, #B600FF);
+ border-radius: 8px;
+}
+
+.nav-button:hover svg, .button-buy:hover svg {
+ transform: scale(1.1) rotate(6deg);
+}
+
+.nav-button:active svg, .button-buy:active svg {
+ transform: scale(0.9);
+}
+
+.nav-button:active, .button-buy:active {
+ transform: scale(0.98);
+}
+
+.nav-button.active {
+ background: linear-gradient(60deg, #A848FF, #8600FF);
+ border-radius: 8px;
+ font-weight: 600;
+}
+
+.nav-button.active:hover {
+ pointer-events: none;
+}
+
+.button-buy {
+ width: 100%;
+ padding: 12px 20px;
+ text-decoration: none;
+ font-size: 15px;
+ font-weight: 600;
+ color: #FFFFFF;
+ background: linear-gradient(45deg, #BDBAF342, #6C63FF26);
+ border: none;
+ text-align: left;
+ cursor: pointer;
+ transition: color 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease, transform 0.2s ease;
+ outline: none;
+ user-select: none;
+ border-radius: 2px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ -webkit-tap-highlight-color: transparent;
+ text-shadow: 0px 0px 9px #FF00D3;
+}
+
+.button-buy:hover {
+ background: linear-gradient(60deg, #FF48C2, #D10094);
+ border-radius: 8px;
+}
+
+/* แท็บเล็ตแนวตั้ง */
+@media (min-width: 600px) {
+    body { font-size: 15px; }
+    .nav-button, .button-buy {  
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+}
+
+/* แท็บเล็ตแนวนอน */
+@media (min-width: 768px) {
+    body { font-size: 16px; }
+    .nav-button, .button-buy {  
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+}
+
+/* เดสก์ท็อปเล็ก */
+@media (min-width: 1024px) {
+    body { font-size: 18px; }
+    .nav-button, .button-buy {  
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+}
+
+/* เดสก์ท็อปกลาง */
+@media (min-width: 1280px) {
+    body { font-size: 20px; }
+    .nav-button, .button-buy {  
+        padding: 15px 22px;
+        font-size: 16px;
+    }
+}
+
+/* เดสก์ท็อปใหญ่ */
+@media (min-width: 1440px) {
+    body { font-size: 22px; }
+    .nav-button, .button-buy {  
+        padding: 16px 24px;
+        font-size: 17px;
+    }
+}
+
+/* หน้าจอ 4K+ */
+@media (min-width: 1920px) {
+    body { font-size: 24px; }
+    .nav-button, .button-buy {  
+        padding: 18px 26px;
+        font-size: 18px;
+    }
+}

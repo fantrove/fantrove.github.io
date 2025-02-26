@@ -1,0 +1,44 @@
+{
+  "mainButtons": [
+    {
+      "en_label": "Symbols & Emojis",
+      "th_label": "สัญลักษณ์และอีโมจิ",
+      "isDefault": true,
+      "url": "Letters&Emoji",
+      "subButtons": [
+        {
+         "en_label": "ALL",
+         "th_label": "ทั้งหมด",
+         "jsonFile": "https://jeffy2600ii.github.io/hub.fantrove/assets/json/content/all.json",
+         "isDefault": true,
+         "url": "all"
+        },
+        {
+         "en_label": "Emojis",
+         "th_label": "อีโมจิ",
+         "jsonFile": "https://jeffy2600ii.github.io/hub.fantrove/assets/json/content/emoji.json",
+         "url": "emojis"
+        },
+        {
+         "en_label": "Symbols",
+         "th_label": "สัญลักษณ์",
+         "jsonFile": "https://jeffy2600ii.github.io/hub.fantrove/assets/json/content/data2.json",
+         "url": "Symbols"
+        }
+      ]
+    },
+    {
+      "en_label": "Package",
+      "th_label": "แพคเกจ",
+      "jsonFile": "https://jeffy2600ii.github.io/hub.fantrove/assets/json/content/packages.json",
+      "url": "packages"
+    },
+{
+ "en_label": "Package",
+ "th_label": "แพคเกจ",
+ "jsonFile": "https://jeffy2600ii.github.io/hub.fantrove/assets/json/content/packages.json",
+ "url": "package"
+}
+    
+  ]
+}

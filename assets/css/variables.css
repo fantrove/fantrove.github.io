@@ -1,0 +1,4 @@
+:root {
+ --main-color: linear-gradient(180deg, #6A11CB, #2575FC);
+ --main-active-color: linear-gradient(45deg, #9700FF, #B100FF);
+}
