@@ -35,7 +35,7 @@ window.addEventListener('scroll', function() {
                 const scrollDiff = scrollTop - lastScrollTop;    
                 currentTop -= scrollDiff;    
                 if (currentTop > 0) currentTop = 0;    
-                if (currentTop < -logoHeight * 1.3) currentTop = -logoHeight * 1.3;    
+                if (currentTop < -logoHeight * 1.29) currentTop = -logoHeight * 1.29;    
                 header.style.transform = `translateY(${currentTop}px)`;    
                 lastScrollTop = scrollTop;    
             } catch (error) {    
