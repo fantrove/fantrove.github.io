@@ -94,7 +94,7 @@ const loadButtonConfig = async () => {
         }
 
         const selectedLang = localStorage.getItem('selectedLang') || 'en'; // ตรวจสอบรหัสภาษาจากที่เก็บข้อมูลถาวร
-        const response = await fetch('https://jeffy2600ii.github.io/hub.fantrove/assets/json/buttons.json', { cache: 'no-cache' });
+        const response = await fetch('https://fantrove-hub.github.io/assets/json/buttons.json', { cache: 'no-cache' });
         if (!response.ok) throw new Error('ไม่สามารถโหลดไฟล์ buttons.json ได้');
         const buttonConfig = await response.json();
 

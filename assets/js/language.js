@@ -18,7 +18,7 @@ class LanguageManager {
       }    
     
       if (Object.keys(this.languagesConfig).length === 0) {    
-        const response = await fetch('https://jeffy2600ii.github.io/hub.fantrove/assets/json/language.json');    
+        const response = await fetch('https://fantrove-hub.github.io/assets/json/language.json');    
         if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);    
     
         const newConfig = await response.json();    
@@ -245,7 +245,7 @@ async updatePageLanguage(language) {
     
   async loadLanguageData(languageCode) {    
     try {    
-      const response = await fetch(`https://jeffy2600ii.github.io/hub.fantrove/assets/json/lang/${languageCode}.json`);    
+      const response = await fetch(`https://fantrove-hub.github.io/assets/json/lang/${languageCode}.json`);    
       if (!response.ok) throw new Error(`Failed to fetch: ${languageCode} - ${response.statusText}`);    
     
       const data = await response.json();    
