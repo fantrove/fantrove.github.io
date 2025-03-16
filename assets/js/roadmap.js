@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // ดึงข้อมูลล่าสุดจากไฟล์ JSON
     try {
-        const response = await fetch('https://fantrove-hub.github.io/assets/json/current-stage.json');
+        const response = await fetch('./assets/json/current-stage.json');
         const data = await response.json();
 
         // ตรวจสอบว่าข้อมูลในที่เก็บถาวรต่างจาก JSON หรือไม่

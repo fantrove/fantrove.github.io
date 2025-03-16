@@ -1,508 +1,1019 @@
-document.addEventListener('DOMContentLoaded', () => {    
-    const navButtons = document.querySelectorAll('nav ul li button');    
-    const header = document.querySelector('header');    
-    const logo = document.querySelector('.logo');    
-    let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;    
-    const logoHeight = logo.offsetHeight;    
-    let currentTop = 0;    
-    let rafId = null;    
-  
-    // ระบบจัดการข้อผิดพลาดที่ชาญฉลาด    
-    function handleError(error) {  
-        console.error('An error occurred:', error);  
-        let errorMessage = error.message || 'An unexpected error occurred. Please try again.';  
-    }  
-    
-    navButtons.forEach(button => {    
-        button.addEventListener('click', event => {    
-            event.preventDefault();    
-            const route = button.getAttribute('data-url');    
-            navigateTo(route);    
-            activateButton(button);    
-        });    
-    });    
-  
-let isChangingContent = false; // ตัวแปรเพื่อป้องกันการเปลี่ยนแปลงข้อความหลายครั้ง
-
-
-
-let ticking = false;
-window.addEventListener('scroll', function() {    
-    if (!ticking) {    
-        requestAnimationFrame(() => {    
-            try {    
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;    
-                const scrollDiff = scrollTop - lastScrollTop;    
-                currentTop -= scrollDiff;    
-                if (currentTop > 0) currentTop = 0;    
-                if (currentTop < -logoHeight * 1.27) currentTop = -logoHeight * 1.27;    
-                header.style.transform = `translateY(${currentTop}px)`;    
-                lastScrollTop = scrollTop;    
-            } catch (error) {    
-                handleError(error);    
-            }    
-            ticking = false;    
-        });    
-        ticking = true;    
-    }    
-});
-  
-    const activateButton = button => {    
-        const navList = document.getElementById('nav-list');    
-        const subButtonsContainer = document.getElementById('sub-buttons-container');    
-    
-        navList.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));    
-        subButtonsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));    
-
-        const url = button.getAttribute('data-url');    
-        const currentUrl = window.location.hash || '';    
-    
-        if (url && url.includes('-')) {    
-            const [mainUrl, subUrl] = url.split('-');    
-            if (currentUrl.includes(mainUrl)) activateMainButton(mainUrl, navList);    
-            if (currentUrl.includes(subUrl)) activateSubButton(subUrl, subButtonsContainer);    
-        } else {    
-            button.classList.add('active');    
-        }    
-    };    
-  
-    const activateMainButton = (mainUrl, navList) => {    
-        const mainButton = navList.querySelector(`button[data-url^='${mainUrl}']`);    
-        if (mainButton) mainButton.classList.add('active');    
-    };    
-
-    const activateSubButton = (subUrl, subButtonsContainer) => {    
-        const subButton = subButtonsContainer.querySelector(`button[data-url$='${subUrl}']`);    
-        if (subButton) subButton.classList.add('active');    
+/**
+ * header.js - Enhanced version
+ * ปรับปรุงประสิทธิภาพและความเสถียร
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    // ประกาศตัวแปรสำหรับใช้ทั้งไฟล์
+    const state = {
+        isRendering: false,
+        debounceTimer: null,
+        buttonConfig: null,
+        cache: new Map()
     };
-  
-    const createElement = (type, className, content = '') => {    
-        const element = document.createElement(type);    
-        if (className) element.className = className;    
-        if (content) element.textContent = content;    
-        return element;    
-    };    
-  
-let loadedButtonConfig = null; // เก็บข้อมูลการตั้งค่าปุ่มที่โหลดแล้ว
 
-const loadButtonConfig = async () => {
-    try {
-        // ตรวจสอบหากข้อมูลการตั้งค่าปุ่มถูกโหลดแล้ว ไม่ต้องโหลดซ้ำ
-        if (loadedButtonConfig) {
-            renderMainButtons(loadedButtonConfig.mainButtons, localStorage.getItem('selectedLang') || 'en');
-            return;
-        }
-
-        const selectedLang = localStorage.getItem('selectedLang') || 'en'; // ตรวจสอบรหัสภาษาจากที่เก็บข้อมูลถาวร
-        const response = await fetch('https://fantrove-hub.github.io/assets/json/buttons.json', { cache: 'no-cache' });
-        if (!response.ok) throw new Error('ไม่สามารถโหลดไฟล์ buttons.json ได้');
-        const buttonConfig = await response.json();
-
-        // เก็บข้อมูลปุ่มที่โหลดไว้เพื่อไม่ให้โหลดซ้ำ
-        loadedButtonConfig = buttonConfig;
-        renderMainButtons(buttonConfig.mainButtons, selectedLang);
-    } catch (error) {
-        console.error(`Error loading button configuration: ${error}`);
-    }
-};
-
-const renderMainButtons = (mainButtons, lang) => {
-    const navList = document.getElementById('nav-list');
-    navList.innerHTML = ''; // ล้างข้อมูลก่อนที่จะเรนเดอร์ใหม่
-
-    mainButtons.forEach(({ [`${lang}_label`]: label, subButtons, jsonFile, isDefault, url }) => {
-        if (!label) return; // ข้ามปุ่มที่ไม่มีการแปลเป็นภาษาที่เลือก
-
-        const li = createElement('li');
-        const mainButton = createElement('button', 'nav ul li button', label);
-        mainButton.setAttribute('data-url', url || jsonFile);
-        mainButton.addEventListener('click', () => {
-            clearContent();
-            activateButton(mainButton);
-            if (!subButtons && url) {
-                changeURL(url);
-            }
-            if (jsonFile) {
-                loadContentFromJSON(jsonFile);
-            } else if (subButtons) {
-                renderSubButtons(subButtons, url, lang);
-            }
-        });
-        li.appendChild(mainButton);
-        navList.appendChild(li);
-        if (isDefault) mainButton.click();
-    });
-};
-
-const renderSubButtons = async (subButtons, mainButtonUrl, lang) => {
-    const subButtonsContainer = document.getElementById('sub-buttons-container');
-    subButtonsContainer.innerHTML = ''; // ล้างข้อมูลก่อนที่จะเรนเดอร์ใหม่
-    subButtonsContainer.classList.add('fade-out');
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    subButtons.forEach(({ [`${lang}_label`]: label, jsonFile, isDefault, url }) => {
-        if (!label) return; // ข้ามปุ่มที่ไม่มีการแปลเป็นภาษาที่เลือก
-
-        const subButton = createElement('button', 'button-sub sub-butto', label);
-        const fullUrl = url ? `${mainButtonUrl}-${url}` : `${mainButtonUrl}-${jsonFile}`;
-        subButton.setAttribute('data-url', fullUrl);
-        subButton.addEventListener('click', () => {
-            if (fullUrl) changeURL(fullUrl);
-            loadContentFromJSON(jsonFile);
-            activateButton(subButton);
-        });
-        subButtonsContainer.appendChild(subButton);
-        if (isDefault) subButton.click();
-    });
-
-    subButtonsContainer.classList.remove('fade-out');
-    subButtonsContainer.classList.add('fade-in');
-};
-  
-  // ฟังก์ชันดึงข้อมูลด้วยระบบ Prefetching
-const prefetchData = async (jsonFiles) => {
-    const prefetchPromises = jsonFiles.map((file) => fetchWithTimeout(file, { cache: 'no-cache' }));
-    return Promise.all(prefetchPromises);
-};
-  
-// ฟังก์ชันการตรวจสอบการเปลี่ยนแปลงข้อมูล JSON และใช้ Service Worker
-const loadContentFromJSON = async (jsonFile) => {
-    try {
-        if (!isOnline()) throw new Error('ไม่มีการเชื่อมต่ออินเทอร์เน็ต');
-
-        // ตรวจสอบข้อมูลในแคช
-        const cachedData = getCacheData(jsonFile);
-        const lastUpdate = cachedData?.timestamp || 0;
-
-        // หากข้อมูลจากแคชยังใหม่พอจะใช้ได้
-        if (await validateData(jsonFile, lastUpdate) && cachedData?.data) {
-            renderContent(cachedData.data);
-            return;
-        }
-
-        // ดึงข้อมูลใหม่จากเซิร์ฟเวอร์
-        const data = await fetchWithTimeout(jsonFile, { cache: 'no-cache' }, 5000);
-        if (!data || typeof data !== 'object') throw new Error(`ข้อมูลจาก ${jsonFile} ไม่ถูกต้อง`);
-
-        setCacheData(jsonFile, data);
-        renderContent(data);
-    } catch (error) {
-        handleLoadError(error, jsonFile);
-    }
-};
-
-// ฟังก์ชันตรวจสอบข้อมูลใน localStorage  
-const getCacheData = (jsonFile) => {
-    try {
-        const cachedData = localStorage.getItem(jsonFile);
-        return cachedData ? JSON.parse(cachedData) : null;
-    } catch {
-        return null;
-    }
-};
-
-const setCacheData = (jsonFile, data) => {
-    const cachePayload = {
-        data,
-        timestamp: Date.now(),
+    // Element selectors
+    const elements = {
+        header: document.querySelector('header'),
+        navButtons: document.querySelectorAll('nav ul li button'),
+        logo: document.querySelector('.logo'),
+        navList: document.getElementById('nav-list'),
+        subButtonsContainer: document.getElementById('sub-buttons-container')
     };
-    localStorage.setItem(jsonFile, JSON.stringify(cachePayload));
-};
 
-// ปรับปรุงฟังก์ชัน validateData ให้สามารถใช้ Cache-Control
-const validateData = async (jsonFile, lastUpdate) => {
-    try {
-        const response = await fetchWithTimeout(jsonFile, { method: 'HEAD', cache: 'no-cache' }, 3000);
-        if (!response || !response.ok) return false;
+    // Constants
+    const CONSTANTS = {
+        ANIMATION_DURATION: 500,
+        SCROLL_THRESHOLD: 1.27,
+        CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
+        FETCH_TIMEOUT: 5000,
+        RETRY_DELAY: 2000,
+        MAX_RETRIES: 3
+    };
 
-        const serverTimestamp = new Date(response.headers.get('Last-Modified')).getTime();
-        return serverTimestamp > lastUpdate;
-    } catch (error) {
+    // Error handling
+    class AppError extends Error {
+        constructor(message, type = 'general', original = null) {
+            super(message);
+            this.name = 'AppError';
+            this.type = type;
+            this.original = original;
+        }
+    }
+
+    // Utils
+    const utils = {
+        async debounce(func, wait) {
+            clearTimeout(state.debounceTimer);
+            return new Promise(resolve => {
+                state.debounceTimer = setTimeout(() => {
+                    resolve(func());
+                }, wait);
+            });
+        },
+
+        isOnline() {
+            return navigator.onLine;
+        },
+
+        async copyToClipboard(content) {
+            try {
+                await navigator.clipboard.writeText(content);
+                this.showNotification('เนื้อหาถูกคัดลอกไปยังคลิปบอร์ดแล้ว!', 'success');
+            } catch (error) {
+                throw new AppError('ไม่สามารถคัดลอกข้อความได้', 'clipboard', error);
+            }
+        },
+
+        showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+    };
+
+// NavigationManager ที่ปรับปรุงใหม่
+const NavigationManager = {
+    history: [],
+    maxHistory: 50,
+
+    addEntry(url, type = 'user') {
+        this.history.unshift({ 
+            url: this.normalizeUrl(url), 
+            type, 
+            timestamp: Date.now() 
+        });
+        if (this.history.length > this.maxHistory) {
+            this.history.pop();
+        }
+    },
+
+    // เพิ่มฟังก์ชันสำหรับทำความสะอาด URL
+    normalizeUrl(url) {
+        return url.toLowerCase().trim().replace(/^#/, '');
+    },
+
+    // เพิ่มฟังก์ชันสำหรับเปรียบเทียบ URL อย่างแม่นยำ
+    compareUrls(url1, url2) {
+        return this.normalizeUrl(url1) === this.normalizeUrl(url2);
+    },
+
+    async navigateTo(route) {
+        try {
+            if (!route) {
+                throw new AppError('ไม่ได้ระบุเส้นทางในการนำทาง', 'navigation');
+            }
+
+            this.addEntry(route);
+            await this.changeURL(route);
+            await this.updateButtonStates();
+            
+        } catch (error) {
+            throw new AppError('เกิดข้อผิดพลาดในการนำทาง', 'navigation', error);
+        }
+    },
+
+    async changeURL(url) {
+        const newUrl = url.includes('#') ? url : `#${url}`;
+        history.replaceState(null, '', newUrl);
+    },
+
+    // ปรับปรุงฟังก์ชันอัพเดทสถานะปุ่มใหม่
+    async updateButtonStates() {
+        try {
+            const currentUrl = window.location.hash || '';
+            const normalizedCurrentUrl = this.normalizeUrl(currentUrl);
+            
+            // เก็บปุ่มที่ active ไว้ตรวจสอบ
+            const activeButtons = new Set();
+            
+            // รวบรวมปุ่มทั้งหมด
+            const allButtons = [
+                ...document.querySelectorAll('nav ul li button'),
+                ...document.querySelectorAll('.button-sub')
+            ];
+
+            // ล้าง active state ทั้งหมดก่อน
+            allButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // ตรวจสอบและเปรียบเทียบ URL อย่างละเอียด
+            allButtons.forEach(button => {
+                const buttonUrl = button.getAttribute('data-url');
+                if (!buttonUrl) return;
+
+                const normalizedButtonUrl = this.normalizeUrl(buttonUrl);
+
+                // ตรวจสอบว่าเป็น URL เดียวกันพอดี
+                if (this.compareUrls(normalizedCurrentUrl, normalizedButtonUrl)) {
+                    button.classList.add('active');
+                    activeButtons.add(normalizedButtonUrl);
+                }
+                // กรณีที่เป็น URL แบบมี sub-route
+                else if (normalizedCurrentUrl.includes('-')) {
+                    const [mainRoute, subRoute] = normalizedCurrentUrl.split('-');
+                    if (this.compareUrls(normalizedButtonUrl, mainRoute) || 
+                        this.compareUrls(normalizedButtonUrl, subRoute)) {
+                        if (!activeButtons.has(normalizedButtonUrl)) {
+                            button.classList.add('active');
+                            activeButtons.add(normalizedButtonUrl);
+                        }
+                    }
+                }
+            });
+
+            // ตรวจสอบความขัดแย้ง
+            this.validateActiveStates(activeButtons);
+
+        } catch (error) {
+            console.error('Error updating button states:', error);
+            throw new AppError('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม', 'button-state', error);
+        }
+    },
+
+    // เพิ่มฟังก์ชันตรวจสอบความขัดแย้งของ active states
+    validateActiveStates(activeButtons) {
+        if (activeButtons.size > 2) {
+            console.warn('พบการ active มากกว่า 2 ปุ่ม - กำลังแก้ไข...');
+            
+            // เก็บเฉพาะปุ่มที่ตรงกับ URL ปัจจุบันที่สุด
+            const currentUrl = this.normalizeUrl(window.location.hash);
+            const allButtons = document.querySelectorAll('button.active');
+            
+            allButtons.forEach(button => {
+                const buttonUrl = this.normalizeUrl(button.getAttribute('data-url') || '');
+                if (!this.isClosestMatch(buttonUrl, currentUrl)) {
+                    button.classList.remove('active');
+                }
+            });
+        }
+    },
+
+    // เพิ่มฟังก์ชันตรวจสอบความใกล้เคียงของ URL
+    isClosestMatch(buttonUrl, currentUrl) {
+        if (this.compareUrls(buttonUrl, currentUrl)) return true;
+        
+        // กรณี sub-route
+        if (currentUrl.includes('-')) {
+            const [mainRoute, subRoute] = currentUrl.split('-');
+            return this.compareUrls(buttonUrl, mainRoute) || 
+                   this.compareUrls(buttonUrl, subRoute);
+        }
+        
         return false;
-    }
-};
+    },
 
-// แยกการจัดการข้อผิดพลาดของการโหลด JSON
-const handleLoadError = (error, jsonFile) => {
-    console.error(`Error loading ${jsonFile}:`, error);
-    alert(`ไม่สามารถโหลดข้อมูลจาก ${jsonFile} ได้ โปรดตรวจสอบการเชื่อมต่อของคุณ`);
-};
-  
-// ฟังก์ชันสำหรับตรวจสอบสถานะการออนไลน์
-// ฟังก์ชันตรวจสอบการเชื่อมต่ออินเทอร์เน็ต
-const isOnline = () => navigator.onLine;
+    // เพิ่มฟังก์ชันสำหรับตรวจสอบความคล้ายกันของ URL
+    calculateUrlSimilarity(url1, url2) {
+        const normalized1 = this.normalizeUrl(url1);
+        const normalized2 = this.normalizeUrl(url2);
+        
+        if (normalized1 === normalized2) return 1;
+        
+        // ใช้ Levenshtein Distance algorithm
+        const distance = this.levenshteinDistance(normalized1, normalized2);
+        const maxLength = Math.max(normalized1.length, normalized2.length);
+        
+        return 1 - (distance / maxLength);
+    },
 
-// ฟังก์ชันการดึงข้อมูลแบบมีเวลา timeout
+    // เพิ่มฟังก์ชัน Levenshtein Distance สำหรับเปรียบเทียบความคล้ายของข้อความ
+    levenshteinDistance(str1, str2) {
+        const m = str1.length;
+        const n = str2.length;
+        const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
 
-// ปรับปรุงให้ทำงานแยกจากระบบอื่นชัดเจนขึ้น
-const fetchWithTimeout = async (url, options = {}, timeout = 5000) => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
+        for (let i = 0; i <= m; i++) dp[i][0] = i;
+        for (let j = 0; j <= n; j++) dp[0][j] = j;
 
-    try {
-        const response = await fetch(url, { ...options, signal: controller.signal });
-        if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
-        return await response.json();
-    } finally {
-        clearTimeout(timeoutId);
-    }
-};
-
-const fetchDataWithRetry = async (url, retries = 3, delay = 2000) => {
-    try {
-        const response = await fetchWithTimeout(url, { method: 'GET' });
-        if (!response.ok) {
-            throw new Error('Failed to fetch');
+        for (let i = 1; i <= m; i++) {
+            for (let j = 1; j <= n; j++) {
+                if (str1[i - 1] === str2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = 1 + Math.min(
+                        dp[i - 1][j],     // ลบ
+                        dp[i][j - 1],     // เพิ่ม
+                        dp[i - 1][j - 1]  // แทนที่
+                    );
+                }
+            }
         }
-        const data = await response.json();
-        renderContent(data);
+
+        return dp[m][n];
+    }
+};
+
+    // Content Management
+    const ContentManager = {
+        async clearContent() {
+            const contentElements = document.querySelectorAll('[id^="content-"]');
+            
+            await Promise.all(Array.from(contentElements).map(element => {
+                return new Promise(resolve => {
+                    const handleAnimationEnd = () => {
+                        element.innerHTML = '';
+                        element.classList.remove('fade-out');
+                        element.removeEventListener('animationend', handleAnimationEnd);
+                        resolve();
+                    };
+
+                    element.addEventListener('animationend', handleAnimationEnd);
+                    element.classList.add('fade-out');
+
+                    // Fallback
+                    setTimeout(handleAnimationEnd, CONSTANTS.ANIMATION_DURATION);
+                });
+            }));
+        },
+
+        async renderContent(data) {
+            if (!Array.isArray(data)) {
+                throw new AppError('ข้อมูลที่ได้รับไม่ใช่อาร์เรย์', 'render');
+            }
+
+            await this.clearContent();
+            if (state.isRendering) return;
+            
+            state.isRendering = true;
+            
+            try {
+                await Promise.all(data.map(async item => {
+                    const targetElement = document.getElementById(item.id);
+                    if (!targetElement) return;
+
+                    targetElement.innerHTML = '';
+                    const container = this.createContainer(item);
+                    
+                    if (item.group?.items) {
+                        await this.renderGroupItems(container, item.group);
+                    } else {
+                        await this.renderSingleItem(container, item);
+                    }
+                    
+                    targetElement.appendChild(container);
+                }));
+            } finally {
+                state.isRendering = false;
+            }
+        },
+
+    createContainer(item) {
+     const container = document.createElement('div');
+     container.className = item.group?.type === 'button' ?
+      'button-content-container' : 'card-content-container';
+     
+     // เพิ่ม custom class สำหรับ container ถ้ามีการระบุ
+     if (item.group?.containerClass) {
+      container.classList.add(item.group.containerClass);
+     }
+     
+     return container;
+    },
+
+    async renderGroupItems(container, group) {
+      // เพิ่มการสร้าง Group Header ถ้ามีการระบุ
+      if (group.header) {
+       const headerElement = this.createGroupHeader(group.header);
+       container.appendChild(headerElement);
+      }
+      
+      const renderPromises = group.items.map(item =>
+       group.type === 'button' ?
+       this.createButton(item.content) :
+       this.createCard(item)
+      );
+      
+      const elements = await Promise.all(renderPromises);
+      elements.forEach(element => {
+       if (element) container.appendChild(element);
+      });
+     },
+     
+     // เพิ่มฟังก์ชันใหม่สำหรับสร้าง Group Header
+     createGroupHeader(headerConfig) {
+      const headerContainer = document.createElement('div');
+      headerContainer.className = 'group-header';
+      
+      // สร้างส่วนหัวของกลุ่ม
+      const headerText = document.createElement('h2');
+      headerText.className = 'group-header-text';
+      
+      // รองรับทั้งข้อความธรรมดาและ object ที่มี properties
+      if (typeof headerConfig === 'string') {
+       headerText.textContent = headerConfig;
+      } else {
+       headerText.textContent = headerConfig.text || '';
+       if (headerConfig.description) {
+        const description = document.createElement('p');
+        description.className = 'group-header-description';
+        description.textContent = headerConfig.description;
+        headerContainer.appendChild(description);
+       }
+       
+       // เพิ่ม custom class ถ้ามีการระบุ
+       if (headerConfig.className) {
+        headerContainer.classList.add(headerConfig.className);
+       }
+      }
+      
+      headerContainer.insertBefore(headerText, headerContainer.firstChild);
+      return headerContainer;
+     },
+
+        async renderSingleItem(container, item) {
+            const element = item.type === 'button' ? 
+                await this.createButton(item.content) : 
+                await this.createCard(item);
+            
+            if (element) container.appendChild(element);
+        },
+
+    async createButton(content) {
+      const button = document.createElement('button');
+      button.className = 'button-content';
+      button.textContent = content;
+      const wrapper = document.createElement('div');
+      wrapper.appendChild(button);
+      
+      button.addEventListener('click', async () => {
+       try {
+        await utils.copyToClipboard(content);
+       } catch (error) {
+        utils.showNotification(error.message, 'error');
+       }
+      });
+      
+      return this.animateElement(wrapper);
+     },
+     
+     async createCard({ title, description, image, link }) {
+       const card = document.createElement('button');
+       card.className = 'card';
+       const wrapper = document.createElement('div');
+       
+       if (image) {
+        const img = document.createElement('img');
+        img.className = 'card-image';
+        img.src = image;
+        img.loading = 'lazy';
+        card.appendChild(img);
+       }
+       
+       const titleDiv = document.createElement('h1');
+       titleDiv.className = 'card-title';
+       titleDiv.textContent = title;
+       card.appendChild(titleDiv);
+       
+       const descDiv = document.createElement('p');
+       descDiv.className = 'card-description';
+       descDiv.textContent = description;
+       card.appendChild(descDiv);
+       
+       card.addEventListener('click', () => {
+        if (link) window.open(link, '_blank', 'noopener');
+       });
+       
+       wrapper.appendChild(card);
+       return this.animateElement(wrapper);
+      },
+      
+      async animateElement(element) {
+       return new Promise(resolve => {
+        requestAnimationFrame(() => {
+         const handleAnimationEnd = () => {
+          element.removeEventListener('animationend', handleAnimationEnd);
+          resolve(element);
+         };
+         
+         element.addEventListener('animationend', handleAnimationEnd);
+         element.classList.add('fade-in');
+         
+         // Fallback
+         setTimeout(() => handleAnimationEnd(), CONSTANTS.ANIMATION_DURATION);
+        });
+       });
+      }
+    };
+
+    // Data Management
+    const DataManager = {
+        async fetchWithTimeout(url, options = {}, timeout = CONSTANTS.FETCH_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, { 
+                    ...options, 
+                    signal: controller.signal,
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        ...options.headers
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new AppError(`HTTP error! status: ${response.status}`, 'fetch');
+                }
+
+                return await response.json();
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        },
+
+        async fetchWithRetry(url, retries = CONSTANTS.MAX_RETRIES) {
+            try {
+                return await this.fetchWithTimeout(url);
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, CONSTANTS.RETRY_DELAY));
+                    return this.fetchWithRetry(url, retries - 1);
+                }
+                throw error;
+            }
+        },
+
+        getCached(key) {
+            const cached = state.cache.get(key);
+            if (!cached) return null;
+
+            const isExpired = Date.now() - cached.timestamp > CONSTANTS.CACHE_DURATION;
+            if (isExpired) {
+                state.cache.delete(key);
+                return null;
+            }
+
+            return cached.data;
+        },
+
+        setCache(key, data) {
+            state.cache.set(key, {
+                data,
+                timestamp: Date.now()
+            });
+        }
+    };
+
+    // Scroll Management
+// ScrollManager ที่ปรับปรุงใหม่ใช้ Animation-based
+const ScrollManager = {
+ init() {
+  // ตัวแปรสำหรับควบคุมสถานะ
+  const state = {
+   isAnimating: false,
+   lastScrollY: window.pageYOffset,
+   headerVisible: true,
+   animationFrame: null,
+   headerHeight: 0,
+   scrollDirection: 0,
+   scrollTimeout: null
+  };
+  
+  // ค่าคงที่สำหรับการปรับแต่ง
+  const SETTINGS = {
+   // ระยะ scroll ขั้นต่ำที่จะเริ่มทำงาน (px)
+   SCROLL_THRESHOLD: 20,
+   // ความเร็วในการแสดง/ซ่อน header (ms)
+   ANIMATION_DURATION: 300,
+   // ระยะเวลารอก่อนรีเซ็ต header (ms)
+   RESET_DELAY: 130,
+   // ระยะการเลื่อนขั้นต่ำที่จะเริ่มตรวจจับทิศทาง (px)
+   DIRECTION_THRESHOLD: 5,
+   // ความเร็วในการ scroll ที่จะทริกเกอร์ animation (px/ms)
+   VELOCITY_THRESHOLD: 0.5
+  };
+  
+  // Keyframes สำหรับ animation
+  const ANIMATIONS = {
+   hideHeader: [
+    { transform: 'translateY(0)', offset: 0 },
+    { transform: 'translateY(-50%)', offset: 1 }
+   ],
+   showHeader: [
+    { transform: 'translateY(-50%)', offset: 0 },
+    { transform: 'translateY(0)', offset: 1 }
+   ]
+  };
+  
+  // Animation timing
+  const TIMING = {
+   duration: SETTINGS.ANIMATION_DURATION,
+   easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)', // Material Design easing
+   fill: 'forwards'
+  };
+  
+  // ฟังก์ชันสำหรับคำนวณความเร็วการ scroll
+  const calculateScrollVelocity = (() => {
+   let lastScrollY = window.pageYOffset;
+   let lastScrollTime = performance.now();
+   
+   return () => {
+    const currentScrollY = window.pageYOffset;
+    const currentTime = performance.now();
+    const timeDiff = currentTime - lastScrollTime;
+    const scrollDiff = currentScrollY - lastScrollY;
+    
+    lastScrollY = currentScrollY;
+    lastScrollTime = currentTime;
+    
+    return timeDiff > 0 ? scrollDiff / timeDiff : 0;
+   };
+  })();
+  
+  // ฟังก์ชันจัดการ animation
+  const animateHeader = (show) => {
+   const { header } = elements;
+   if (!header || state.isAnimating) return;
+   
+   // ยกเลิก animation ที่กำลังเล่นอยู่
+   header.getAnimations().forEach(animation => animation.cancel());
+   
+   // สร้างและเริ่ม animation ใหม่
+   const animation = header.animate(
+    show ? ANIMATIONS.showHeader : ANIMATIONS.hideHeader,
+    TIMING
+   );
+   
+   state.isAnimating = true;
+   state.headerVisible = show;
+   
+   animation.onfinish = () => {
+    state.isAnimating = false;
+   };
+  };
+  
+  // ฟังก์ชันหลักจัดการ scroll
+  const handleScroll = () => {
+   if (state.animationFrame) {
+    cancelAnimationFrame(state.animationFrame);
+   }
+   
+   state.animationFrame = requestAnimationFrame(() => {
+    const currentScrollY = window.pageYOffset;
+    const scrollDiff = currentScrollY - state.lastScrollY;
+    const velocity = calculateScrollVelocity();
+    
+    // ตรวจสอบทิศทางและความเร็วของการ scroll
+    if (Math.abs(scrollDiff) > SETTINGS.DIRECTION_THRESHOLD) {
+     const scrollingDown = scrollDiff > 0;
+     const velocityTriggered = Math.abs(velocity) > SETTINGS.VELOCITY_THRESHOLD;
+     
+     // เช็คเงื่อนไขการแสดง/ซ่อน header
+     if (currentScrollY > SETTINGS.SCROLL_THRESHOLD) {
+      if (scrollingDown && state.headerVisible && velocityTriggered) {
+       // ซ่อน header เมื่อเลื่อนลงเร็วๆ
+       animateHeader(false);
+      } else if (!scrollingDown && !state.headerVisible && velocityTriggered) {
+       // แสดง header เมื่อเลื่อนขึ้นเร็วๆ
+       animateHeader(true);
+      }
+     } else if (currentScrollY <= 0 && !state.headerVisible) {
+      // แสดง header เมื่ออยู่บนสุด
+      animateHeader(true);
+     }
+    }
+    
+    state.lastScrollY = currentScrollY;
+    state.scrollDirection = scrollDiff;
+   });
+   
+   // รีเซ็ต timeout สำหรับการตรวจสอบการหยุด scroll
+   clearTimeout(state.scrollTimeout);
+   state.scrollTimeout = setTimeout(() => {
+    const currentScrollY = window.pageYOffset;
+    if (currentScrollY <= SETTINGS.SCROLL_THRESHOLD && !state.headerVisible) {
+     animateHeader(true);
+    }
+   }, SETTINGS.RESET_DELAY);
+  };
+  
+  // Touch handling สำหรับมือถือ
+  let touchStartY = 0;
+  let lastTouchY = 0;
+  let touchStartTime = 0;
+  
+  const handleTouchStart = (e) => {
+   touchStartY = e.touches[0].clientY;
+   lastTouchY = touchStartY;
+   touchStartTime = performance.now();
+   state.isAnimating = false;
+  };
+  
+  const handleTouchMove = (e) => {
+   const currentY = e.touches[0].clientY;
+   const touchDiff = currentY - lastTouchY;
+   const timeDiff = performance.now() - touchStartTime;
+   const velocity = touchDiff / timeDiff;
+   
+   if (Math.abs(velocity) > SETTINGS.VELOCITY_THRESHOLD) {
+    if (velocity > 0 && !state.headerVisible) {
+     animateHeader(true);
+    } else if (velocity < 0 && state.headerVisible) {
+     animateHeader(false);
+    }
+   }
+   
+   lastTouchY = currentY;
+  };
+  
+  // Event Listeners
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('touchstart', handleTouchStart, { passive: true });
+  window.addEventListener('touchmove', handleTouchMove, { passive: true });
+  
+  // Resize Observer
+  const resizeObserver = new ResizeObserver((entries) => {
+   for (const entry of entries) {
+    if (entry.target === elements.header) {
+     state.headerHeight = entry.contentRect.height;
+    }
+   }
+  });
+  
+  if (elements.header) {
+   resizeObserver.observe(elements.header);
+  }
+ },
+ 
+ // รีเซ็ต ScrollManager
+ reset() {
+  const { header } = elements;
+  if (header) {
+   header.getAnimations().forEach(animation => animation.cancel());
+   header.style.transform = 'translateY(0)';
+  }
+ }
+};
+
+    // Button Configuration
+    const ButtonManager = {
+        async loadConfig() {
+            try {
+                if (state.buttonConfig) {
+                    this.renderMainButtons();
+                    return;
+                }
+
+                const cached = DataManager.getCached('buttonConfig');
+                if (cached) {
+                    state.buttonConfig = cached;
+                    this.renderMainButtons();
+                    return;
+                }
+
+                const response = await DataManager.fetchWithRetry('./assets/json/buttons.json');
+                state.buttonConfig = response;
+                DataManager.setCache('buttonConfig', response);
+                
+                this.renderMainButtons();
+                await NavigationManager.updateButtonStates();
+
+            } catch (error) {
+                throw new AppError('ไม่สามารถโหลดการตั้งค่าปุ่มได้', 'config', error);
+            }
+        },
+
+// ในส่วน ButtonManager ให้แก้ไขฟังก์ชัน renderMainButtons ดังนี้
+renderMainButtons() {
+  const lang = localStorage.getItem('selectedLang') || 'en';
+  const { mainButtons } = state.buttonConfig;
+  const { navList } = elements;
+  const currentUrl = window.location.hash.replace('#', '') || '';
+  
+  navList.innerHTML = '';
+  
+  // สร้างแมพของปุ่มเพื่อเก็บการอ้างอิง
+  const buttonMap = new Map();
+  let defaultButton = null;
+  
+  mainButtons.forEach(button => {
+   const label = button[`${lang}_label`];
+   if (!label) return;
+   
+   const li = document.createElement('li');
+   const mainButton = document.createElement('button');
+   mainButton.textContent = label;
+   const buttonUrl = button.url || button.jsonFile;
+   mainButton.setAttribute('data-url', buttonUrl);
+   
+   // เก็บการอ้างอิงปุ่มและข้อมูล
+   buttonMap.set(buttonUrl, {
+    button: mainButton,
+    config: button
+   });
+   
+   if (button.isDefault) {
+    defaultButton = {
+     button: mainButton,
+     config: button
+    };
+   }
+   
+   mainButton.addEventListener('click', async () => {
+    try {
+     await ContentManager.clearContent();
+     
+     if (!button.subButtons && button.url) {
+      await NavigationManager.navigateTo(button.url);
+     }
+     
+     if (button.jsonFile) {
+      const data = await DataManager.fetchWithRetry(button.jsonFile);
+      await ContentManager.renderContent(data);
+     } else if (button.subButtons) {
+      await this.renderSubButtons(button.subButtons, button.url, lang, currentUrl);
+     }
     } catch (error) {
-        if (retries > 0) {
-            console.warn(`Retrying fetch... Remaining attempts: ${retries}`);
-            setTimeout(() => fetchDataWithRetry(url, retries - 1, delay), delay);
-        } else {
-            console.error('Max retries reached. Could not fetch data.', error);
-            handleRenderError(error);
-        }
+     utils.showNotification(error.message, 'error');
     }
-};
+   });
+   
+   li.appendChild(mainButton);
+   navList.appendChild(li);
+  });
   
-// Main render function to display content  
-const renderContent = async (data) => {  
- const contentContainer = document.getElementById('content-container');  
+  // ตรวจสอบ URL ปัจจุบันและคลิกปุ่มที่เหมาะสม
+  this.handleInitialNavigation(currentUrl, buttonMap, defaultButton);
+ },
+ 
+ // เพิ่มฟังก์ชันใหม่สำหรับจัดการการนำทางครั้งแรก
+ async handleInitialNavigation(currentUrl, buttonMap, defaultButton) {
+   try {
+    // กรณีมี URL
+    if (currentUrl) {
+     // แยก URL หลักและ sub-route (ถ้ามี)
+     const [mainRoute, subRoute] = currentUrl.split('-');
+     
+     // ค้นหาปุ่มที่ตรงกับ URL หลัก
+     const mainButtonData = buttonMap.get(mainRoute);
+     
+     if (mainButtonData) {
+      // พบปุ่มที่ตรงกับ URL
+      const { button, config } = mainButtonData;
+      
+      // คลิกปุ่มหลัก
+      await button.click();
+      
+      // ถ้ามี sub-route และปุ่มหลักมี subButtons
+      if (subRoute && config.subButtons) {
+       // รอให้ sub-buttons ถูกสร้าง
+       await new Promise(resolve => setTimeout(resolve, 100));
+       
+       // ค้นหาและคลิก sub-button ที่ตรงกับ subRoute
+       const subButton = document.querySelector(`button[data-url="${currentUrl}"]`);
+       if (subButton) {
+        await subButton.click();
+       }
+      }
+      return;
+     }
+    }
+    
+    // กรณีไม่มี URL หรือ URL ไม่ตรงกับปุ่มใดๆ
+    if (defaultButton) {
+     await defaultButton.button.click();
+    }
+   } catch (error) {
+    console.error('Error handling initial navigation:', error);
+    utils.showNotification('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่', 'error');
+   }
+  },
   
- // ตรวจสอบว่าคอนเทนเนอร์มีอยู่ใน DOM หรือไม่  
- if (!contentContainer) {  
-  console.error('ไม่พบคอนเทนเนอร์สำหรับเนื้อหา');  
-  return;  
- }  
-  
- // Fade out เพื่อเตรียมพร้อมสำหรับเนื้อหาใหม่  
- contentContainer.classList.add('fade-out');  
-  
- try {  
-  // ตรวจสอบข้อมูลว่าเป็นอาร์เรย์  
-  if (!Array.isArray(data)) {  
-   throw new Error('ข้อมูลที่ได้รับไม่ใช่อาร์เรย์');  
-  }  
-  
-  // ล้างเนื้อหาเดิม  
-  contentContainer.innerHTML = '';  
-  
-  // ใช้ DocumentFragment เพื่อเพิ่มประสิทธิภาพ  
-  const fragment = document.createDocumentFragment();  
-  
-  // สร้างคอนเทนเนอร์สำหรับปุ่มและการ์ด  
-  const buttonContainer = document.createElement('div');  
-  buttonContainer.className = 'button-content-container';  
-  
-  const cardContainer = document.createElement('div');  
-  cardContainer.className = 'card-content-container';  
-  
-  // ฟังก์ชันสำหรับเพิ่มเนื้อหาในกลุ่ม  
-  const renderGroupItems = (items, type) => {  
-   if (!Array.isArray(items)) return;  
-  
-   items.forEach((content) => {  
-    if (type === 'button') {  
-     const buttonElement = createContentButton(content.content);  
-     if (buttonElement) {  
-      buttonElement.classList.add('fade-in'); // เพิ่มอนิเมชั่นจางเข้ากับปุ่ม  
-      buttonContainer.appendChild(buttonElement);  
-     }  
-    } else {  
-     const cardElement = createCard(content);  
-     if (cardElement) {  
-      cardElement.classList.add('fade-in'); // เพิ่มอนิเมชั่นจางเข้ากับการ์ด  
-      cardContainer.appendChild(cardElement);  
-     }  
-    }  
-   });  
-  };  
-  
-  // ประมวลผลข้อมูล  
-  data.forEach((item) => {  
-   if (item.group && Array.isArray(item.group.items)) {  
-    renderGroupItems(item.group.items, item.group.type);  
-   } else if (item.type === 'button') {  
-    const buttonElement = createContentButton(item.content);  
-    if (buttonElement) {  
-     buttonElement.classList.add('fade-in'); // เพิ่มอนิเมชั่นจางเข้ากับปุ่ม  
-     buttonContainer.appendChild(buttonElement);  
-    }  
-   } else {  
-    const cardElement = createCard(item);  
-    if (cardElement) {  
-     cardElement.classList.add('fade-in'); // เพิ่มอนิเมชั่นจางเข้ากับการ์ด  
-     cardContainer.appendChild(cardElement);  
-    }  
-   }  
-  });  
-  
-  // ตรวจสอบว่าคอนเทนเนอร์มีลูกหรือไม่ก่อนเพิ่มเข้า Fragment  
-  if (buttonContainer.hasChildNodes()) fragment.appendChild(buttonContainer);  
-  if (cardContainer.hasChildNodes()) fragment.appendChild(cardContainer);  
-  
-  // เพิ่มเนื้อหาใหม่เข้าไปใน DOM หลังจากอนิเมชั่นจางออกเสร็จ  
-  setTimeout(() => {  
-   contentContainer.appendChild(fragment);  
-  
-   // จัดการอนิเมชั่นการจางเข้าและจางออกของเนื้อหาและปุ่มพร้อมกัน  
-   contentContainer.classList.remove('fade-out');  
-   contentContainer.classList.add('fade-in');  
-  
-   // แสดงเนื้อหาและปุ่มทั้งหมดหลังจากอนิเมชั่นเสร็จ  
-   buttonContainer.classList.add('fade-in');  
-   cardContainer.classList.add('fade-in');  
-  }, 200); // เวลาที่ให้การจางออกทำงานเสร็จ  
- } catch (error) {  
-  console.error('เกิดข้อผิดพลาดในการเรนเดอร์เนื้อหา:', error);  
-  handleRenderError(error);  
- }  
-};  
-  
-// Example usage to fetch data from a URL  
-const fetchData = async (url) => {  
- if (!isOnline()) {  
-  console.error('No internet connection');  
-  handleRenderError(new Error('No internet connection'));  
-  return;  
- }  
-  
- await fetchDataWithRetry(url); // Retry fetching data if there was an issue  
-};  
-  
-    const handleRenderError = error => {  
-        let errorMessage = '';  
-        if (error.message.includes('ข้อมูลไม่ใช่อาร์เรย์')) {  
-            errorMessage = `ข้อผิดพลาด: ข้อมูลในไฟล์ JSON ไม่ใช่รูปแบบที่ถูกต้อง (ต้องเป็นอาร์เรย์)`;  
-        } else {  
-            errorMessage = `ข้อผิดพลาด: ไม่สามารถแสดงข้อมูลได้ โปรดตรวจสอบรูปแบบข้อมูลในไฟล์ JSON`;  
-        }  
-  
-        alert(errorMessage);  
-        console.error(`Error rendering content: ${error.message}`);  
-    };  
-  
-    const createContentButton = content => {  
-        const button = createElement('button', 'button-content', content);  
-        button.addEventListener('click', () => copyToClipboard(content));  
-        return button;  
-    };  
-  
-const createCard = ({ title, description, image, link }) => {  
- const card = createElement('div', 'card');  
- if (image) {  
-  const img = createElement('img', 'card-image');  
-  img.src = image;  
-  card.appendChild(img);  
- }  
- card.appendChild(createElement('div', 'card-title', title));  
- card.appendChild(createElement('div', 'card-description', description));  
- card.addEventListener('click', () => window.open(link, '_blank'));  
- return card;  
-};  
-  
-const copyToClipboard = async content => {  
- try {  
-  await navigator.clipboard.writeText(content);  
-  alert('เนื้อหาถูกคัดลอกไปยังคลิปบอร์ดแล้ว!');  
- } catch (error) {  
-  console.error(`Error copying text: ${error}`);  
- }  
-};  
-  
-const clearContent = () => {  
- const contentContainer = document.getElementById('content-container');  
- const subButtonsContainer = document.getElementById('sub-buttons-container');  
-  
- contentContainer.classList.add('fade-out');  
- subButtonsContainer.classList.add('fade-out');  
-  
- setTimeout(() => {  
-  contentContainer.innerHTML = '';  
-  subButtonsContainer.innerHTML = '';  
-  contentContainer.classList.remove('fade-out');  
-  subButtonsContainer.classList.remove('fade-out');  
- }, 100);  
-};  
-  
-const changeURL = url => {  
- if (url.includes('#')) {  
-  history.replaceState(null, '', url);  
- } else {  
-  history.replaceState(null, '', `#${url}`);  
- }  
-};  
-  
-window.onload = loadButtonConfig;  
-  
-// เพิ่มระบบ Prefetching เพื่อโหลดล่วงหน้า  
-function enablePrefetching() {  
- try {  
-  const links = document.querySelectorAll('a[href]');  
-  links.forEach(link => {  
-   const prefetchLink = document.createElement('link');  
-   prefetchLink.rel = 'prefetch';  
-   prefetchLink.href = link.href;  
-   prefetchLink.as = 'document';  
-   document.head.appendChild(prefetchLink);  
-  });  
- } catch (error) {  
-  handleError(error);  
- }  
-}  
-  
-// เพิ่มระบบ Lazy Loading เพื่อประหยัดแบนด์วิธและเพิ่มประสิทธิภาพ  
-function enableLazyLoading() {  
- try {  
-  const images = document.querySelectorAll('img');  
-  images.forEach(img => {  
-   if ('loading' in HTMLImageElement.prototype) {  
-    img.loading = 'lazy';  
-   } else {  
-    const lazyImageObserver = new IntersectionObserver((entries, observer) => {  
-     entries.forEach(entry => {  
-      if (entry.isIntersecting) {  
-       const lazyImage = entry.target;  
-       lazyImage.src = lazyImage.dataset.src;  
-       lazyImageObserver.unobserve(lazyImage);  
-      }  
-     });  
-    });  
-    lazyImageObserver.observe(img);  
-   }  
-  });  
- } catch (error) {  
-  handleError(error);  
- }  
-}  
-  
-// เรียกใช้ฟังก์ชัน Prefetching และ Lazy Loading เมื่อ DOM โหลดเสร็จ  
-document.addEventListener('DOMContentLoaded', function() {  
- enablePrefetching();  
- enableLazyLoading();  
-});  
-  
-// เพิ่มระบบจัดการข้อผิดพลาดนอกเหนือจาก DOMContentLoaded  
-window.addEventListener('error', (event) => {  
- handleError(event.error);  
-});  
-  
-window.addEventListener('unhandledrejection', (event) => {  
- handleError(event.reason);  
-});  
-  
-document.addEventListener('DOMContentLoaded', function() {  
-const header = document.querySelector('header');  
-const logoHeight = header.offsetHeight;  
-  
-window.addEventListener('scroll', function() {  
- if (window.scrollY > logoHeight) {  
-  header.classList.add('scrolled');  
- } else {  
-  header.classList.remove('scrolled');  
- }  
-});  
-});  
-});
+  // ปรับปรุงฟังก์ชัน renderSubButtons ให้รองรับการตรวจสอบ URL เริ่มต้น
+  async renderSubButtons(subButtons, mainButtonUrl, lang, initialUrl) {
+   const { subButtonsContainer } = elements;
+   
+   subButtonsContainer.innerHTML = '';
+   subButtonsContainer.classList.add('fade-out');
+   
+   await new Promise(resolve => setTimeout(resolve, 100));
+   
+   let defaultSubButton = null;
+   const subButtonMap = new Map();
+   
+   subButtons.forEach(button => {
+    const label = button[`${lang}_label`];
+    if (!label) return;
+    
+    const subButton = document.createElement('button');
+    subButton.className = 'button-sub sub-button';
+    subButton.textContent = label;
+    
+    const fullUrl = button.url ?
+     `${mainButtonUrl}-${button.url}` :
+     `${mainButtonUrl}-${button.jsonFile}`;
+    
+    subButton.setAttribute('data-url', fullUrl);
+    
+    // เก็บการอ้างอิงปุ่มย่อย
+    subButtonMap.set(fullUrl, subButton);
+    if (button.isDefault) {
+     defaultSubButton = subButton;
+    }
+    
+    subButton.addEventListener('click', async () => {
+     try {
+      await NavigationManager.navigateTo(fullUrl);
+      
+      if (button.jsonFile) {
+       const data = await DataManager.fetchWithRetry(button.jsonFile);
+       await ContentManager.renderContent(data);
+      }
+     } catch (error) {
+      utils.showNotification(error.message, 'error');
+     }
+    });
+    
+    subButtonsContainer.appendChild(subButton);
+   });
+   
+   // ตรวจสอบว่ามี URL ตรงกับปุ่มย่อยหรือไม่
+   const matchingSubButton = subButtonMap.get(initialUrl);
+   if (matchingSubButton) {
+    await matchingSubButton.click();
+   } else if (defaultSubButton && !initialUrl) {
+    // ใช้ปุ่ม default เมื่อไม่มี URL หรือ URL ไม่ตรงกับปุ่มใด
+    await defaultSubButton.click();
+   }
+   
+   subButtonsContainer.classList.remove('fade-out');
+   subButtonsContainer.classList.add('fade-in');
+  }
+    };
+
+    // Performance Optimizations
+    const PerformanceOptimizer = {
+     init() {
+      this.setupLazyLoading();
+      this.setupPrefetching();
+      this.setupErrorBoundary();
+     },
+     
+     setupLazyLoading() {
+      if ('loading' in HTMLImageElement.prototype) {
+       document.querySelectorAll('img').forEach(img => {
+        img.loading = 'lazy';
+       });
+      } else {
+       this.setupIntersectionObserver();
+      }
+     },
+     
+     setupIntersectionObserver() {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+       entries.forEach(entry => {
+        if (entry.isIntersecting) {
+         const img = entry.target;
+         if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+         }
+         observer.unobserve(img);
+        }
+       });
+      });
+      
+      document.querySelectorAll('img[data-src]').forEach(img => {
+       imageObserver.observe(img);
+      });
+     },
+     
+     setupPrefetching() {
+      const prefetchLinks = new Set();
+      
+      document.querySelectorAll('a[href], button[data-url]').forEach(element => {
+       const url = element.href || element.dataset.url;
+       if (url && !prefetchLinks.has(url)) {
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = url;
+        link.as = url.endsWith('.json') ? 'fetch' : 'document';
+        document.head.appendChild(link);
+        prefetchLinks.add(url);
+       }
+      });
+     },
+     
+     setupErrorBoundary() {
+      window.addEventListener('error', event => {
+       console.error('Global error:', event.error);
+       utils.showNotification(
+        'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง',
+        'error'
+       );
+      });
+      
+      window.addEventListener('unhandledrejection', event => {
+       console.error('Unhandled promise rejection:', event.reason);
+       utils.showNotification(
+        'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+        'error'
+       );
+      });
+     }
+    };
+    
+    // Event Listeners and Initialization
+    const initializeApp = async () => {
+     try {
+      // Initialize scroll handling
+      ScrollManager.init();
+      
+      // Initialize performance optimizations
+      PerformanceOptimizer.init();
+      
+      // Setup button event listeners
+      elements.navButtons.forEach(button => {
+       button.addEventListener('click', async event => {
+        event.preventDefault();
+        const route = button.getAttribute('data-url');
+        if (route) {
+         try {
+          await NavigationManager.navigateTo(route);
+         } catch (error) {
+          utils.showNotification(error.message, 'error');
+         }
+        }
+       });
+      });
+      
+      // Setup network status monitoring
+      window.addEventListener('online', () => {
+       utils.showNotification('การเชื่อมต่อกลับมาแล้ว', 'success');
+      });
+      
+      window.addEventListener('offline', () => {
+       utils.showNotification('ขาดการเชื่อมต่ออินเทอร์เน็ต', 'warning');
+      });
+      
+      // Handle URL changes
+      window.addEventListener('popstate', () => {
+       NavigationManager.updateButtonStates();
+      });
+      
+      window.addEventListener('hashchange', () => {
+       NavigationManager.updateButtonStates();
+      });
+      
+      // Load initial configuration
+      await ButtonManager.loadConfig();
+      
+     } catch (error) {
+      console.error('Initialization error:', error);
+      utils.showNotification(
+       'เกิดข้อผิดพลาดในการเริ่มต้นแอปพลิเคชัน กรุณารีเฟรชหน้า',
+       'error'
+      );
+     }
+    };
+    
+    // Start the application
+    if (document.readyState === 'loading') {
+     document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+     initializeApp();
+    }
+    });
