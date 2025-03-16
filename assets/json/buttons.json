@@ -9,20 +9,20 @@
         {
          "en_label": "ALL",
          "th_label": "ทั้งหมด",
-         "jsonFile": "https://fantrove-hub.github.io/assets/json/content/all.json",
+         "jsonFile": "./assets/json/content/all.json",
          "isDefault": true,
          "url": "all"
         },
         {
          "en_label": "Emojis",
          "th_label": "อีโมจิ",
-         "jsonFile": "https://fantrove-hub.github.io/assets/json/content/emoji.json",
+         "jsonFile": "./assets/json/content/emoji.json",
          "url": "emojis"
         },
         {
          "en_label": "Symbols",
          "th_label": "สัญลักษณ์",
-         "jsonFile": "https://fantrove-hub.github.io/assets/json/content/data2.json",
+         "jsonFile": "./assets/json/content/data2.json",
          "url": "Symbols"
         }
       ]
@@ -30,13 +30,13 @@
     {
       "en_label": "Package",
       "th_label": "แพคเกจ",
-      "jsonFile": "https://fantrove-hub.github.io/assets/json/content/packages.json",
+      "jsonFile": "./assets/json/content/packages.json",
       "url": "packages"
     },
 {
  "en_label": "Package",
  "th_label": "แพคเกจ",
- "jsonFile": "https://fantrove-hub.github.io/assets/json/content/packages.json",
+ "jsonFile": "./assets/json/content/packages.json",
  "url": "package"
 }
     
