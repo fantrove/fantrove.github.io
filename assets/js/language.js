@@ -273,13 +273,37 @@ class LanguageManager {
     }
   }
 
-  replaceTextOnly(element, newText) {
-    element.childNodes.forEach(node => {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
-        node.textContent = newText;
-      }
+replaceTextOnly(element, newText) {
+    // สร้างอาร์เรย์เก็บโหนดข้อความที่ต้องการแปล
+    const textNodesToTranslate = [];
+    
+    // ฟังก์ชันสำหรับการหาโหนดข้อความที่ควรแปล
+    const findTextNodes = (node) => {
+        for (let child of node.childNodes) {
+            // ถ้าเป็นโหนดข้อความและมีเนื้อหา
+            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim() !== '') {
+                textNodesToTranslate.push(child);
+            }
+            // ถ้าเป็นอิลิเมนต์ที่ไม่ใช่ img หรือ svg ให้ค้นหาต่อในลูก
+            else if (child.nodeType === Node.ELEMENT_NODE && 
+                     !['IMG', 'SVG'].includes(child.nodeName) &&
+                     !child.closest('svg')) {
+                findTextNodes(child);
+            }
+            // ถ้าเป็น img หรือ svg ให้ข้ามไป
+        }
+    };
+
+    // เริ่มค้นหาโหนดข้อความที่ต้องแปล
+    findTextNodes(element);
+
+    // แปลเฉพาะโหนดข้อความที่พบ
+    textNodesToTranslate.forEach(textNode => {
+        if (textNode.textContent.trim() !== '') {
+            textNode.textContent = newText;
+        }
     });
-  }
+}
 
   observeMutations() {
     this.mutationObserver = new MutationObserver((mutations) => {
