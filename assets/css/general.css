@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    margin: 0;
+    margin-bottom: 60px;
     background-color: #f4f4f9; /* พื้นหลังสีอ่อน */
 }
 
@@ -20,7 +20,7 @@ footer {
 
 .footer-content p {
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 0.5;
 }
 
 /* Mobile-First (ค่าเริ่มต้นใช้ได้กับมือถือ) */
