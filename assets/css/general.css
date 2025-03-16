@@ -20,8 +20,7 @@ footer {
 
 .footer-content p {
     font-size: 1rem;
-    line-height: 0.5;
-    margin-bottom: 15px;
+    line-height: 1.5;
 }
 
 /* Mobile-First (ค่าเริ่มต้นใช้ได้กับมือถือ) */
