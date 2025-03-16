@@ -1,9 +1,9 @@
-@import url(https://fantrove-hub.github.io/assets/css/variables.css);
-@import url('https://fantrove-hub.github.io/assets/css/nav.css');
+@import url(variables.css);
+@import url('nav.css');
 
 :root {
     --primary-color: #FFFFFF;
-    --hover-color: #CECECE14;
+    --hover-color: rgba(206, 206, 206, 0.08);
     --background-color: #FFFFFF;
     --text-color: #FFFFFF;
     --active-border-color: #009C5F;
@@ -19,36 +19,41 @@ body {
  background-color: #fafafa;
 }
 
+/* Header Container */
 header {
+    --header-padding: 4px;
+    --logo-margin: 60px;
+    
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--main-color);
-    border-bottom: none; /* เริ่มต้นด้วยการซ่อนเส้นใต้ */
     position: sticky;
-    width: 100vw;
+    width: 100%;
     top: 0;
     left: 0;
     z-index: 9000;
-    padding: 4px 0 0 0;
+    background: var(--main-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo Styles */
 .logo {
+    --logo-padding: 9px;
+    
     font-family: cursive;
-    font-size: var(--font-size); /* เพิ่มขนาดโลโก้ */
+    font-size: var(--font-size);
     font-weight: 700;
-    padding: 8px 0 4.5px 11px;
+    padding: var(--logo-padding) 0 4.5px var(--logo-padding);
     white-space: nowrap;
     color: var(--text-color);
-    text-shadow: 0 1px 2px var(--shadow-color);
-    pointer-events: none;
-    align-self: flex-start; /* เลื่อนโลโก้ไปด้านซ้าย */
-    margin-left: 58px; /* เพิ่มระยะห่างจากขอบซ้าย */
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
+    pointer-events: none;
+    align-self: flex-start;
+    margin-left: var(--logo-margin);
     display: flex;
+    align-items: center;
 }
 
 .logo span {
@@ -60,30 +65,29 @@ header {
     width: auto;
     height: var(--height);
     margin-left: 5px;
-    align-items: center;
-    justify-content: center;
-    display: flex;
 }
 
+/* Navigation Styles */
 nav {
+    --nav-spacing: 5px;
+    
     width: 100%;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     background: none;
-    margin-top: 5px; /* ลดระยะห่างระหว่างโลโก้กับ nav ลง 7 พิกเซล */
-    padding: 3.5px 0 0 0; /* ลด padding ด้านบนของ nav */
+    margin-top: var(--nav-spacing);
+    padding: 3.5px 0 0;
 }
 
 nav ul {
     display: flex;
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: var(--nav-spacing) var(--nav-spacing) 2px;
     justify-content: flex-start;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
-    padding: 5px 5px 2px 5px;
     border-top: var(--navbar-border);
     border-bottom: var(--navbar-border);
 }
@@ -96,39 +100,44 @@ nav ul li {
     flex: none;
 }
 
+
+/* Premium Navigation Button Styles - Optimized Version */
 nav ul li button {
     display: block;
-    padding: 10px 16px; /* ลดความกว้างของปุ่ม 2 พิกเซล */
+    padding: 9px 14px;
     text-align: center;
     background: none;
     border: none;
-    color: var(--text-color);
-    font-weight: bold;
+    color: var(--nav-text-default);
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.3s ease-in-out; /* เพิ่มความมีชีวิตชีวา */
+    position: relative;
+    /* ลดจำนวน properties ใน transition เพื่อเพิ่มประสิทธิภาพ */
+    transition: color 0.2s ease, transform 0.2s ease;
     outline: none;
-    border-radius: 10px; /* ลดความมนโค้งของปุ่ม */
+    border-radius: var(--nav-button-radius, 25px);
     -webkit-tap-highlight-color: transparent;
     user-select: none;
 }
 
+/* ลด Layer การเรนเดอร์โดยใช้ background-color แทน gradient */
 nav ul li button:hover {
-    color: #C2DDFF;
-    background-color: var(--hover-color); /* สีของปุ่มเมื่อ active */
+    color: var(--nav-text-hover);
+    background-color: var(--nav-hover-bg);
+    transform: translateY(-1px);
 }
 
-nav ul li button:active {
-    outline: none;
-    background-color: #CECECE36;
-}
-
+/* ปุ่ม Active State */
 nav ul li button.active {
-    position: relative;
-    background: rgba(204, 255, 239, 0.27);
-    color: var(--primary-color);
+    color: var(--nav-text-active);
+    font-weight: 600;
+    /* ใช้ text-shadow เพียงเล็กน้อย */
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
+/* เส้นใต้แบบ Optimized */
 nav ul li button.active::after {
     content: '';
     position: absolute;
@@ -136,10 +145,45 @@ nav ul li button.active::after {
     bottom: 0;
     transform: translateX(-50%);
     width: 60%;
-    height: 3px;
-    background-color: var(--primary-color);
-    border-radius: 20px 20px 0 0; /* ปรับปรุงเส้นใต้ให้พรีเมี่ยมมากขึ้น */
-    box-shadow: inset 0 -2px 0 var(--primary-color);
+    height: 2px;
+    background-color: var(--nav-underline-color);
+    border-radius: 2px;
+    /* ใช้ box-shadow เพียงชั้นเดียว */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+    /* ใช้ animation ที่เรียบง่ายขึ้น */
+    animation: simpleGlow 2s ease-in-out infinite;
+}
+
+/* ลดความซับซ้อนของ Animation */
+@keyframes simpleGlow {
+    0%, 100% {
+        opacity: 0.9;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* CSS Custom Properties */
+:root {
+    /* สีพื้นฐาน - ลดการใช้ rgba และ opacity */
+    --nav-text-default: #FFFFFF;
+    --nav-text-hover: #FFFFFF;
+    --nav-text-active: #ffffff;
+    --nav-hover-bg: rgba(255, 255, 255, 0.1);
+    --nav-underline-color: #ffffff;
+    --nav-button-radius: 25px;
+}
+
+/* Media Query สำหรับอุปกรณ์ที่มีประสิทธิภาพต่ำ */
+@media (prefers-reduced-motion: reduce) {
+    nav ul li button {
+        transition: none;
+    }
+    
+    nav ul li button.active::after {
+        animation: none;
+    }
 }
 
 .navbar-toggle {
@@ -157,6 +201,25 @@ nav ul li button.active::after {
     transform: translateY(-50%); /* เลื่อนขึ้นลงให้มันกลางพอดี */
     padding: 5px;
     z-index: 10008;
+}
+
+/* เพิ่ม CSS สำหรับข้อความแจ้งเตือน */
+.error-message {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    background-color: #ff4444;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* แท็บเล็ตแนวตั้ง */

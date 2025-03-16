@@ -1,106 +1,7 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     background-color: #f4f4f9; /* พื้นหลังสีอ่อน */
-}
-
-/* สไตล์พื้นฐานของ container */
-#language-selector-container {
-    position: relative;
-}
-
-/* ตั้งค่าให้พื้นหลังและ dropdown ซ่อนเริ่มต้น */
-#language-overlay, #language-dropdown {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* เอฟเฟกต์การจางเข้า/จางออกและการขยายตัว */
-}
-
-/* เพิ่มคลาสเพื่อทำให้มันจางเข้า */
-#language-overlay.fade-in, #language-dropdown.fade-in {
-    opacity: 1;
-    display: block; /* แสดงเมื่อ fade-in */
-}
-
-/* ปรับการล็อกการเลื่อน */
-body.no-scroll {
-    overflow: hidden;
-}
-
-/* ตั้งค่าพื้นหลังสีดำ */
-#language-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh; /* ใช้ความสูงของหน้าจอ */
-    background-color: rgba(0, 0, 0, 0.7); /* พื้นหลังดำ */
-    z-index: 19000; /* ให้อยู่บนสุด */
-    backdrop-filter: blur(10px); /* ทำให้พื้นหลังเบลอเพื่อเพิ่มความหรูหรา */
-}
-
-/* สไตล์สำหรับตัวเลือกภาษา */
-#language-dropdown {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 90%;
-    transform: translate(-50%, -50%) scale(0.8); /* เริ่มต้นด้วยขนาดเล็กแล้วขยายเมื่อเปิด */
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* เงาที่ละเอียด */
-    z-index: 20000;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-/* เอฟเฟกต์การขยายและจางเข้าเมื่อเปิด */
-#language-dropdown.fade-in {
-    transform: translate(-50%, -50%) scale(1); /* ขยายให้เต็มขนาดเมื่อเปิด */
-    opacity: 1;
-}
-
-/* ปรับการออกแบบสำหรับตัวเลือกภาษา */
-.language-option {
-    padding: 12px 20px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    background-color: #f9f9f9;
-    color: #333;
-    transition: background-color 0.3s, transform 0.3s; /* เพิ่มเอฟเฟกต์เลื่อนปุ่ม */
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* เอฟเฟกต์เมื่อเลื่อนเมาส์ */
-.language-option:hover {
-    background-color: #007bff; /* สีฟ้าเมื่อ hover */
-    color: #fff;
-    transform: translateX(5px); /* เคลื่อนที่เล็กน้อยเมื่อ hover */
-}
-
-/* ปุ่มเลือกภาษา */
-#language-button {
-    background-color: #007BFF; /* สีพื้นหลังของปุ่ม */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 4px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s; /* เอฟเฟกต์ปุ่ม */
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-}
-
-/* เอฟเฟกต์ปุ่มเมื่อ active */
-#language-button:active {
-    background-color: #0056b3; /* สีเข้มขึ้นเมื่อ hover */
-    transform: scale(0.95);
 }
 
 /* Footer */
@@ -119,6 +20,7 @@ footer {
 
 .footer-content p {
     font-size: 1rem;
+    line-height: 0.5;
 }
 
 /* Mobile-First (ค่าเริ่มต้นใช้ได้กับมือถือ) */

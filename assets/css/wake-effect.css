@@ -1,47 +1,238 @@
+/*!
+ * Wave Effect v2.1.6 - Ultimate Professional Animation System
+ * Release: 2025-03-07 22:35:34 UTC
+ * Author: Jeffy2600II
+ * World-Class Premium Animation Framework - Production Ready
+ * Copyright (c) 2025 Professional Animation Systems. All Rights Reserved.
+ */
+
 :root {
-    --wave-opacity-start: 0.4; /* ความโปร่งใสเริ่มต้น */
-    --wave-opacity-end: 0;    /* ความโปร่งใสสุดท้าย */
-    --wave-duration: 0.4s;   /* ระยะเวลาอนิเมชัน */
-    --wave-color: rgba(0, 0, 0, 0.3); /* สีของคลื่น */
-    --wave-scale: 3;         /* ขนาดสุดท้ายของคลื่น */
-    --max-waves: 4;          /* จำนวนคลื่นสูงสุด */
+    /* ตัวแปรหลัก - เพิ่มความพรีเมี่ยม */
+    --wave-opacity-start: 0.58;
+    --wave-opacity-mid: 0.35;
+    --wave-opacity-hold: 0.22;
+    --wave-opacity-end: 0;
+    --wave-scale: 3.15;
+    
+    /* ระบบจังหวะการเคลื่อนไหว - เร็วขึ้น */
+    --wave-expand-time: 780ms;
+    --wave-hold-time: 850ms;  /* ลดลงจาก 1100ms */
+    --wave-fade-time: 420ms;  /* ลดลงจาก 580ms */
+    
+    /* คุณสมบัติการแสดงผล */
+    --wave-back-color: #00000058;
+    --wave-white-color: rgb(242 243 245 / 42%);
+    --wave-blur-start: 15px;
+    --wave-blur-mid: 10px;
+    --wave-blur-hold: 7.5px;
+    --wave-blur-end: 5.5px;
+    
+    /* ระบบฟิสิกส์ขั้นสูง - ปรับปรุงใหม่ */
+    --wave-expand-curve: cubic-bezier(0.32, 0.03, 0.34, 0.93);
+    --wave-release-curve: cubic-bezier(0.46, 0.09, 0.39, 0.98);
+    --wave-spring-tension: cubic-bezier(0.39, 0.09, 0.29, 0.92);
+    --wave-spring-damping: cubic-bezier(0.33, 0.07, 0.25, 0.98);
+    --wave-momentum-curve: cubic-bezier(0.27, 0.10, 0.30, 0.93);
+    
+    /* ระบบควบคุมการเคลื่อนไหว - เพิ่มความนุ่มนวล */
+    --wave-elasticity: cubic-bezier(0.36, 0.11, 0.32, 0.91);
+    --wave-precision-curve: cubic-bezier(0.35, 0.14, 0.30, 0.92);
+    --wave-micro-movement: cubic-bezier(0.28, 0.07, 0.28, 0.98);
+    --wave-depth-curve: cubic-bezier(0.30, 0.09, 0.29, 0.93);
+    
+    /* ระบบการจางหายแบบใหม่ - เร็วและนุ่มนวล */
+    --wave-fade-curve: cubic-bezier(0.43, 0, 0.57, 1);
 }
 
 .wave-effect {
     position: relative;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     user-select: none;
+    z-index: 1;
+    contain: layout style paint;
+    isolation: isolate;
+    transform: translate3d(0,0,0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+    transform-style: preserve-3d;
+    perspective: 1600px;
 }
 
 .wave-effect:active {
- filter: brightness(0.8);
+    filter: brightness(0.988);
+    transition: filter 340ms var(--wave-spring-tension);
 }
 
 .wave {
     position: absolute;
-    transform: scale(0); /* หมุนคลื่นเล็กน้อย */
+    border-radius: 50%;
+    pointer-events: none;
     opacity: var(--wave-opacity-start);
-    background: var(--wave-color);
-    border-radius: 50%; /* ทำให้คลื่นเป็นวงกลม */
-    animation: wave-animation var(--wave-duration) ease-out forwards;
-    backdrop-filter: blur(50px);
+    background: var(--wave-back-color);
+    contain: strict;
+    will-change: transform, opacity;
+    transform: scale(0) translate3d(0,0,0);
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transition: initial;
 }
 
-@keyframes wave-animation {
+.wave.animating {
+    animation: 
+        wave-expand var(--wave-expand-time) var(--wave-expand-curve) forwards,
+        wave-blur-in var(--wave-expand-time) var(--wave-precision-curve) forwards,
+        wave-depth var(--wave-expand-time) var(--wave-depth-curve) forwards;
+}
+
+.wave.holding {
+    transform: scale(var(--wave-scale)) translate3d(0,0,0);
+    opacity: var(--wave-opacity-hold);
+    filter: blur(var(--wave-blur-hold));
+    transition: 
+        transform var(--wave-hold-time) var(--wave-elasticity),
+        opacity var(--wave-hold-time) var(--wave-spring-damping),
+        filter var(--wave-hold-time) var(--wave-momentum-curve);
+}
+
+.wave.fade-out {
+    animation: 
+        wave-fade-out var(--wave-fade-time) var(--wave-fade-curve) forwards,
+        wave-scale-out var(--wave-fade-time) var(--wave-release-curve) forwards;
+}
+
+@keyframes wave-expand {
     0% {
-        transform: scale(0);
+        transform: scale(0.26) translate3d(0,0,0);
         opacity: var(--wave-opacity-start);
-        filter: blur(25px);
     }
-    50% {
-        transform: scale(1);
-        opacity: 0.2;
-        filter: blur(20px);
+    15% {
+        opacity: var(--wave-opacity-start);
+        transform: scale(calc(var(--wave-scale) * 0.35)) translate3d(0,0,0);
+    }
+    35% {
+        opacity: var(--wave-opacity-mid);
+        transform: scale(calc(var(--wave-scale) * 0.55)) translate3d(0,0,0);
+    }
+    65% {
+        opacity: calc(var(--wave-opacity-hold) * 1.1);
+        transform: scale(calc(var(--wave-scale) * 0.80)) translate3d(0,0,0);
+    }
+    85% {
+        opacity: calc(var(--wave-opacity-hold) * 1.05);
+        transform: scale(calc(var(--wave-scale) * 0.95)) translate3d(0,0,0);
     }
     100% {
-        transform: scale(var(--wave-scale));
+        transform: scale(var(--wave-scale)) translate3d(0,0,0);
+        opacity: var(--wave-opacity-hold);
+    }
+}
+
+@keyframes wave-blur-in {
+    0% { filter: blur(var(--wave-blur-start)); }
+    15% { filter: blur(calc(var(--wave-blur-start) * 0.85)); }
+    35% { filter: blur(var(--wave-blur-mid)); }
+    65% { filter: blur(calc(var(--wave-blur-hold) * 1.2)); }
+    85% { filter: blur(calc(var(--wave-blur-hold) * 1.1)); }
+    100% { filter: blur(var(--wave-blur-hold)); }
+}
+
+@keyframes wave-fade-out {
+    0% {
+        opacity: var(--wave-opacity-hold);
+        filter: blur(var(--wave-blur-hold));
+    }
+    45% {
+        opacity: calc(var(--wave-opacity-hold) * 0.7);
+        filter: blur(calc(var(--wave-blur-end) * 1.25));
+    }
+    100% {
         opacity: var(--wave-opacity-end);
-        filter: blur(10px);
+        filter: blur(var(--wave-blur-end));
+    }
+}
+
+@keyframes wave-scale-out {
+    0% {
+        transform: scale(var(--wave-scale)) translate3d(0,0,0);
+    }
+    45% {
+        transform: scale(calc(var(--wave-scale) * 1.01)) translate3d(0,0,0);
+    }
+    100% {
+        transform: scale(calc(var(--wave-scale) * 1.015)) translate3d(0,0,0);
+    }
+}
+
+/* การปรับแต่งสำหรับอุปกรณ์สัมผัส */
+@media (pointer: coarse) {
+    .wave-effect {
+        touch-action: manipulation;
+    }
+    
+    .wave {
+        transition: transform 18ms var(--wave-micro-movement);
+    }
+}
+
+/* การปรับแต่งสำหรับจอความละเอียดสูง */
+@media ((-webkit-min-device-pixel-ratio: 2) and (hover: hover)), 
+       (min-resolution: 192dpi) and (hover: hover) {
+    .wave-effect {
+        transform: translate3d(0,0,0);
+        perspective: 1800px;
+    }
+    
+    .wave {
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+    }
+}
+
+/* รองรับการลดการเคลื่อนไหว */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --wave-expand-time: 300ms;
+        --wave-hold-time: 200ms;
+        --wave-fade-time: 180ms;
+    }
+}
+
+/* การปรับแต่งสำหรับ Safari */
+@supports (-webkit-touch-callout: none) {
+    .wave-effect {
+        -webkit-transform: translate3d(0,0,0);
+        -webkit-perspective: 1800px;
+        -webkit-backface-visibility: hidden;
+    }
+    
+    .wave {
+        -webkit-transform: translate3d(0,0,0) scale(0);
+        -webkit-transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1600px;
+    }
+}
+
+/* คุณสมบัติขั้นสูงสำหรับเบราว์เซอร์ทันสมัย */
+@supports (backdrop-filter: none) {
+    .wave {
+        will-change: transform, opacity, filter;
+        contain: strict;
+    }
+    
+    .wave.animating {
+        contain: strict;
+        composite: high-performance;
+    }
+}
+
+/* โหมดประหยัดทรัพยากร */
+@media (prefers-reduced-transparency: reduce) {
+    :root {
+        --wave-opacity-start: 0.52;
+        --wave-opacity-mid: 0.32;
+        --wave-opacity-hold: 0.18;
     }
 }

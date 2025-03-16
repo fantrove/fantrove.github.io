@@ -1,4 +1,4 @@
-@import url('https://fantrove-hub.github.io/assets/css/variables.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
+@import url('variables.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
 
 /* ตั้งค่าพื้นฐาน */
 * {
@@ -75,7 +75,7 @@ main p {
   border-radius: 50px;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(39, 117, 252, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-image 0.3s ease, filter 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-image 0.3s ease !important;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   width: 100%; 
@@ -85,7 +85,6 @@ main p {
 .buttons-in button:active {
   transform: scale(0.98);
   box-shadow: 0 5px 15px rgba(39, 117, 252, 0.3);
-  filter: brightness(0.9);
 }
 
 /* แท็บเล็ตแนวตั้ง */

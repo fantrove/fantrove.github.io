@@ -1,114 +1,188 @@
-@import url(https://fantrove-hub.github.io/assets/css/variables.css);
+/* ==========================================================================
+   Base Styles and Variables
+   ========================================================================== */
+
+@import url('variables.css');
 
 :root {
-  --main-gradient: linear-gradient(90deg, #12D181, #0ABAB5); /* ไล่เฉดสีเขียวออกน้ำทะเล */
-  --black-color: #252525; /* สีดำ */
-  --light-gray: #FFFFFF; /* สีเทาอ่อน */
-  --border-color: rgba(0, 0, 0, 0.1); /* สีเส้นขอบอ่อน */
-  --premium-dark: #1B1B1B; /* สีเข้มสำหรับสร้างความหรูหรา */
-  --highlight-color: #0058FF; /* สีเน้นความทันสมัย */
-  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* ฟอนต์สำหรับหน้าเว็บ */
+ /* Colors */
+ --color-primary-start: #12D181;
+ --color-primary-end: #0ABAB5;
+ --color-text-primary: #252525;
+ --color-background: #FFFFFF;
+ --color-border: rgba(0, 0, 0, 0.1);
+ --color-premium: #1B1B1B;
+ --color-accent: #0058FF;
+ --color-link: #00A0FF;
+ 
+ /* Gradients */
+ --gradient-primary: linear-gradient(90deg, var(--color-primary-start), var(--color-primary-end));
+ 
+ /* Typography */
+ --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ --font-size-base: 14px;
+ --font-weight-normal: 400;
+ --font-weight-semi-bold: 600;
+ 
+ /* Spacing */
+ --spacing-xs: 10px;
+ --spacing-sm: 30px;
+ --spacing-md: 40px;
+ --spacing-lg: 60px;
+ --spacing-xl: 130px;
+ 
+ /* Border radius */
+ --border-radius-lg: 20px;
+ 
+ /* Shadows */
+ --shadow-bottom: 0 -15px 40px rgba(255, 255, 255, 1), 0 -6px 15px rgba(255, 255, 255, 0.1);
+ --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.1);
+ 
+ /* Z-index */
+ --z-index-fixed: 888;
 }
+
+/* ==========================================================================
+   Layout & Container Styles
+   ========================================================================== */
 
 body {
-  font-family: var(--font-family);
-  height: 100vh;
-  color: var(--black-color);
-  margin-top: 60px;
-}
-
-.bottom-box-shadow {
-  position: fixed;
-  bottom: -120px; /* ปรับระยะห่างจากด้านล่างเล็กน้อย */
-  left: 0;
-  width: 100%;
-  box-shadow: 0 -15px 40px rgba(255, 255, 255, 1), 0 -6px 15px rgba(255, 255, 255, 0.1); /* ปรับให้สีขาวมีความเข้ม 1 */
-  background-color: #FFFFFF;
-  z-index: 888;
+ font-family: var(--font-primary);
+ height: 100vh;
+ color: var(--color-text-primary);
+ margin-top: var(--spacing-lg);
 }
 
 main {
-  padding: 130px 30px 140px;
-  max-width: 900px;
-  margin: 0 auto;
+ padding: var(--spacing-xl) var(--spacing-sm) 140px;
+ max-width: 900px;
+ margin: 0 auto;
+}
+
+/* ==========================================================================
+   Component Styles
+   ========================================================================== */
+
+.bottom-box-shadow {
+ position: fixed;
+ bottom: -120px;
+ left: 0;
+ width: 100%;
+ box-shadow: var(--shadow-bottom);
+ background-color: var(--color-background);
+ z-index: var(--z-index-fixed);
 }
 
 .section {
-  margin-bottom: 40px;
-  padding: 30px; /* เพิ่ม padding เพื่อให้ดูหรูหราขึ้น */
-  background-color: var(--light-gray);
-  border-radius: 20px; /* ขอบโค้งมนมากขึ้น */
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูพรีเมียม */
+ margin-bottom: var(--spacing-md);
+ padding: var(--spacing-sm);
+ background-color: var(--color-background);
+ border-radius: var(--border-radius-lg);
+ box-shadow: var(--shadow-card);
 }
 
-.section a {
-  color: #00A0FF; /* เน้นสีให้ตรงกับสีหลัก */
-  text-decoration: none; /* ไม่ให้มีขีดเส้นใต้ */
-  font-weight: 600; /* ตัวหนาเล็กน้อยเพื่อเพิ่มความหรูหรา */
-  transition: color 0.2s ease; /* เพิ่มการเปลี่ยนแปลงสีอย่างนุ่มนวล */
-  -webkit-tap-highlight-color: transparent;
-}
-
-.section a:hover {
-  color: var(--highlight-color); /* เมื่อ hover จะเปลี่ยนเป็นสีไฮไลต์ */
-}
-
-.main-title, .title {
-  font-size: 14px; /* ขนาดใหญ่ขึ้น */
-  font-weight: 600;
-  background: var(--main-color); /* ใช้ไล่ระดับสีจากตัวแปร */
-  -webkit-background-clip: text; /* ให้พื้นหลังคลิปเฉพาะตัวอักษร */
-  -webkit-text-fill-color: transparent; /* ทำให้ข้อความโปร่งใส เพื่อแสดงไล่ระดับ */
+/* Typography Components */
+.main-title,
+.title {
+ font-size: var(--font-size-base);
+ font-weight: var(--font-weight-semi-bold);
+ background: var(--main-color);
+ -webkit-background-clip: text;
+ background-clip: text;
+ -webkit-text-fill-color: transparent;
+ text-fill-color: transparent;
 }
 
 .content,
 .developer-name {
-  font-size: 12px;
-  color: var(--black-color);
-  font-weight: 400;
-  margin-top: 10px;
+ font-size: 12px;
+ color: var(--color-text-primary);
+ font-weight: var(--font-weight-normal);
+ margin-top: var(--spacing-xs);
 }
 
-/* Mobile-First (ค่าเริ่มต้นใช้ได้กับมือถือ) */  
-
-/* แท็บเล็ตแนวตั้ง */  
-@media (min-width: 600px) {  
-    body { font-size: 16px; }  
-    .section { padding: 40px; } /* เพิ่ม padding เพื่อให้เข้ากับขนาดจอใหญ่ขึ้น */
-    .main-title, .title { font-size: 18px; } /* เพิ่มขนาดตัวอักษรของชื่อหัวข้อ */
+/* Link Styles */
+.section a {
+ color: var(--color-link);
+ text-decoration: none;
+ font-weight: var(--font-weight-semi-bold);
+ transition: color 0.2s ease;
+ -webkit-tap-highlight-color: transparent;
 }
 
-/* แท็บเล็ตแนวนอน */  
-@media (min-width: 768px) {  
-    body { font-size: 18px; }  
-    .section { padding: 50px; } /* เพิ่ม padding สำหรับขนาดหน้าจอที่ใหญ่ขึ้น */
-    .main-title, .title { font-size: 20px; } /* ปรับขนาดตัวอักษรของหัวข้อ */
+.section a:hover {
+ color: var(--color-accent);
 }
 
-/* เดสก์ท็อปเล็ก */  
-@media (min-width: 1024px) {  
-    body { font-size: 20px; }  
-    .section { padding: 60px; } /* เพิ่ม padding สำหรับจอใหญ่ขึ้น */
-    .main-title, .title { font-size: 22px; } /* ขยายขนาดตัวอักษรของหัวข้อ */
+/* ==========================================================================
+   Responsive Design
+   Using Mobile-First Approach
+   ========================================================================== */
+
+/* Base styles are mobile-first (default) */
+
+/* Tablet Portrait */
+@media screen and (min-width: 600px) {
+ :root {
+  --font-size-base: 16px;
+ }
+ 
+ .section {
+  padding: var(--spacing-md);
+ }
 }
 
-/* เดสก์ท็อปกลาง */  
-@media (min-width: 1280px) {  
-    body { font-size: 22px; }  
-    .section { padding: 70px; } /* ปรับ padding ให้เหมาะสมกับขนาดหน้าจอ */
-    .main-title, .title { font-size: 24px; } /* ปรับขนาดหัวข้อให้ใหญ่ขึ้น */
+/* Tablet Landscape */
+@media screen and (min-width: 768px) {
+ :root {
+  --font-size-base: 18px;
+ }
+ 
+ .section {
+  padding: 50px;
+ }
 }
 
-/* เดสก์ท็อปใหญ่ */  
-@media (min-width: 1440px) {  
-    body { font-size: 24px; }  
-    .section { padding: 80px; } /* เพิ่ม padding */
-    .main-title, .title { font-size: 26px; } /* ขยายขนาดตัวอักษร */
+/* Small Desktop */
+@media screen and (min-width: 1024px) {
+ :root {
+  --font-size-base: 20px;
+ }
+ 
+ .section {
+  padding: var(--spacing-lg);
+ }
 }
 
-/* หน้าจอ 4K+ */  
-@media (min-width: 1920px) {  
-    body { font-size: 26px; }  
-    .section { padding: 90px; } /* เพิ่ม padding สำหรับหน้าจอใหญ่พิเศษ */
-    .main-title, .title { font-size: 28px; } /* เพิ่มขนาดตัวอักษรให้ใหญ่ที่สุด */
+/* Medium Desktop */
+@media screen and (min-width: 1280px) {
+ :root {
+  --font-size-base: 22px;
+ }
+ 
+ .section {
+  padding: 70px;
+ }
+}
+
+/* Large Desktop */
+@media screen and (min-width: 1440px) {
+ :root {
+  --font-size-base: 24px;
+ }
+ 
+ .section {
+  padding: 80px;
+ }
+}
+
+/* 4K and Ultra-wide */
+@media screen and (min-width: 1920px) {
+ :root {
+  --font-size-base: 26px;
+ }
+ 
+ .section {
+  padding: 90px;
+ }
 }

@@ -1,4 +1,4 @@
-@import url('https://fantrove-hub.github.io/assets/css/variables.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
+@import url('variables.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
 
 :root {
     --navbar-bg: linear-gradient(135deg, #3A47D5 0%, #6E72FC 100%);
@@ -25,7 +25,7 @@
     color: var(--navbar-color);
     border-bottom: var(--navbar-border);
     transition: border-bottom 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* เงาให้ดูมีมิติ */
 }
 
 .navbar-title img {
@@ -43,7 +43,7 @@
     font-weight: 700;
     white-space: nowrap;
     pointer-events: none;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     align-items: center;
     justify-content: center;
     display: flex;
@@ -68,42 +68,54 @@
 }
 
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 80%;
-    height: 100%;
-    color: #fff;
-    background-image: var(--main-color);
-    transition: all 0.2s ease;
-    padding: 60px 5px 0 5px;
-    z-index: 10002;
+ position: fixed;
+ top: 0;
+ left: -100%;
+ width: 80%;
+ height: 100%;
+ color: #fff;
+ background-image: var(--main-color);
+ padding: 60px 5px 0 5px;
+ z-index: 10002;
+ will-change: transform;
+ touch-action: pan-y pinch-zoom;
+ -webkit-backface-visibility: hidden;
+ backface-visibility: hidden;
+ -webkit-perspective: 1000;
+ perspective: 1000;
+ transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.open-sidebar {
+ transform: none;
+ left: 0;
+}
+
+.sidebar.dragging {
+    transition: none !important;
+    touch-action: pan-x;
+    will-change: transform;
 }
 
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 10000;
-    transition: opacity 0.1s ease;
-    opacity: 0;
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background-color: rgba(0, 0, 0, 0.5);
+ display: none;
+ z-index: 10000;
+ will-change: opacity;
+ transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ -webkit-backface-visibility: hidden;
+ backface-visibility: hidden;
+ touch-action: none;
 }
 
 .show-overlay {
     display: block;
     opacity: 1;
-}
-
-.open-sidebar {
-    left: 0;
-}
-
-.show-overlay {
-    display: block;
 }
 
 /* แท็บเล็ตแนวตั้ง */

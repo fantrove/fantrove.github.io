@@ -1,173 +1,284 @@
-/* ปุ่มย่อย */
+/* Root variables - ปรับปรุงค่าตัวแปรให้พรีเมียมขึ้น */
+:root {
+  /* Theme Colors - ปรับโทนสีให้ดูหรูขึ้น */
+  --app-theme-indigo: #6051FF;
+  --app-theme-indigo-hover: #7667FF;
+  --app-theme-indigo-active: #5046E5;
+  --app-theme-indigo-light: rgba(96, 81, 255, 0.08);
+  --app-theme-indigo-lighter: rgba(96, 81, 255, 0.04);
+  --app-theme-indigo-border: rgba(96, 81, 255, 0.15);
+  --app-theme-indigo-border2: rgba(96, 81, 255, 0.3);
+  
+  /* Text Colors - ปรับค่าสีให้อ่านง่ายและดูพรีเมียม */
+  --app-text-heading: #14141B;
+  --app-text-body: #2F2F3A;
+  --app-text-light: #6F6F82;
+  
+  /* Background & Surface Colors */
+  --app-surface-primary: #FFFFFF;
+  --app-surface-secondary: #FAFBFF;
+  
+  /* Border Colors */
+  --app-border-subtle: #EAEAF1;
+  --app-border-hover: #DCDCE6;
+  
+  /* Shadow Styles - ปรับเงาให้ดูนุ่มนวลและมีมิติ */
+  --app-elevation-small: 
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 1px 6px rgba(0, 0, 0, 0.02);
+  --app-elevation-medium: 
+    0 3px 8px rgba(0, 0, 0, 0.03),
+    0 2px 4px rgba(0, 0, 0, 0.02);
+  --app-elevation-large: 
+    0 6px 12px rgba(0, 0, 0, 0.03),
+    0 4px 8px rgba(0, 0, 0, 0.02);
+  
+  /* Motion & Animation */
+  --app-motion-quick: 0.15s cubic-bezier(0.3, 0, 0.2, 1);
+  --app-motion-natural: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Component Specific */
+  --app-card-padding: 16px;
+  --app-card-radius: 16px;
+  --app-button-radius: 12px;
+  --app-pill-radius: 100px;
+}
+
+main {
+ padding: 20px 10px 0 10px;
+}
+
+/* ปุ่มย่อย - ปรับปรุงให้ดูพรีเมียมขึ้น */
 .button-sub {
   margin: 0 -5px 0 0;
-  padding: 6px 14px;
-  background: none;
-  color: #383838;
-  border: 1px solid #D5D5D5;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 8px 16px;
+  background: var(--app-surface-primary);
+  color: var(--app-text-body);
+  border: 1px solid var(--app-border-subtle);
+  border-radius: var(--app-pill-radius);
+  font-size: 13.5px;
+  font-weight: 500;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  transition: all 0.1s ease-in-out;
+  transition: all var(--app-motion-quick);
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(8px);
+}
+
+.button-sub:hover {
+  background: var(--app-theme-indigo-lighter);
+  border-color: var(--app-theme-indigo-border);
+  color: var(--app-theme-indigo);
+  box-shadow: var(--app-elevation-small);
 }
 
 .button-sub.active {
- color: #000000;
- background: #EDE9FF;
- border: 1px solid #EDE9FF;
+  color: var(--app-theme-indigo);
+  background: var(--app-theme-indigo-light);
+  border-color: var(--app-theme-indigo);
+  font-weight: 600;
+  box-shadow: var(--app-elevation-small);
 }
 
 .button-sub:active {
- transform: scale(0.95);
-}
-
-/* ปุ่มในเนื้อหา */
-.button-content {
-  display: inline-block;
-  margin: 6px 0px; /* ลดระยะห่างระหว่างปุ่ม */
-  padding: 10px 18px; /* ขนาดปุ่มลดลง */
-  border: 0.07rem solid #8A2BE2;
-  background-color: #F4F4F4;
-  color: #8A2BE2;
-  border-radius: 8px; /* ลดความโค้งมนของปุ่ม */
-  cursor: pointer;
-  font-family: var(--font-family);
-  font-size: 16px; /* ขนาดฟอนต์ในปุ่มลดลง */
-  font-weight: 500; /* ลดน้ำหนักของฟอนต์ */
-  transition: all 0.3s ease;
-  text-align: center;
-  white-space: nowrap; /* ป้องกันการตัดคำในปุ่ม */
-  -webkit-tap-highlight-color: transparent;
-}
-
-.button-content:focus {
-  outline: none; /* เอาขอบออกเมื่อเลือก */
-  box-shadow: 0 0 5px rgba(138, 43, 226, 0.8); /* เพิ่มเงาเมื่อโฟกัส */
-}
-
-.button-content:hover {
-  background-color: #8A2BE2; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
-  color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4); /* เงาเพิ่มมิติ */
-  transform: scale(1.05); /* ขยายปุ่มเล็กน้อย */
-}
-
-.button-content:active {
-  transform: scale(1); /* กลับมาปกติเมื่อกด */
+  transform: translateY(1px);
+  background: var(--app-theme-indigo-light);
   box-shadow: none;
 }
 
-#main-buttons-container {
- display: flex;
- overflow-x: auto;
- white-space: nowrap;
-}
-
-/* ทำให้ปุ่มย่อยสามารถเลื่อนได้ */
-#sub-buttons-container {
- display: flex;
- overflow-x: auto;
- white-space: nowrap;
- gap: 10px;
- padding: 10px;
-}
-
-#sub-buttons-container .button-sub {
- flex-shrink: 0;
-}
-
-/* Button Content Container */
-.button-content-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
-  padding: 20px;
-}
-
-/* Card Content Container */
-.card-content-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.card {
-  width: 150px;
-  margin: 4px;
-  padding: 4px;
+/* ปุ่มในเนื้อหา - เพิ่มความพรีเมียม */
+.button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0px;
+  padding: 12px 22px;
+  background-color: var(--app-surface-primary);
+  color: var(--app-theme-indigo);
+  border: 1px solid var(--app-theme-indigo-border);
+  border-radius: var(--app-button-radius);
   cursor: pointer;
-  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  transition: all 0.1s ease-in-out;
+  transition: all var(--app-motion-natural);
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
 }
 
-.card img:active {
- pointer-events: none;
+.button-content:hover {
+  background-color: var(--app-theme-indigo);
+  color: var(--app-surface-primary);
+  border-color: var(--app-theme-indigo);
+  box-shadow: var(--app-elevation-medium);
+  transform: translateY(-1px);
+}
+
+.button-content:active {
+  background-color: var(--app-theme-indigo-active);
+  transform: translateY(1px);
+  box-shadow: var(--app-elevation-small);
+}
+
+/* Card - ปรับปรุงให้ดูพรีเมียมและทันสมัย */
+.card {
+  width: 140px;
+  margin: 4px;
+  padding: var(--app-card-padding);
+  cursor: pointer;
+  border-radius: var(--app-card-radius);
+  -webkit-tap-highlight-color: transparent;
+  border: 1px solid var(--app-border-subtle);
+  background: var(--app-surface-primary);
+  user-select: none;
+  transition: all var(--app-motion-natural);
+  position: relative;
+  isolation: isolate;
+  backdrop-filter: blur(8px);
+}
+
+.card:hover {
+  border-color: var(--app-theme-indigo-border);
+  box-shadow: var(--app-elevation-medium);
+  transform: translateY(-2px);
+}
+
+.card:hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--app-theme-indigo-lighter);
+  border-radius: var(--app-card-radius);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
 }
 
 .card:active {
-  transform: scale(0.99);
-  color: #4A4A4A;
-}
-
-.card:active .card-title {
- color: #ADADAD;
-}
-
-.card:active .card-description {
-  color: #C6C6C6; /* เปลี่ยนสีข้อความเมื่อการ์ดถูกคลิก */
-}
-
-.card:active img {
-  opacity: 0.3; /* ลดความเข้มของภาพ */
-}
-
-.card-title {
-  margin-top: 10px;
-  font-family: "Gill Sans", sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  color: #444444;
-  transition: all 0.1s ease-in-out;
-}
-
-.card-description {
-  font-size: 12px;
-  color: #555555;
-  margin-top: 4px;
-  transition: all 0.1s ease-in-out;
+  transform: translateY(0);
+  box-shadow: var(--app-elevation-small);
+  background: var(--app-theme-indigo-light);
 }
 
 .card-image {
   width: 100%;
   height: auto;
-  border-radius: 15px;
+  border-radius: calc(var(--app-card-radius) - 4px);
   user-select: none;
+  transition: var(--app-motion-quick);
   position: relative;
-  background: #FFFFFF;
-  transition: all 0.1s ease-in-out;
+  z-index: 2;
+  object-fit: cover;
+  filter: contrast(1.02) brightness(1.02);
 }
 
-/* เพิ่มการเลือนเข้าและเลือนออก */
+.card-title {
+  margin-top: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--app-text-heading);
+  transition: var(--app-motion-quick);
+  position: relative;
+  z-index: 2;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.card-description {
+  font-size: 13px;
+  color: var(--app-text-body);
+  margin-top: 6px;
+  line-height: 1.5;
+  transition: var(--app-motion-quick);
+  position: relative;
+  z-index: 2;
+  letter-spacing: 0.01em;
+}
+
+/* Container layouts - ปรับปรุงระยะห่าง */
+#main-buttons-container,
+#sub-buttons-container {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px;
+}
+
+#main-buttons-container::-webkit-scrollbar,
+#sub-buttons-container::-webkit-scrollbar {
+  display: none;
+}
+
+#sub-buttons-container {
+  gap: 8px;
+  padding: 12px;
+}
+
+.group-header {
+ padding: 10px 20px;
+ margin-top: 10px;
+ border-bottom: 1px solid rgba(96, 81, 255, 0.1);
+ width: 100%;
+}
+
+.group-header-text {
+ font-size: 1.5rem;
+ font-weight: 600;
+ margin: 0;
+ color: #464646;
+}
+
+.group-header-description {
+ margin: 0.5rem 0 0;
+ font-size: 1rem;
+ color: #666;
+}
+
+.card-content-container, .button-content-container {
+ border: 1px solid var(--app-theme-indigo-border2);
+ border-radius: 25px;
+ margin: 0 0 40px 0;
+ padding-bottom: 1rem;
+}
+
+.button-content-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-content-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Animations */
 .fade-in {
   opacity: 0;
-  animation: fadeIn 0.2s forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: opacity, transform, filter;
 }
 
 .fade-out {
   opacity: 1;
-  animation: fadeOut 0.3s forwards;
-}
-
-.main {
- padding: 0 0 0 0;
+  animation: fadeOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: opacity, transform, filter;
 }
 
 @keyframes fadeIn {
   from {
-   transform: translateY(-5px);
+    opacity: 0;
+    transform: translateY(-0.313rem);
+    filter: blur(4px);
   }
   to {
     opacity: 1;
@@ -184,12 +295,100 @@
   }
   to {
     opacity: 0;
-    transform: translateY(-5px);
+    transform: translateY(-0.313rem);
+    filter: blur(4px);
   }
 }
 
+/* Responsive */
 @media screen and (max-width: 480px) {
- .card-content-container {
-  justify-content: center;
- }
+  .card-content-container {
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .button-content {
+    width: 100%;
+  }
 }
+
+  .notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+    z-index: 1000;
+    min-width: 280px;
+    max-width: 400px;
+  }
+
+  .notification.success {
+    background: #4caf50;
+    color: white;
+  }
+
+  .notification.error {
+    background: #f44336;
+    color: white;
+  }
+
+  .notification.warning {
+    background: #ff9800;
+    color: white;
+  }
+
+  .notification.info {
+    background: #2196f3;
+    color: white;
+  }
+
+  .notification-icon {
+    font-size: 18px;
+  }
+
+  .notification-message {
+    flex-grow: 1;
+    font-size: 14px;
+  }
+
+  .notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    opacity: 0.8;
+  }
+
+  .notification-close:hover {
+    opacity: 1;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
