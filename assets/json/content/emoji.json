@@ -13,7 +13,6 @@
     "id": "card_group_1",
     "group": {
       "type": "card",
-      "header": "uijh",
       "items": [
         {
           "title": "OpenAI",
