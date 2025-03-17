@@ -1,37 +1,45 @@
 {
   "mainButtons": [
     {
-      "en_label": "Symbols & Emojis",
-      "th_label": "สัญลักษณ์และอีโมจิ",
+      "en_label": "Symbols",
+      "th_label": "สัญลักษณ์",
       "isDefault": true,
-      "url": "Letters&Emoji",
+      "url": "?main=symbols",
       "subButtons": [
         {
-         "en_label": "ALL",
-         "th_label": "ทั้งหมด",
-         "jsonFile": "./assets/json/content/all.json",
+         "en_label": "page 1",
+         "th_label": "หน้าที่ 1",
+         "jsonFile": "./assets/json/content/symbols-page1.json",
          "isDefault": true,
-         "url": "all"
+         "url": "?page=1"
         },
         {
-         "en_label": "Emojis",
-         "th_label": "อีโมจิ",
-         "jsonFile": "./assets/json/content/emoji.json",
-         "url": "emojis"
+         "en_label": "2",
+         "th_label": "2",
+         "jsonFile": "./assets/json/content/symbols-page2.json",
+         "url": "?page=2"
         },
         {
-         "en_label": "Symbols",
-         "th_label": "สัญลักษณ์",
+         "en_label": "3",
+         "th_label": "3",
          "jsonFile": "./assets/json/content/data2.json",
-         "url": "Symbols"
+         "url": "?page=3"
         }
       ]
     },
     {
-      "en_label": "Package",
-      "th_label": "แพคเกจ",
-      "jsonFile": "./assets/json/content/packages.json",
-      "url": "packages"
+      "en_label": "Emojis",
+      "th_label": "อีโมจิ",
+      "url": "?main=emojis",
+      "subButtons": [
+       {
+        "en_label": "page 1",
+        "th_label": "หน้าที่ 1",
+        "jsonFile": "./assets/json/content/emojis-page1.json",
+        "isDefault": true,
+        "url": "?page=1"
+       }
+       ]
     },
 {
  "en_label": "Package",

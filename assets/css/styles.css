@@ -224,7 +224,6 @@ main {
 
 .group-header {
  padding: 10px 20px;
- margin-top: 10px;
  border-bottom: 1px solid rgba(96, 81, 255, 0.1);
  width: 100%;
 }
@@ -246,7 +245,7 @@ main {
  border: 1px solid var(--app-theme-indigo-border2);
  border-radius: 25px;
  margin: 0 0 40px 0;
- padding-bottom: 1rem;
+ padding: 1rem 0 1rem 0;
 }
 
 .button-content-container {

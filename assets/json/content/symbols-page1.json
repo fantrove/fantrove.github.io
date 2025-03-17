@@ -1,15 +1,9 @@
 [
   {
-    "type": "button",
-    "content": "😊"
-  },
-  {
-    "type": "button",
-    "content": "😊"
-  },
-  {
+    "id": "card_group_1",
     "group": {
       "type": "card",
+      "header": "หน้ายิ้มและอารมณ์",
       "items": [
         {
           "title": "OpenAI",
@@ -28,12 +22,13 @@
           "description": "Discover more about AI advancements and how they're shaping the future of technology.",
           "image": "https://jeffy2600ii.github.io/images/favicon.ico",
           "link": "https://www.openai.com/research"
+        },
+        {
+          "id": "button_3",
+          "type": "button",
+         "content": "😎"
         }
       ]
     }
-  },
-  {
-    "type": "button",
-    "content": "😎"
   }
 ]
