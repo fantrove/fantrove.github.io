@@ -91,11 +91,11 @@ const NavigationManager = {
   }
  },
  
-  // เพิ่มตัวแปรควบคุมการทำงาน
+ // เพิ่มตัวแปรควบคุมการทำงาน
  state: {
-   isNavigating: false,
-   currentUrl: '',
-   lastValidUrl: ''
+  isNavigating: false,
+  isInitialLoad: true,
+  initialUrl: window.location.hash.replace('#', '') || ''
  },
  
  // ทำความสะอาด URL
@@ -108,47 +108,51 @@ const NavigationManager = {
   return this.normalizeUrl(url1) === this.normalizeUrl(url2);
  },
  
- // ปรับปรุงฟังก์ชัน navigateTo
- async navigateTo(route) {
+ // ฟังก์ชันหลักสำหรับการนำทาง
+ async navigateTo(route, options = {}) {
   try {
    if (!route) {
     throw new AppError('ไม่ได้ระบุเส้นทางในการนำทาง', 'navigation');
    }
    
-   // ป้องกันการนำทางซ้ำ
-   if (this.state.isNavigating || this.state.currentUrl === route) {
+   // ป้องกันการเรียกซ้ำขณะกำลังนำทาง
+   if (this.state.isNavigating) {
     return;
    }
    
    this.state.isNavigating = true;
    
+   // ตรวจสอบว่าเป็นการโหลดครั้งแรกหรือไม่
+   const isFirstLoad = this.state.isInitialLoad;
+   
    try {
-    // บันทึกประวัติ
+    // เพิ่มรายการในประวัติ
     this.addEntry(route);
     
-    // อัพเดท URL
-    await this.changeURL(route);
+    // อัพเดท URL ถ้าไม่ได้กำหนดให้ข้าม
+    if (!options.skipUrlUpdate) {
+     await this.changeURL(route);
+    }
     
     // อัพเดทสถานะปุ่ม
     await this.updateButtonStates();
     
-    // บันทึก URL ที่ถูกต้องล่าสุด
-    this.state.lastValidUrl = route;
-    this.state.currentUrl = route;
+    // เลื่อนปุ่มที่ active ไปทางซ้าย
+    setTimeout(() => this.scrollActiveButtonToLeft(), 100);
+    
+    // ถ้าเป็นการโหลดครั้งแรก ให้จัดการพิเศษ
+    if (isFirstLoad) {
+     this.state.isInitialLoad = false;
+     this.state.initialUrl = '';
+    }
     
    } finally {
     this.state.isNavigating = false;
    }
    
   } catch (error) {
-   // กรณีเกิดข้อผิดพลาด ให้กลับไปที่ URL ล่าสุดที่ถูกต้อง
-   if (this.state.lastValidUrl) {
-    await this.changeURL(this.state.lastValidUrl);
-   } else {
-    // ถ้าไม่มี URL ที่ถูกต้องก่อนหน้า ให้ใช้ปุ่ม default
-    await this.navigateToDefault();
-   }
-   throw error;
+   this.state.isNavigating = false;
+   throw new AppError('เกิดข้อผิดพลาดในการนำทาง', 'navigation', error);
   }
  },
  
@@ -1013,48 +1017,66 @@ renderMainButtons() {
   this.handleInitialNavigation(currentUrl, buttonMap, defaultButton);
  },
  
- // เพิ่มฟังก์ชันใหม่สำหรับจัดการการนำทางครั้งแรก
- async handleInitialNavigation(currentUrl, buttonMap, defaultButton) {
-   try {
-    // กรณีมี URL
-    if (currentUrl) {
-     // แยก URL หลักและ sub-route (ถ้ามี)
-     const [mainRoute, subRoute] = currentUrl.split('-');
+async handleInitialNavigation(currentUrl, buttonMap, defaultButton) {
+ try {
+  // เก็บ URL เริ่มต้น
+  const initialUrl = currentUrl;
+  let mainRoute = '';
+  let subRoute = '';
+  
+  // มี URL
+  if (initialUrl) {
+   [mainRoute, subRoute] = initialUrl.split('-');
+   
+   // ค้นหาปุ่มที่ตรงกับ URL หลัก
+   const mainButtonData = buttonMap.get(mainRoute);
+   
+   if (mainButtonData) {
+    const { button, config } = mainButtonData;
+    
+    // คลิกปุ่มหลักโดยไม่อัพเดท URL
+    await this.triggerButtonClick(button, { skipUrlUpdate: true });
+    
+    // ถ้ามี sub-route และปุ่มหลักมี subButtons
+    if (subRoute && config.subButtons) {
+     await new Promise(resolve => setTimeout(resolve, 100));
      
-     // ค้นหาปุ่มที่ตรงกับ URL หลัก
-     const mainButtonData = buttonMap.get(mainRoute);
-     
-     if (mainButtonData) {
-      // พบปุ่มที่ตรงกับ URL
-      const { button, config } = mainButtonData;
-      
-      // คลิกปุ่มหลัก
-      await button.click();
-      
-      // ถ้ามี sub-route และปุ่มหลักมี subButtons
-      if (subRoute && config.subButtons) {
-       // รอให้ sub-buttons ถูกสร้าง
-       await new Promise(resolve => setTimeout(resolve, 100));
-       
-       // ค้นหาและคลิก sub-button ที่ตรงกับ subRoute
-       const subButton = document.querySelector(`button[data-url="${currentUrl}"]`);
-       if (subButton) {
-        await subButton.click();
-       }
-      }
-      return;
+     // หา sub-button และคลิก
+     const subButton = document.querySelector(`button[data-url="${initialUrl}"]`);
+     if (subButton) {
+      await this.triggerButtonClick(subButton);
+     } else {
+      // ถ้าไม่พบ sub-button ให้ใช้ปุ่ม default
+      await this.handleDefaultSubButton(config);
      }
     }
-    
-    // กรณีไม่มี URL หรือ URL ไม่ตรงกับปุ่มใดๆ
-    if (defaultButton) {
-     await defaultButton.button.click();
-    }
-   } catch (error) {
-    console.error('Error handling initial navigation:', error);
-    utils.showNotification('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่', 'error');
+    return;
    }
-  },
+  }
+  
+  // กรณีไม่มี URL หรือ URL ไม่ถูกต้อง
+  if (defaultButton) {
+   await this.triggerButtonClick(defaultButton.button);
+  }
+  
+ } catch (error) {
+  console.error('Error handling initial navigation:', error);
+  utils.showNotification('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่', 'error');
+ }
+},
+
+// เพิ่มฟังก์ชันใหม่สำหรับจัดการการคลิกปุ่ม
+async triggerButtonClick(button, options = {}) {
+ if (button && button.click) {
+  // สร้าง custom event สำหรับการคลิก
+  const clickEvent = new MouseEvent('click', {
+   bubbles: true,
+   cancelable: true,
+   ...options
+  });
+  button.dispatchEvent(clickEvent);
+ }
+},
   
 async renderSubButtons(subButtons, mainButtonUrl, lang, initialUrl) {
   const { subButtonsContainer } = elements;
