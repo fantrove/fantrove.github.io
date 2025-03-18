@@ -1,22 +1,26 @@
 /**
  * LanguageManager - ระบบจัดการภาษาสำหรับเว็บไซต์
- * ปรับปรุงล่าสุด: 2025-03-16
+ * ปรับปรุงล่าสุด: 2025-03-18
+ * @version 2.0.0
  */
 class LanguageManager {
   constructor() {
     // ตัวแปรพื้นฐาน
     this.languagesConfig = {};
     this.selectedLang = '';
+    this.lastSelectedLang = ''; // เพิ่มใหม่: เก็บภาษาล่าสุด
     this.isLanguageDropdownOpen = false;
     this.languageCache = new Map();
     this.isUpdatingLanguage = false;
+    this.isNavigating = false; // เพิ่มใหม่: ควบคุมการนำทาง
     this.mutationObserver = null;
     this.scrollPosition = 0;
 
-    // ค่าคงที่สำหรับการ retry
+    // ค่าคงที่
     this.RETRY_ATTEMPTS = 3;
     this.RETRY_DELAY = 1000; // milliseconds
     this.FADE_DURATION = 300; // milliseconds
+    this.UPDATE_DELAY = 100; // milliseconds
 
     // สถานะการโหลด
     this.isInitialized = false;
@@ -24,11 +28,26 @@ class LanguageManager {
   }
 
   /**
-   * โหลด configuration ภาษาเริ่มต้น
+   * เริ่มต้นระบบ
    */
-  async loadLanguagesConfig() {
+  async initialize() {
     if (this.isInitialized) return;
 
+    try {
+      await this.loadLanguagesConfig();
+      this.observeMutations();
+      this.setupNavigationHandlers();
+      this.isInitialized = true;
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการเริ่มต้นระบบ:', error);
+      this.showError('ไม่สามารถเริ่มต้นระบบได้');
+    }
+  }
+
+  /**
+   * โหลด configuration ภาษา
+   */
+  async loadLanguagesConfig() {
     try {
       const storedConfig = this.getStoredConfig();
       if (storedConfig && await this.validateConfig(storedConfig)) {
@@ -39,10 +58,9 @@ class LanguageManager {
 
       await this.handleInitialLanguage();
       this.initializeCustomLanguageSelector();
-      this.isInitialized = true;
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการโหลดการตั้งค่าภาษา:', error);
-      this.showError('ไม่สามารถโหลดข้อมูลภาษาได้ กำลังใช้ภาษาเริ่มต้น');
+      this.showError('ไม่สามารถโหลดข้อมูลภาษาได้');
       this.fallbackToDefaultLanguage();
     }
   }
@@ -106,11 +124,14 @@ class LanguageManager {
     
     const urlParams = new URLSearchParams(window.location.search);
     const langFromUrl = urlParams.get('lang');
+    const historyState = window.history.state;
     
-    this.selectedLang = this.determineInitialLanguage(langFromUrl);
+    // ใช้ภาษาจาก state ก่อน, ถ้าไม่มีใช้จาก URL หรือค่าที่บันทึกไว้
+    this.selectedLang = historyState?.language || 
+                       this.determineInitialLanguage(langFromUrl);
     
     if (this.selectedLang !== 'en') {
-      await this.updatePageLanguage(this.selectedLang);
+      await this.updatePageLanguage(this.selectedLang, { updateHistory: false });
     }
   }
 
@@ -138,6 +159,77 @@ class LanguageManager {
     return browserLanguages
       .map(lang => lang.split('-')[0])
       .find(lang => this.languagesConfig[lang]) || 'en';
+  }
+
+  /**
+   * อัพเดทภาษาของหน้าเว็บ
+   */
+  async updatePageLanguage(language, options = { updateHistory: true }) {
+    if (this.isUpdatingLanguage) return;
+    
+    try {
+      this.isUpdatingLanguage = true;
+      this.lastSelectedLang = this.selectedLang;
+      
+      document.documentElement.lang = language;
+
+      if (language === 'en') {
+        await this.resetToEnglishContent();
+      } else {
+        const languageData = await this.loadLanguageData(language);
+        if (languageData) {
+          await this.translatePageContent(languageData);
+        } else {
+          await this.resetToEnglishContent();
+        }
+      }
+
+      this.selectedLang = language;
+      this.updateButtonText();
+      
+      if (options.updateHistory) {
+        this.updateURLAndHistory(language);
+      }
+      
+      localStorage.setItem('selectedLang', language);
+      
+      // รอให้ DOM update เสร็จ
+      await new Promise(resolve => setTimeout(resolve, this.UPDATE_DELAY));
+      
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการอัพเดทภาษา:', error);
+      this.showError('เกิดข้อผิดพลาดในการเปลี่ยนภาษา');
+      await this.resetToEnglishContent();
+    } finally {
+      this.isUpdatingLanguage = false;
+    }
+  }
+
+  /**
+   * อัพเดท URL และ Browser History
+   */
+  updateURLAndHistory(language) {
+    const url = new URL(window.location.href);
+    const currentLang = url.searchParams.get('lang');
+    
+    if (language === 'en') {
+      url.searchParams.delete('lang');
+    } else {
+      url.searchParams.set('lang', language);
+    }
+
+    const newUrl = url.toString();
+    
+    // ถ้า URL ไม่เปลี่ยน ไม่ต้องอัพเดท history
+    if (newUrl === window.location.href) return;
+
+    const state = {
+      language: language,
+      lastLanguage: this.lastSelectedLang,
+      timestamp: Date.now()
+    };
+
+    history.replaceState(state, '', newUrl);
   }
 
   /**
@@ -171,36 +263,35 @@ class LanguageManager {
   }
 
   /**
-   * อัพเดทภาษาของหน้าเว็บ
+   * จัดการ navigation events
    */
-  async updatePageLanguage(language) {
-    if (this.isUpdatingLanguage) return;
-    
-    try {
-      this.isUpdatingLanguage = true;
-      document.documentElement.lang = language;
-
-      if (language === 'en') {
-        this.resetToEnglishContent();
-      } else {
-        const languageData = await this.loadLanguageData(language);
-        if (languageData) {
-          await this.translatePageContent(languageData);
-        } else {
-          this.resetToEnglishContent();
-        }
+  setupNavigationHandlers() {
+    window.addEventListener('popstate', async (event) => {
+      if (this.isLanguageDropdownOpen) {
+        await this.closeLanguageDropdown();
       }
 
-      this.updateButtonText();
-      this.updateURLLanguage(language);
-      localStorage.setItem('selectedLang', language);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการอัพเดทภาษา:', error);
-      this.showError('เกิดข้อผิดพลาดในการเปลี่ยนภาษา');
-      this.resetToEnglishContent();
-    } finally {
-      this.isUpdatingLanguage = false;
-    }
+      // ป้องกันการ trigger ซ้ำ
+      if (this.isNavigating) return;
+      this.isNavigating = true;
+
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang') || 'en';
+        const stateLang = event.state?.language;
+        const lastLang = event.state?.lastLanguage;
+
+        // ใช้ภาษาจาก state ถ้ามี ไม่งั้นใช้จาก URL
+        const targetLang = stateLang || urlLang;
+
+        // ตรวจสอบว่าต้องอัพเดทภาษาจริงๆ หรือไม่
+        if (targetLang !== this.selectedLang) {
+          await this.updatePageLanguage(targetLang, { updateHistory: false });
+        }
+      } finally {
+        this.isNavigating = false;
+      }
+    });
   }
 
   /**
@@ -241,80 +332,6 @@ class LanguageManager {
   }
 
   /**
-   * แสดงข้อความแจ้งเตือน
-   */
-  showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'language-error';
-    errorDiv.textContent = message;
-    
-    // สไตล์พื้นฐานสำหรับการแจ้งเตือน
-    Object.assign(errorDiv.style, {
-      position: 'fixed',
-      top: '20px',
-      right: '20px',
-      backgroundColor: '#ff4444',
-      color: 'white',
-      padding: '10px 20px',
-      borderRadius: '4px',
-      zIndex: '9999',
-      opacity: '0',
-      transition: 'opacity 0.3s ease'
-    });
-
-    document.body.appendChild(errorDiv);
-    
-    // แสดงการแจ้งเตือนด้วย animation
-    requestAnimationFrame(() => {
-      errorDiv.style.opacity = '1';
-      setTimeout(() => {
-        errorDiv.style.opacity = '0';
-        setTimeout(() => errorDiv.remove(), 300);
-      }, 3000);
-    });
-  }
-
-  /**
-   * สังเกตการเปลี่ยนแปลงของ DOM
-   */
-  observeMutations() {
-    if (this.mutationObserver) {
-      this.mutationObserver.disconnect();
-    }
-
-    this.mutationObserver = new MutationObserver((mutations) => {
-      let needsUpdate = false;
-
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              const translatableElements = node.querySelectorAll('[data-translate]');
-              if (translatableElements.length > 0) {
-                needsUpdate = true;
-                translatableElements.forEach(el => {
-                  if (!el.hasAttribute('data-original-text')) {
-                    el.setAttribute('data-original-text', el.textContent.trim());
-                  }
-                });
-              }
-            }
-          });
-        }
-      });
-
-      if (needsUpdate && this.selectedLang !== 'en') {
-        this.updatePageLanguage(this.selectedLang);
-      }
-    });
-
-    this.mutationObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-
-  /**
    * จัดการ UI ของตัวเลือกภาษา
    */
   initializeCustomLanguageSelector() {
@@ -329,12 +346,10 @@ class LanguageManager {
    * สร้าง UI elements สำหรับตัวเลือกภาษา
    */
   createLanguageElements() {
-    // สร้าง overlay
     this.languageOverlay = document.createElement('div');
     this.languageOverlay.id = 'language-overlay';
     document.body.appendChild(this.languageOverlay);
 
-    // สร้างปุ่มเลือกภาษา
     const container = document.getElementById('language-selector-container');
     this.languageButton = document.createElement('button');
     this.languageButton.id = 'language-button';
@@ -342,7 +357,6 @@ class LanguageManager {
     this.updateButtonText();
     container.appendChild(this.languageButton);
 
-    // สร้าง dropdown
     this.languageDropdown = document.createElement('div');
     this.languageDropdown.id = 'language-dropdown';
     this.populateLanguageDropdown();
@@ -380,16 +394,6 @@ class LanguageManager {
         if (lang) this.selectLanguage(lang);
       }
     });
-
-    // จัดการ navigation events
-    window.addEventListener('popstate', () => {
-      if (this.isLanguageDropdownOpen) this.closeLanguageDropdown();
-      const urlParams = new URLSearchParams(window.location.search);
-      const lang = urlParams.get('lang') || 'en';
-      if (lang !== this.selectedLang) {
-        this.updatePageLanguage(lang);
-      }
-    });
   }
 
   /**
@@ -402,57 +406,61 @@ class LanguageManager {
   /**
    * เปิด dropdown
    */
-  openLanguageDropdown() {
-    if (this.isLanguageDropdownOpen) return;
-
-    this.scrollPosition = window.scrollY;
-    this.isLanguageDropdownOpen = true;
-
-    this.languageOverlay.style.display = 'block';
-    this.languageDropdown.style.display = 'block';
-
-    document.body.style.top = `-${this.scrollPosition}px`;
-    document.body.classList.add('scroll-lock');
-
+  async openLanguageDropdown() {
+   if (this.isLanguageDropdownOpen) return;
+   
+   this.scrollPosition = window.scrollY;
+   this.isLanguageDropdownOpen = true;
+   
+   this.languageOverlay.style.display = 'block';
+   this.languageDropdown.style.display = 'block';
+   
+   document.body.style.top = `-${this.scrollPosition}px`;
+   document.body.classList.add('scroll-lock');
+   
+   // ใช้ requestAnimationFrame เพื่อให้แน่ใจว่า DOM ได้ update แล้ว
+   return new Promise(resolve => {
     requestAnimationFrame(() => {
-      this.languageOverlay.classList.add('fade-in');
-      this.languageDropdown.classList.add('fade-in');
+     this.languageOverlay.classList.add('fade-in');
+     this.languageDropdown.classList.add('fade-in');
+     setTimeout(resolve, this.FADE_DURATION);
     });
+   });
   }
-
+  
   /**
-   * ปิด dropdown พร้อม animation fade out
+   * ปิด dropdown
    */
-  closeLanguageDropdown() {
-    if (!this.isLanguageDropdownOpen) return;
-
-    return new Promise(resolve => {
-      this.isLanguageDropdownOpen = false;
-
-      // เริ่ม animation fade out
-      this.languageOverlay.classList.remove('fade-in');
-      this.languageDropdown.classList.remove('fade-in');
-      this.languageOverlay.classList.add('fade-out');
-      this.languageDropdown.classList.add('fade-out');
-
-      // คืนค่าการเลื่อนหน้าเว็บ
-      document.body.classList.remove('scroll-lock');
-      document.body.style.top = '';
-      window.scrollTo(0, this.scrollPosition);
-
-      // รอให้ animation เสร็จสิ้น
-      setTimeout(() => {
-        // ซ่อน elements
-        this.languageOverlay.style.display = 'none';
-        this.languageDropdown.style.display = 'none';
-        
-        // ลบ class fade-out
-        this.languageOverlay.classList.remove('fade-out');
-        this.languageDropdown.classList.remove('fade-out');
-        
-        resolve();
-      }, this.FADE_DURATION);
-    });
+  async closeLanguageDropdown() {
+   if (!this.isLanguageDropdownOpen) return;
+   
+   return new Promise(resolve => {
+    this.isLanguageDropdownOpen = false;
+    
+    // เริ่ม animation fade out
+    this.languageOverlay.classList.remove('fade-in');
+    this.languageDropdown.classList.remove('fade-in');
+    this.languageOverlay.classList.add('fade-out');
+    this.languageDropdown.classList.add('fade-out');
+    
+    // คืนค่าการเลื่อนหน้าเว็บ
+    document.body.classList.remove('scroll-lock');
+    document.body.style.top = '';
+    window.scrollTo(0, this.scrollPosition);
+    
+    // รอให้ animation เสร็จสิ้น
+    setTimeout(() => {
+     // ซ่อน elements
+     this.languageOverlay.style.display = 'none';
+     this.languageDropdown.style.display = 'none';
+     
+     // ลบ class fade-out
+     this.languageOverlay.classList.remove('fade-out');
+     this.languageDropdown.classList.remove('fade-out');
+     
+     resolve();
+    }, this.FADE_DURATION);
+   });
   }
   
   /**
@@ -464,27 +472,18 @@ class LanguageManager {
     language = 'en';
    }
    
-   if (this.selectedLang === language) {
-    this.closeLanguageDropdown();
+   // ถ้าเลือกภาษาเดิมและไม่ได้กำลังนำทาง ให้ปิด dropdown เท่านั้น
+   if (this.selectedLang === language && !this.isNavigating) {
+    await this.closeLanguageDropdown();
     return;
    }
    
-   this.selectedLang = language;
+   // บันทึกภาษาปัจจุบันก่อนเปลี่ยน
+   this.lastSelectedLang = this.selectedLang;
+   
+   // อัพเดทภาษาและปิด dropdown
    await this.updatePageLanguage(language);
-   this.closeLanguageDropdown();
-  }
-  
-  /**
-   * อัพเดท URL ตามภาษาที่เลือก
-   */
-  updateURLLanguage(language) {
-   const url = new URL(window.location.href);
-   if (language === 'en') {
-    url.searchParams.delete('lang');
-   } else {
-    url.searchParams.set('lang', language);
-   }
-   history.replaceState({}, '', url.toString());
+   await this.closeLanguageDropdown();
   }
   
   /**
@@ -492,7 +491,8 @@ class LanguageManager {
    */
   updateButtonText() {
    if (this.languageButton) {
-    this.languageButton.textContent = this.languagesConfig[this.selectedLang]?.buttonText || 'Language';
+    this.languageButton.textContent =
+     this.languagesConfig[this.selectedLang]?.buttonText || 'Language';
    }
   }
   
@@ -513,18 +513,26 @@ class LanguageManager {
   /**
    * คืนค่าเนื้อหาเป็นภาษาอังกฤษ
    */
-  resetToEnglishContent() {
-   document.querySelectorAll('[data-translate]').forEach(el => {
-    const originalText = el.getAttribute('data-original-text');
-    const originalStyle = el.getAttribute('data-original-style');
-    
-    if (originalText) {
-     this.replaceTextOnly(el, originalText);
-    }
-    if (originalStyle) {
-     el.style.cssText = originalStyle;
-    }
-   });
+  async resetToEnglishContent() {
+   const elements = document.querySelectorAll('[data-translate]');
+   const resetPromises = Array.from(elements).map(el =>
+    new Promise(resolve => {
+     requestAnimationFrame(() => {
+      const originalText = el.getAttribute('data-original-text');
+      const originalStyle = el.getAttribute('data-original-style');
+      
+      if (originalText) {
+       this.replaceTextOnly(el, originalText);
+      }
+      if (originalStyle) {
+       el.style.cssText = originalStyle;
+      }
+      resolve();
+     });
+    })
+   );
+   
+   await Promise.all(resetPromises);
   }
   
   /**
@@ -542,45 +550,93 @@ class LanguageManager {
   /**
    * กลับไปใช้ภาษาเริ่มต้น (อังกฤษ)
    */
-  fallbackToDefaultLanguage() {
+  async fallbackToDefaultLanguage() {
    this.selectedLang = 'en';
-   this.resetToEnglishContent();
+   await this.resetToEnglishContent();
    this.updateButtonText();
-   this.updateURLLanguage('en');
+   this.updateURLAndHistory('en');
    localStorage.setItem('selectedLang', 'en');
   }
-
+  
   /**
    * แสดงข้อความแจ้งเตือนพร้อม animation
    */
   showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'language-error';
-    errorDiv.textContent = message;
-
-    document.body.appendChild(errorDiv);
-    
-    // เริ่ม animation แสดงข้อความ
-    requestAnimationFrame(() => {
-      errorDiv.classList.add('show');
-      
-      // ซ่อนข้อความอัตโนมัติ
-      setTimeout(() => {
-        errorDiv.classList.add('hide');
-        errorDiv.classList.remove('show');
-        
-        // ลบ element หลังจาก animation เสร็จสิ้น
-        setTimeout(() => errorDiv.remove(), 300);
-      }, 3000);
-    });
+   const errorDiv = document.createElement('div');
+   errorDiv.className = 'language-error';
+   errorDiv.textContent = message;
+   
+   // สไตล์พื้นฐานสำหรับการแจ้งเตือน
+   Object.assign(errorDiv.style, {
+    position: 'fixed',
+    top: '20px',
+    right: '20px',
+    backgroundColor: '#ff4444',
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '4px',
+    zIndex: '9999',
+    opacity: '0',
+    transition: 'opacity 0.3s ease'
+   });
+   
+   document.body.appendChild(errorDiv);
+   
+   // แสดงการแจ้งเตือนด้วย animation
+   requestAnimationFrame(() => {
+    errorDiv.style.opacity = '1';
+    setTimeout(() => {
+     errorDiv.style.opacity = '0';
+     setTimeout(() => errorDiv.remove(), this.FADE_DURATION);
+    }, 3000);
+   });
   }
-
-
+  
+  /**
+   * สังเกตการเปลี่ยนแปลงของ DOM
+   */
+  observeMutations() {
+   if (this.mutationObserver) {
+    this.mutationObserver.disconnect();
+   }
+   
+   this.mutationObserver = new MutationObserver((mutations) => {
+    let needsUpdate = false;
+    
+    mutations.forEach(mutation => {
+     if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach(node => {
+       if (node.nodeType === Node.ELEMENT_NODE) {
+        const translatableElements = node.querySelectorAll('[data-translate]');
+        if (translatableElements.length > 0) {
+         needsUpdate = true;
+         translatableElements.forEach(el => {
+          if (!el.hasAttribute('data-original-text')) {
+           el.setAttribute('data-original-text', el.textContent.trim());
+          }
+         });
+        }
+       }
+      });
+     }
+    });
+    
+    if (needsUpdate && this.selectedLang !== 'en') {
+     this.updatePageLanguage(this.selectedLang, { updateHistory: false });
+    }
+   });
+   
+   this.mutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+   });
+  }
+  
   /**
    * ทำความสะอาดและยกเลิกการทำงานของ LanguageManager
    */
   destroy() {
-   // ยกเลิก event listeners
+   // ยกเลิก event listeners และลบ elements
    if (this.languageButton) {
     this.languageButton.remove();
    }
@@ -596,13 +652,12 @@ class LanguageManager {
     this.mutationObserver.disconnect();
    }
    
-   // ล้าง cache
+   // ล้าง cache และข้อมูลที่บันทึกไว้
    this.languageCache.clear();
-   
-   // ล้างข้อมูลที่บันทึกไว้
    this.isInitialized = false;
    this.isLanguageDropdownOpen = false;
    this.isUpdatingLanguage = false;
+   this.isNavigating = false;
   }
   }
   
@@ -611,8 +666,7 @@ class LanguageManager {
   
   // เริ่มต้นระบบเมื่อโหลดหน้าเว็บ
   window.addEventListener('DOMContentLoaded', () => {
-   languageManager.loadLanguagesConfig();
-   languageManager.observeMutations();
+   languageManager.initialize();
   });
   
   // Export สำหรับการใช้งานภายนอก
