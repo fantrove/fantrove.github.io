@@ -261,122 +261,38 @@ const NavigationManager = {
         }
     },
 
-// ปรับปรุงฟังก์ชัน updateButtonStates
-async updateButtonStates() {
-  try {
-   const currentUrl = window.location.hash || '';
-   const normalizedCurrentUrl = this.normalizeUrl(currentUrl);
-   
-   // เพิ่มการตรวจสอบความถูกต้องของ URL
-   if (!await this.validateUrl(normalizedCurrentUrl)) {
-    console.warn('URL ไม่ถูกต้อง:', normalizedCurrentUrl);
-    return;
-   }
-   
-   // สร้างแมพสำหรับเก็บปุ่มที่ active
-   const activeButtonsMap = new Map();
-   
-   // รวบรวมปุ่มทั้งหมด
-   const allButtons = [
-    ...document.querySelectorAll('nav ul li button'),
-    ...document.querySelectorAll('.button-sub')
-   ];
-   
-   // ล้าง active state ทั้งหมดก่อน
-   allButtons.forEach(button => {
-    button.classList.remove('active');
-   });
-   
-   // กำหนดขอบเขตการ active สำหรับแต่ละประเภทปุ่ม
-   const mainButtons = document.querySelectorAll('nav ul li button');
-   const subButtons = document.querySelectorAll('.button-sub');
-   
-   // ตรวจสอบ URL pattern
-   const [mainRoute, subRoute] = normalizedCurrentUrl.split('-');
-   
-   // ตรวจสอบและ active main button
-   if (mainRoute) {
-    mainButtons.forEach(button => {
-     const buttonUrl = this.normalizeUrl(button.getAttribute('data-url') || '');
-     if (this.compareUrls(buttonUrl, mainRoute)) {
-      button.classList.add('active');
-      activeButtonsMap.set('main', button);
-     }
-    });
-   }
-   
-   // ตรวจสอบและ active sub button (ถ้ามี)
-   if (subRoute) {
-    subButtons.forEach(button => {
-     const buttonUrl = this.normalizeUrl(button.getAttribute('data-url') || '');
-     if (this.compareUrls(buttonUrl, `${mainRoute}-${subRoute}`)) {
-      button.classList.add('active');
-      activeButtonsMap.set('sub', button);
-     }
-    });
-   }
-   
-   // ตรวจสอบความขัดแย้ง
-   this.validateActiveStates(activeButtonsMap);
-   
-   // เลื่อนปุ่ม active ไปทางซ้าย (ถ้ามี)
-   if (activeButtonsMap.size > 0) {
-    setTimeout(() => {
-     const activeMainButton = activeButtonsMap.get('main');
-     const activeSubButton = activeButtonsMap.get('sub');
-     
-     if (activeMainButton) this.scrollActiveButtonToLeft(activeMainButton);
-     if (activeSubButton) this.scrollActiveSubButtonIntoView(activeSubButton);
-    }, 100);
-   }
-   
-  } catch (error) {
-   console.error('Error updating button states:', error);
-   throw new AppError('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม', 'button-state', error);
-  }
-},
+    // อัพเดทสถานะปุ่ม
+    async updateButtonStates(route) {
+        try {
+            const normalizedRoute = this.normalizeUrl(route);
+            const [mainRoute, subRoute] = normalizedRoute.split('-');
 
-// เพิ่มฟังก์ชันใหม่สำหรับตรวจสอบความขัดแย้ง
-validateActiveStates(activeButtonsMap) {
-  // ตรวจสอบว่ามีการ active เกินกว่าที่ควรหรือไม่
-  if (activeButtonsMap.size > 2) {
-    console.warn('พบการ active มากกว่า 2 ปุ่ม - กำลังแก้ไข...');
-    
-    // เก็บเฉพาะปุ่มที่สำคัญที่สุด
-    const currentUrl = this.normalizeUrl(window.location.hash);
-    let mainButton = activeButtonsMap.get('main');
-    let subButton = activeButtonsMap.get('sub');
-    
-    // ตรวจสอบความถูกต้องของ main button
-    if (mainButton) {
-      const mainUrl = this.normalizeUrl(mainButton.getAttribute('data-url') || '');
-      if (!this.isValidMainButton(mainUrl, currentUrl)) {
-        mainButton.classList.remove('active');
-        activeButtonsMap.delete('main');
-      }
-    }
-    
-    // ตรวจสอบความถูกต้องของ sub button
-    if (subButton) {
-      const subUrl = this.normalizeUrl(subButton.getAttribute('data-url') || '');
-      if (!this.isValidSubButton(subUrl, currentUrl)) {
-        subButton.classList.remove('active');
-        activeButtonsMap.delete('sub');
-      }
-    }
-  }
-},
+            // ล้างสถานะปุ่มทั้งหมด
+            document.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('active');
+            });
 
-// เพิ่มฟังก์ชันตรวจสอบความถูกต้องของ main button
-isValidMainButton(buttonUrl, currentUrl) {
-  const [mainRoute] = currentUrl.split('-');
-  return this.compareUrls(buttonUrl, mainRoute);
-},
+            // อัพเดทปุ่มหลัก
+            const mainButton = document.querySelector(`button[data-url="${mainRoute}"]`);
+            if (mainButton) {
+                mainButton.classList.add('active');
+            }
 
-// เพิ่มฟังก์ชันตรวจสอบความถูกต้องของ sub button
-isValidSubButton(buttonUrl, currentUrl) {
-  return this.compareUrls(buttonUrl, currentUrl);
-},
+            // อัพเดทปุ่มย่อย
+            if (subRoute) {
+                const subButton = document.querySelector(`button[data-url="${normalizedRoute}"]`);
+                if (subButton) {
+                    subButton.classList.add('active');
+                }
+            }
+
+            // เลื่อนปุ่มที่ active เข้ามาในมุมมอง
+            this.scrollActiveButtonsIntoView();
+
+        } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม:', error);
+        }
+    },
 
     // เลื่อนปุ่มที่ active เข้ามาในมุมมอง
     scrollActiveButtonsIntoView() {
