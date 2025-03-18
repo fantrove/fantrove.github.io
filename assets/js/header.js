@@ -467,36 +467,103 @@ createGroupHeader(headerConfig) {
       return this.animateElement(wrapper);
      },
      
-     async createCard({ title, description, image, link }) {
-       const card = document.createElement('button');
-       card.className = 'card';
-       const wrapper = document.createElement('div');
-       
-       if (image) {
-        const img = document.createElement('img');
-        img.className = 'card-image';
-        img.src = image;
-        img.loading = 'lazy';
-        card.appendChild(img);
-       }
-       
-       const titleDiv = document.createElement('h1');
-       titleDiv.className = 'card-title';
-       titleDiv.textContent = title;
-       card.appendChild(titleDiv);
-       
-       const descDiv = document.createElement('p');
-       descDiv.className = 'card-description';
-       descDiv.textContent = description;
-       card.appendChild(descDiv);
-       
-       card.addEventListener('click', () => {
-        if (link) window.open(link, '_blank', 'noopener');
-       });
-       
-       wrapper.appendChild(card);
-       return this.animateElement(wrapper);
-      },
+async createCard(cardConfig) {
+  const lang = localStorage.getItem('selectedLang') || 'en';
+  const card = document.createElement('button');
+  card.className = 'card';
+  const wrapper = document.createElement('div');
+  
+  // จัดการรูปภาพ
+  if (cardConfig.image) {
+    const img = document.createElement('img');
+    img.className = 'card-image';
+    img.src = cardConfig.image;
+    img.loading = 'lazy';
+    
+    // เพิ่มการรองรับ alt text หลายภาษา
+    img.alt = cardConfig.imageAlt?.[lang] || cardConfig.imageAlt?.en || '';
+    
+    card.appendChild(img);
+  }
+  
+  // จัดการหัวข้อ
+  const titleDiv = document.createElement('h1');
+  titleDiv.className = 'card-title';
+  
+  // เก็บข้อความหลายภาษาใน data attributes
+  if (typeof cardConfig.title === 'object') {
+    Object.entries(cardConfig.title).forEach(([langCode, text]) => {
+      titleDiv.dataset[`title${langCode.toUpperCase()}`] = text;
+    });
+    titleDiv.textContent = cardConfig.title[lang] || cardConfig.title.en;
+  } else {
+    titleDiv.textContent = cardConfig.title;
+  }
+  card.appendChild(titleDiv);
+  
+  // จัดการคำอธิบาย
+  const descDiv = document.createElement('p');
+  descDiv.className = 'card-description';
+  
+  // เก็บข้อความหลายภาษาใน data attributes
+  if (typeof cardConfig.description === 'object') {
+    Object.entries(cardConfig.description).forEach(([langCode, text]) => {
+      descDiv.dataset[`desc${langCode.toUpperCase()}`] = text;
+    });
+    descDiv.textContent = cardConfig.description[lang] || cardConfig.description.en;
+  } else {
+    descDiv.textContent = cardConfig.description;
+  }
+  card.appendChild(descDiv);
+  
+  // จัดการลิงก์
+  if (cardConfig.link) {
+    card.addEventListener('click', () => {
+      window.open(cardConfig.link, '_blank', 'noopener');
+    });
+  }
+  
+  // เพิ่มคลาสเพิ่มเติม (ถ้ามี)
+  if (cardConfig.className) {
+    card.classList.add(cardConfig.className);
+  }
+  
+  wrapper.appendChild(card);
+  return this.animateElement(wrapper);
+},
+
+// เพิ่มในส่วน DataManager หรือ ContentManager
+updateCardsLanguage(lang) {
+  document.querySelectorAll('.card').forEach(card => {
+    // อัพเดทหัวข้อ
+    const titleElement = card.querySelector('.card-title');
+    if (titleElement) {
+      const newTitle = titleElement.dataset[`title${lang.toUpperCase()}`];
+      if (newTitle) {
+        titleElement.textContent = newTitle;
+      }
+    }
+    
+    // อัพเดทคำอธิบาย
+    const descElement = card.querySelector('.card-description');
+    if (descElement) {
+      const newDesc = descElement.dataset[`desc${lang.toUpperCase()}`];
+      if (newDesc) {
+        descElement.textContent = newDesc;
+      }
+    }
+    
+    // อัพเดท alt text ของรูปภาพ
+    const imgElement = card.querySelector('.card-image');
+    if (imgElement) {
+      const newAlt = imgElement.dataset[`alt${lang.toUpperCase()}`];
+      if (newAlt) {
+        imgElement.alt = newAlt;
+      }
+    }
+  });
+},
+
       
       async animateElement(element) {
        return new Promise(resolve => {
@@ -1087,6 +1154,12 @@ renderMainButtons() {
       );
      }
     };
+    
+    // เพิ่ม Event Listener สำหรับการเปลี่ยนภาษา
+window.addEventListener('languageChange', (event) => {
+  const newLang = event.detail.language;
+  this.updateCardsLanguage(newLang);
+});
     
     // Start the application
     if (document.readyState === 'loading') {

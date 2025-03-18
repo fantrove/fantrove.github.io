@@ -11,7 +11,10 @@
     },
       "items": [
         {
-          "title": "OpenAI",
+          "title": {
+           "en": "hello",
+           "th": "สวัสดี"
+          },
           "description": "Explore the future of artificial intelligence with OpenAI's cutting-edge research.",
           "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTbj1tpx5qrCHYNYH5H0hxBvCbmKUQllr3SCO3uZ-Q3Q4hMJ--T6VfTeXFc57XpZs3HtBDOFvt5pDq9yVFvsriFKg",
           "link": "https://www.openai.com"
