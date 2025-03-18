@@ -3,7 +3,12 @@
     "id": "card_group_1",
     "group": {
       "type": "card",
-      "header": "หน้ายิ้มและอารมณ์",
+          "header": {
+           "title": {
+     "en": "Simple Title",
+     "th": "หัวข้อแบบง่าย"
+           }
+    },
       "items": [
         {
           "title": "OpenAI",

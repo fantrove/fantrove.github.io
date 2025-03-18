@@ -332,36 +332,114 @@ const NavigationManager = {
       });
      },
      
-     // เพิ่มฟังก์ชันใหม่สำหรับสร้าง Group Header
-     createGroupHeader(headerConfig) {
-      const headerContainer = document.createElement('div');
-      headerContainer.className = 'group-header';
-      
-      // สร้างส่วนหัวของกลุ่ม
-      const headerText = document.createElement('h2');
-      headerText.className = 'group-header-text';
-      
-      // รองรับทั้งข้อความธรรมดาและ object ที่มี properties
-      if (typeof headerConfig === 'string') {
-       headerText.textContent = headerConfig;
-      } else {
-       headerText.textContent = headerConfig.text || '';
-       if (headerConfig.description) {
-        const description = document.createElement('p');
-        description.className = 'group-header-description';
-        description.textContent = headerConfig.description;
-        headerContainer.appendChild(description);
-       }
-       
-       // เพิ่ม custom class ถ้ามีการระบุ
-       if (headerConfig.className) {
-        headerContainer.classList.add(headerConfig.className);
-       }
-      }
-      
-      headerContainer.insertBefore(headerText, headerContainer.firstChild);
-      return headerContainer;
-     },
+// ปรับปรุงโครงสร้างของ Group Header ให้เรียบง่ายขึ้น
+createGroupHeader(headerConfig) {
+  // สร้าง container หลัก
+  const headerContainer = document.createElement('div');
+  headerContainer.className = 'group-header';
+  
+  // รับภาษาปัจจุบัน
+  const currentLang = localStorage.getItem('selectedLang') || 'en';
+  
+  // จัดการกับ headerConfig ที่เป็น string
+  if (typeof headerConfig === 'string') {
+   return this.createSimpleHeader(headerConfig, headerContainer);
+  }
+  
+  // เพิ่ม custom class ถ้ามี
+  if (headerConfig.className) {
+   headerContainer.classList.add(headerConfig.className);
+  }
+  
+  // สร้างส่วนประกอบต่างๆ
+  this.createHeaderComponents(headerContainer, headerConfig, currentLang);
+  
+  // เพิ่ม event listener สำหรับการเปลี่ยนภาษา
+  this.addLanguageChangeListener(headerContainer, headerConfig);
+  
+  return headerContainer;
+ },
+ 
+ // สร้าง header แบบง่าย
+ createSimpleHeader(text, container) {
+  const headerText = document.createElement('h2');
+  headerText.className = 'group-header-text';
+  headerText.textContent = text;
+  container.appendChild(headerText);
+  return container;
+ },
+ 
+ // สร้างส่วนประกอบของ header
+ createHeaderComponents(container, config, currentLang) {
+  // 1. สร้างไอคอน (ถ้ามี)
+  if (config.icon) {
+   container.appendChild(this.createHeaderIcon(config.icon));
+  }
+  
+  // 2. สร้างส่วนหัว
+  const headerContent = document.createElement('div');
+  headerContent.className = 'header-content';
+  
+  // 2.1 สร้างหัวข้อ
+  const title = this.createHeaderTitle(config, currentLang);
+  headerContent.appendChild(title);
+  
+  // 2.2 สร้างคำอธิบาย (ถ้ามี)
+  if (config.description) {
+   const desc = this.createHeaderDescription(config.description, currentLang);
+   headerContent.appendChild(desc);
+  }
+  
+  container.appendChild(headerContent);
+  
+  // 3. สร้างปุ่มเสริม (ถ้ามี)
+  if (config.actions) {
+   container.appendChild(this.createHeaderActions(config.actions, currentLang));
+  }
+ },
+ 
+ // สร้างหัวข้อ
+ createHeaderTitle(config, currentLang) {
+  const title = document.createElement('h2');
+  title.className = 'group-header-text';
+  
+  // เก็บข้อมูลภาษาใน data attributes
+  if (typeof config.title === 'object') {
+   Object.entries(config.title).forEach(([lang, text]) => {
+    title.dataset[`title${lang.toUpperCase()}`] = text;
+   });
+   title.textContent = config.title[currentLang] || config.title.en;
+  } else {
+   title.textContent = config.title;
+  }
+  
+  return title;
+ },
+ 
+ // สร้างคำอธิบาย
+ createHeaderDescription(description, currentLang) {
+  const desc = document.createElement('p');
+  desc.className = 'group-header-description';
+  
+  if (typeof description === 'object') {
+   Object.entries(description).forEach(([lang, text]) => {
+    desc.dataset[`desc${lang.toUpperCase()}`] = text;
+   });
+   desc.textContent = description[currentLang] || description.en;
+  } else {
+   desc.textContent = description;
+  }
+  
+  return desc;
+ },
+ 
+ // เพิ่ม event listener สำหรับการเปลี่ยนภาษา
+ addLanguageChangeListener(container, config) {
+  window.addEventListener('languageChange', (event) => {
+   const newLang = event.detail.language;
+   this.updateHeaderLanguage(container, config, newLang);
+  });
+ },
 
         async renderSingleItem(container, item) {
             const element = item.type === 'button' ? 
