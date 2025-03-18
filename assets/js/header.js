@@ -91,6 +91,13 @@ const NavigationManager = {
   }
  },
  
+  // เพิ่มตัวแปรควบคุมการทำงาน
+ state: {
+   isNavigating: false,
+   currentUrl: '',
+   lastValidUrl: ''
+ },
+ 
  // ทำความสะอาด URL
  normalizeUrl(url) {
   return url.toLowerCase().trim().replace(/^#/, '');
@@ -101,30 +108,74 @@ const NavigationManager = {
   return this.normalizeUrl(url1) === this.normalizeUrl(url2);
  },
  
- // ฟังก์ชันหลักสำหรับการนำทาง
+ // ปรับปรุงฟังก์ชัน navigateTo
  async navigateTo(route) {
   try {
    if (!route) {
     throw new AppError('ไม่ได้ระบุเส้นทางในการนำทาง', 'navigation');
    }
    
-   this.addEntry(route);
-   await this.changeURL(route);
-   await this.updateButtonStates();
+   // ป้องกันการนำทางซ้ำ
+   if (this.state.isNavigating || this.state.currentUrl === route) {
+    return;
+   }
    
-   // เพิ่มการเรียกใช้ฟังก์ชันเลื่อนปุ่ม
-   setTimeout(() => this.scrollActiveButtonToLeft(), 100);
+   this.state.isNavigating = true;
+   
+   try {
+    // บันทึกประวัติ
+    this.addEntry(route);
+    
+    // อัพเดท URL
+    await this.changeURL(route);
+    
+    // อัพเดทสถานะปุ่ม
+    await this.updateButtonStates();
+    
+    // บันทึก URL ที่ถูกต้องล่าสุด
+    this.state.lastValidUrl = route;
+    this.state.currentUrl = route;
+    
+   } finally {
+    this.state.isNavigating = false;
+   }
    
   } catch (error) {
-   throw new AppError('เกิดข้อผิดพลาดในการนำทาง', 'navigation', error);
+   // กรณีเกิดข้อผิดพลาด ให้กลับไปที่ URL ล่าสุดที่ถูกต้อง
+   if (this.state.lastValidUrl) {
+    await this.changeURL(this.state.lastValidUrl);
+   } else {
+    // ถ้าไม่มี URL ที่ถูกต้องก่อนหน้า ให้ใช้ปุ่ม default
+    await this.navigateToDefault();
+   }
+   throw error;
   }
  },
  
- // เปลี่ยน URL
+ // ปรับปรุงฟังก์ชันเปลี่ยน URL
  async changeURL(url) {
-  const newUrl = url.includes('#') ? url : `#${url}`;
-  history.replaceState(null, '', newUrl);
- },
+   try {
+    const newUrl = url.includes('#') ? url : `#${url}`;
+    if (window.location.hash !== newUrl) {
+     history.pushState(null, '', newUrl);
+     // เพิ่ม Event เพื่อแจ้งการเปลี่ยนแปลง URL
+     window.dispatchEvent(new CustomEvent('urlChanged', {
+      detail: { url: newUrl }
+     }));
+    }
+   } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการเปลี่ยน URL:', error);
+    throw new AppError('ไม่สามารถเปลี่ยน URL ได้', 'navigation', error);
+   }
+  },
+  
+  // เพิ่มฟังก์ชันตรวจสอบความถูกต้องของ URL
+  async validateUrl(url) {
+   // ตรวจสอบว่า URL ตรงกับปุ่มที่มีอยู่หรือไม่
+   const buttons = document.querySelectorAll('button[data-url]');
+   const validUrls = Array.from(buttons).map(btn => btn.getAttribute('data-url'));
+   return validUrls.includes(url.replace('#', ''));
+  },
  
  // ฟังก์ชันใหม่สำหรับการเลื่อนปุ่ม active ไปทางซ้าย
  scrollActiveButtonToLeft() {
