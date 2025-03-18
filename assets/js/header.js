@@ -1005,66 +1005,124 @@ renderMainButtons() {
    }
   },
   
-  // ปรับปรุงฟังก์ชัน renderSubButtons ให้รองรับการตรวจสอบ URL เริ่มต้น
-  async renderSubButtons(subButtons, mainButtonUrl, lang, initialUrl) {
-   const { subButtonsContainer } = elements;
-   
-   subButtonsContainer.innerHTML = '';
-   subButtonsContainer.classList.add('fade-out');
-   
-   await new Promise(resolve => setTimeout(resolve, 100));
-   
-   let defaultSubButton = null;
-   const subButtonMap = new Map();
-   
-   subButtons.forEach(button => {
-    const label = button[`${lang}_label`];
-    if (!label) return;
-    
-    const subButton = document.createElement('button');
-    subButton.className = 'button-sub sub-button';
-    subButton.textContent = label;
-    
-    const fullUrl = button.url ?
-     `${mainButtonUrl}-${button.url}` :
-     `${mainButtonUrl}-${button.jsonFile}`;
-    
-    subButton.setAttribute('data-url', fullUrl);
-    
-    // เก็บการอ้างอิงปุ่มย่อย
-    subButtonMap.set(fullUrl, subButton);
-    if (button.isDefault) {
-     defaultSubButton = subButton;
-    }
-    
-    subButton.addEventListener('click', async () => {
-     try {
-      await NavigationManager.navigateTo(fullUrl);
-      
-      if (button.jsonFile) {
-       const data = await DataManager.fetchWithRetry(button.jsonFile);
-       await ContentManager.renderContent(data);
-      }
-     } catch (error) {
-      utils.showNotification(error.message, 'error');
-     }
+async renderSubButtons(subButtons, mainButtonUrl, lang, initialUrl) {
+  const { subButtonsContainer } = elements;
+  
+  subButtonsContainer.innerHTML = '';
+  subButtonsContainer.classList.add('fade-out');
+  
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  let defaultSubButton = null;
+  const subButtonMap = new Map();
+  
+  // เพิ่มฟังก์ชันสำหรับจัดการการคลิกปุ่มย่อย
+  const handleSubButtonClick = async (button, fullUrl, jsonFile) => {
+   try {
+    // ล้าง active state ของปุ่มอื่นๆ ก่อน
+    subButtonsContainer.querySelectorAll('.button-sub').forEach(btn => {
+     btn.classList.remove('active');
     });
     
-    subButtonsContainer.appendChild(subButton);
-   });
+    // ทำให้ปุ่มที่ถูกคลิกเป็น active ทันที
+    button.classList.add('active');
+    
+    // เลื่อนปุ่มไปทางซ้ายทันทีที่คลิก
+    this.scrollActiveSubButtonIntoView(button);
+    
+    // อัพเดท URL และโหลดเนื้อหา (ทำงานแบบ async)
+    await Promise.all([
+     NavigationManager.navigateTo(fullUrl),
+     jsonFile ? (async () => {
+      try {
+       const data = await DataManager.fetchWithRetry(jsonFile);
+       await ContentManager.renderContent(data);
+      } catch (error) {
+       // แสดงข้อผิดพลาดแต่ยังคง active state และตำแหน่งปุ่ม
+       utils.showNotification(error.message, 'error');
+      }
+     })() : Promise.resolve()
+    ]);
+    
+   } catch (error) {
+    // แสดงข้อผิดพลาดแต่ยังคง active state และตำแหน่งปุ่ม
+    utils.showNotification(error.message, 'error');
+   }
+  };
+  
+  subButtons.forEach(button => {
+   const label = button[`${lang}_label`];
+   if (!label) return;
    
-   // ตรวจสอบว่ามี URL ตรงกับปุ่มย่อยหรือไม่
-   const matchingSubButton = subButtonMap.get(initialUrl);
-   if (matchingSubButton) {
-    await matchingSubButton.click();
-   } else if (defaultSubButton && !initialUrl) {
-    // ใช้ปุ่ม default เมื่อไม่มี URL หรือ URL ไม่ตรงกับปุ่มใด
-    await defaultSubButton.click();
+   const subButton = document.createElement('button');
+   subButton.className = 'button-sub sub-button';
+   subButton.textContent = label;
+   
+   const fullUrl = button.url ?
+    `${mainButtonUrl}-${button.url}` :
+    `${mainButtonUrl}-${button.jsonFile}`;
+   
+   subButton.setAttribute('data-url', fullUrl);
+   
+   // เก็บการอ้างอิงปุ่มย่อย
+   subButtonMap.set(fullUrl, subButton);
+   if (button.isDefault) {
+    defaultSubButton = subButton;
    }
    
-   subButtonsContainer.classList.remove('fade-out');
-   subButtonsContainer.classList.add('fade-in');
+   // ใช้ฟังก์ชันใหม่ในการจัดการการคลิก
+   subButton.addEventListener('click', () => {
+    handleSubButtonClick(subButton, fullUrl, button.jsonFile);
+   });
+   
+   subButtonsContainer.appendChild(subButton);
+  });
+  
+  // ปรับปรุงการจัดการปุ่มเริ่มต้น
+  const matchingSubButton = subButtonMap.get(initialUrl);
+  if (matchingSubButton) {
+   // ใช้ setTimeout เพื่อให้แน่ใจว่า DOM ได้ render เรียบร้อยแล้ว
+   setTimeout(() => {
+    handleSubButtonClick(matchingSubButton, initialUrl,
+     subButtons.find(b => b.url === initialUrl.split('-')[1])?.jsonFile
+    );
+   }, 0);
+  } else if (defaultSubButton && !initialUrl) {
+   setTimeout(() => {
+    const defaultButtonConfig = subButtons.find(b => b.isDefault);
+    const defaultUrl = `${mainButtonUrl}-${defaultButtonConfig.url || defaultButtonConfig.jsonFile}`;
+    handleSubButtonClick(defaultSubButton, defaultUrl, defaultButtonConfig.jsonFile);
+   }, 0);
   }
+  
+  subButtonsContainer.classList.remove('fade-out');
+  subButtonsContainer.classList.add('fade-in');
+ },
+ 
+ // ปรับปรุงฟังก์ชันเลื่อนปุ่มให้รองรับการทำงานที่เร็วขึ้น
+ scrollActiveSubButtonIntoView(activeButton) {
+  if (!activeButton) return;
+  
+  const container = elements.subButtonsContainer;
+  if (!container) return;
+  
+  // ใช้ requestAnimationFrame เพื่อให้การเลื่อนทำงานได้เร็วและนุ่มนวลขึ้น
+  requestAnimationFrame(() => {
+   const containerLeft = container.getBoundingClientRect().left;
+   const buttonLeft = activeButton.getBoundingClientRect().left;
+   const scrollLeft = container.scrollLeft;
+   
+   // เพิ่มการตรวจสอบว่าจำเป็นต้องเลื่อนหรือไม่
+   const targetScroll = scrollLeft + (buttonLeft - containerLeft) - 16;
+   
+   if (Math.abs(container.scrollLeft - targetScroll) > 1) {
+    container.scrollTo({
+     left: targetScroll,
+     behavior: 'smooth'
+    });
+   }
+  });
+ }
     };
 
     // Performance Optimizations

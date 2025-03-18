@@ -132,8 +132,6 @@ nav ul li button:hover {
 nav ul li button.active {
     color: var(--nav-text-active);
     font-weight: 600;
-    /* ใช้ text-shadow เพียงเล็กน้อย */
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
     /* เพิ่มส่วนนี้เพื่อให้มีการเน้นปุ่มที่ active ชัดเจนขึ้น */
     position: relative;
     transform: translateX(0);
@@ -163,19 +161,6 @@ nav ul li button.active::after {
     background-color: var(--nav-underline-color);
     border-radius: 2px;
     /* ใช้ box-shadow เพียงชั้นเดียว */
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
-    /* ใช้ animation ที่เรียบง่ายขึ้น */
-    animation: simpleGlow 2s ease-in-out infinite;
-}
-
-/* ลดความซับซ้อนของ Animation */
-@keyframes simpleGlow {
-    0%, 100% {
-        opacity: 0.9;
-    }
-    50% {
-        opacity: 1;
-    }
 }
 
 /* CSS Custom Properties */
