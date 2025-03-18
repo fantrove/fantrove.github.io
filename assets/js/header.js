@@ -134,7 +134,7 @@ const NavigationManager = {
    const buttonOffset = activeButton.offsetLeft;
    
    // คำนวณระยะห่างจากขอบซ้าย (เพิ่ม padding)
-   const scrollLeft = Math.max(0, buttonOffset - 16);
+   const scrollLeft = Math.max(0, buttonOffset - 20);
    
    // ทำการเลื่อนแบบ smooth
    navContainer.scrollTo({
@@ -1113,7 +1113,7 @@ async renderSubButtons(subButtons, mainButtonUrl, lang, initialUrl) {
    const scrollLeft = container.scrollLeft;
    
    // เพิ่มการตรวจสอบว่าจำเป็นต้องเลื่อนหรือไม่
-   const targetScroll = scrollLeft + (buttonLeft - containerLeft) - 16;
+   const targetScroll = scrollLeft + (buttonLeft - containerLeft) - 20;
    
    if (Math.abs(container.scrollLeft - targetScroll) > 1) {
     container.scrollTo({

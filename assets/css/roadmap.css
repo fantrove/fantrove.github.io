@@ -1,7 +1,6 @@
 /* พื้นฐาน */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #FFFFFF;
     color: #333;
     line-height: 1.6;
     font-size: 14px;
@@ -31,6 +30,10 @@ h1 {
 h2, h3 {
     color: #6C63FF;
     font-weight: 600;
+}
+
+h2 span {
+ margin-right: 5px;
 }
 
 #current-version {

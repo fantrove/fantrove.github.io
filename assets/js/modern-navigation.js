@@ -16,9 +16,9 @@ class ModernNavigation {
   
   // Template HTML สำหรับ Navigation
   this.template = `
-      <nav class="bottom-nav">
+      <div class="bottom-nav">
         <!-- Navigation items จะถูกเพิ่มที่นี่โดย JavaScript -->
-      </nav>
+      </div>
     `;
   
   // Template HTML สำหรับปุ่มนำทาง
