@@ -1294,6 +1294,25 @@ async renderSubButtons(subButtons, mainButtonUrl, lang, initialUrl) {
        });
       });
       
+        // ปรับปรุงการจัดการ URL changes
+  window.addEventListener('popstate', () => {
+   if (!NavigationManager.state.isNavigating) {
+    NavigationManager.updateButtonStates();
+   }
+  });
+  
+  window.addEventListener('hashchange', (event) => {
+   if (!NavigationManager.state.isNavigating) {
+    const newHash = event.newURL.split('#')[1] || '';
+    NavigationManager.navigateTo(newHash);
+   }
+  });
+  
+  // เพิ่มการจัดการ beforeunload
+  window.addEventListener('beforeunload', () => {
+   NavigationManager.state.isInitialLoad = true;
+  });
+      
       // Setup network status monitoring
       window.addEventListener('online', () => {
        utils.showNotification('การเชื่อมต่อกลับมาแล้ว', 'success');
