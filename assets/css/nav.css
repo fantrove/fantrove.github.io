@@ -26,6 +26,7 @@
     border-bottom: var(--navbar-border);
     transition: border-bottom 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* เงาให้ดูมีมิติ */
+    touch-action: none;
 }
 
 .navbar-title img {

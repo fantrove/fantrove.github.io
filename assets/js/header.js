@@ -75,176 +75,214 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // NavigationManager ที่ปรับปรุงใหม่
 const NavigationManager = {
-    history: [],
-    maxHistory: 50,
-
-    addEntry(url, type = 'user') {
-        this.history.unshift({ 
-            url: this.normalizeUrl(url), 
-            type, 
-            timestamp: Date.now() 
-        });
-        if (this.history.length > this.maxHistory) {
-            this.history.pop();
-        }
-    },
-
-    // เพิ่มฟังก์ชันสำหรับทำความสะอาด URL
-    normalizeUrl(url) {
-        return url.toLowerCase().trim().replace(/^#/, '');
-    },
-
-    // เพิ่มฟังก์ชันสำหรับเปรียบเทียบ URL อย่างแม่นยำ
-    compareUrls(url1, url2) {
-        return this.normalizeUrl(url1) === this.normalizeUrl(url2);
-    },
-
-    async navigateTo(route) {
-        try {
-            if (!route) {
-                throw new AppError('ไม่ได้ระบุเส้นทางในการนำทาง', 'navigation');
-            }
-
-            this.addEntry(route);
-            await this.changeURL(route);
-            await this.updateButtonStates();
-            
-        } catch (error) {
-            throw new AppError('เกิดข้อผิดพลาดในการนำทาง', 'navigation', error);
-        }
-    },
-
-    async changeURL(url) {
-        const newUrl = url.includes('#') ? url : `#${url}`;
-        history.replaceState(null, '', newUrl);
-    },
-
-    // ปรับปรุงฟังก์ชันอัพเดทสถานะปุ่มใหม่
-    async updateButtonStates() {
-        try {
-            const currentUrl = window.location.hash || '';
-            const normalizedCurrentUrl = this.normalizeUrl(currentUrl);
-            
-            // เก็บปุ่มที่ active ไว้ตรวจสอบ
-            const activeButtons = new Set();
-            
-            // รวบรวมปุ่มทั้งหมด
-            const allButtons = [
-                ...document.querySelectorAll('nav ul li button'),
-                ...document.querySelectorAll('.button-sub')
-            ];
-
-            // ล้าง active state ทั้งหมดก่อน
-            allButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-
-            // ตรวจสอบและเปรียบเทียบ URL อย่างละเอียด
-            allButtons.forEach(button => {
-                const buttonUrl = button.getAttribute('data-url');
-                if (!buttonUrl) return;
-
-                const normalizedButtonUrl = this.normalizeUrl(buttonUrl);
-
-                // ตรวจสอบว่าเป็น URL เดียวกันพอดี
-                if (this.compareUrls(normalizedCurrentUrl, normalizedButtonUrl)) {
-                    button.classList.add('active');
-                    activeButtons.add(normalizedButtonUrl);
-                }
-                // กรณีที่เป็น URL แบบมี sub-route
-                else if (normalizedCurrentUrl.includes('-')) {
-                    const [mainRoute, subRoute] = normalizedCurrentUrl.split('-');
-                    if (this.compareUrls(normalizedButtonUrl, mainRoute) || 
-                        this.compareUrls(normalizedButtonUrl, subRoute)) {
-                        if (!activeButtons.has(normalizedButtonUrl)) {
-                            button.classList.add('active');
-                            activeButtons.add(normalizedButtonUrl);
-                        }
-                    }
-                }
-            });
-
-            // ตรวจสอบความขัดแย้ง
-            this.validateActiveStates(activeButtons);
-
-        } catch (error) {
-            console.error('Error updating button states:', error);
-            throw new AppError('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม', 'button-state', error);
-        }
-    },
-
-    // เพิ่มฟังก์ชันตรวจสอบความขัดแย้งของ active states
-    validateActiveStates(activeButtons) {
-        if (activeButtons.size > 2) {
-            console.warn('พบการ active มากกว่า 2 ปุ่ม - กำลังแก้ไข...');
-            
-            // เก็บเฉพาะปุ่มที่ตรงกับ URL ปัจจุบันที่สุด
-            const currentUrl = this.normalizeUrl(window.location.hash);
-            const allButtons = document.querySelectorAll('button.active');
-            
-            allButtons.forEach(button => {
-                const buttonUrl = this.normalizeUrl(button.getAttribute('data-url') || '');
-                if (!this.isClosestMatch(buttonUrl, currentUrl)) {
-                    button.classList.remove('active');
-                }
-            });
-        }
-    },
-
-    // เพิ่มฟังก์ชันตรวจสอบความใกล้เคียงของ URL
-    isClosestMatch(buttonUrl, currentUrl) {
-        if (this.compareUrls(buttonUrl, currentUrl)) return true;
-        
-        // กรณี sub-route
-        if (currentUrl.includes('-')) {
-            const [mainRoute, subRoute] = currentUrl.split('-');
-            return this.compareUrls(buttonUrl, mainRoute) || 
-                   this.compareUrls(buttonUrl, subRoute);
-        }
-        
-        return false;
-    },
-
-    // เพิ่มฟังก์ชันสำหรับตรวจสอบความคล้ายกันของ URL
-    calculateUrlSimilarity(url1, url2) {
-        const normalized1 = this.normalizeUrl(url1);
-        const normalized2 = this.normalizeUrl(url2);
-        
-        if (normalized1 === normalized2) return 1;
-        
-        // ใช้ Levenshtein Distance algorithm
-        const distance = this.levenshteinDistance(normalized1, normalized2);
-        const maxLength = Math.max(normalized1.length, normalized2.length);
-        
-        return 1 - (distance / maxLength);
-    },
-
-    // เพิ่มฟังก์ชัน Levenshtein Distance สำหรับเปรียบเทียบความคล้ายของข้อความ
-    levenshteinDistance(str1, str2) {
-        const m = str1.length;
-        const n = str2.length;
-        const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
-
-        for (let i = 0; i <= m; i++) dp[i][0] = i;
-        for (let j = 0; j <= n; j++) dp[0][j] = j;
-
-        for (let i = 1; i <= m; i++) {
-            for (let j = 1; j <= n; j++) {
-                if (str1[i - 1] === str2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = 1 + Math.min(
-                        dp[i - 1][j],     // ลบ
-                        dp[i][j - 1],     // เพิ่ม
-                        dp[i - 1][j - 1]  // แทนที่
-                    );
-                }
-            }
-        }
-
-        return dp[m][n];
+ // เก็บประวัติการนำทาง
+ history: [],
+ maxHistory: 50,
+ 
+ // เพิ่มรายการใหม่ในประวัติ
+ addEntry(url, type = 'user') {
+  this.history.unshift({
+   url: this.normalizeUrl(url),
+   type,
+   timestamp: Date.now()
+  });
+  if (this.history.length > this.maxHistory) {
+   this.history.pop();
+  }
+ },
+ 
+ // ทำความสะอาด URL
+ normalizeUrl(url) {
+  return url.toLowerCase().trim().replace(/^#/, '');
+ },
+ 
+ // เปรียบเทียบ URL อย่างแม่นยำ
+ compareUrls(url1, url2) {
+  return this.normalizeUrl(url1) === this.normalizeUrl(url2);
+ },
+ 
+ // ฟังก์ชันหลักสำหรับการนำทาง
+ async navigateTo(route) {
+  try {
+   if (!route) {
+    throw new AppError('ไม่ได้ระบุเส้นทางในการนำทาง', 'navigation');
+   }
+   
+   this.addEntry(route);
+   await this.changeURL(route);
+   await this.updateButtonStates();
+   
+   // เพิ่มการเรียกใช้ฟังก์ชันเลื่อนปุ่ม
+   setTimeout(() => this.scrollActiveButtonToLeft(), 100);
+   
+  } catch (error) {
+   throw new AppError('เกิดข้อผิดพลาดในการนำทาง', 'navigation', error);
+  }
+ },
+ 
+ // เปลี่ยน URL
+ async changeURL(url) {
+  const newUrl = url.includes('#') ? url : `#${url}`;
+  history.replaceState(null, '', newUrl);
+ },
+ 
+ // ฟังก์ชันใหม่สำหรับการเลื่อนปุ่ม active ไปทางซ้าย
+ scrollActiveButtonToLeft() {
+  const activeButton = document.querySelector('nav ul li button.active');
+  if (activeButton) {
+   const navContainer = document.querySelector('nav ul');
+   const buttonOffset = activeButton.offsetLeft;
+   
+   // คำนวณระยะห่างจากขอบซ้าย (เพิ่ม padding)
+   const scrollLeft = Math.max(0, buttonOffset - 16);
+   
+   // ทำการเลื่อนแบบ smooth
+   navContainer.scrollTo({
+    left: scrollLeft,
+    behavior: 'smooth'
+   });
+  }
+ },
+ 
+ // อัพเดทสถานะปุ่มทั้งหมด
+ async updateButtonStates() {
+  try {
+   const currentUrl = window.location.hash || '';
+   const normalizedCurrentUrl = this.normalizeUrl(currentUrl);
+   
+   // เก็บปุ่มที่ active ไว้ตรวจสอบ
+   const activeButtons = new Set();
+   
+   // รวบรวมปุ่มทั้งหมด
+   const allButtons = [
+    ...document.querySelectorAll('nav ul li button'),
+    ...document.querySelectorAll('.button-sub')
+   ];
+   
+   // ล้าง active state ทั้งหมดก่อน
+   allButtons.forEach(button => {
+    button.classList.remove('active');
+   });
+   
+   // ตรวจสอบและเปรียบเทียบ URL อย่างละเอียด
+   allButtons.forEach(button => {
+    const buttonUrl = button.getAttribute('data-url');
+    if (!buttonUrl) return;
+    
+    const normalizedButtonUrl = this.normalizeUrl(buttonUrl);
+    
+    // ตรวจสอบว่าเป็น URL เดียวกันพอดี
+    if (this.compareUrls(normalizedCurrentUrl, normalizedButtonUrl)) {
+     button.classList.add('active');
+     activeButtons.add(normalizedButtonUrl);
     }
+    // กรณีที่เป็น URL แบบมี sub-route
+    else if (normalizedCurrentUrl.includes('-')) {
+     const [mainRoute, subRoute] = normalizedCurrentUrl.split('-');
+     if (this.compareUrls(normalizedButtonUrl, mainRoute) ||
+      this.compareUrls(normalizedButtonUrl, subRoute)) {
+      if (!activeButtons.has(normalizedButtonUrl)) {
+       button.classList.add('active');
+       activeButtons.add(normalizedButtonUrl);
+      }
+     }
+    }
+   });
+   
+   // ตรวจสอบความขัดแย้ง
+   this.validateActiveStates(activeButtons);
+   
+   // เลื่อนปุ่ม active ไปทางซ้าย
+   setTimeout(() => this.scrollActiveButtonToLeft(), 100);
+   
+  } catch (error) {
+   console.error('Error updating button states:', error);
+   throw new AppError('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม', 'button-state', error);
+  }
+ },
+ 
+ // ตรวจสอบความขัดแย้งของ active states
+ validateActiveStates(activeButtons) {
+  if (activeButtons.size > 2) {
+   console.warn('พบการ active มากกว่า 2 ปุ่ม - กำลังแก้ไข...');
+   
+   // เก็บเฉพาะปุ่มที่ตรงกับ URL ปัจจุบันที่สุด
+   const currentUrl = this.normalizeUrl(window.location.hash);
+   const allButtons = document.querySelectorAll('button.active');
+   
+   allButtons.forEach(button => {
+    const buttonUrl = this.normalizeUrl(button.getAttribute('data-url') || '');
+    if (!this.isClosestMatch(buttonUrl, currentUrl)) {
+     button.classList.remove('active');
+    }
+   });
+  }
+ },
+ 
+ // ตรวจสอบความใกล้เคียงของ URL
+ isClosestMatch(buttonUrl, currentUrl) {
+  if (this.compareUrls(buttonUrl, currentUrl)) return true;
+  
+  // กรณี sub-route
+  if (currentUrl.includes('-')) {
+   const [mainRoute, subRoute] = currentUrl.split('-');
+   return this.compareUrls(buttonUrl, mainRoute) ||
+    this.compareUrls(buttonUrl, subRoute);
+  }
+  
+  return false;
+ },
+ 
+ // คำนวณความคล้ายคลึงของ URL
+ calculateUrlSimilarity(url1, url2) {
+  const normalized1 = this.normalizeUrl(url1);
+  const normalized2 = this.normalizeUrl(url2);
+  
+  if (normalized1 === normalized2) return 1;
+  
+  // ใช้ Levenshtein Distance algorithm
+  const distance = this.levenshteinDistance(normalized1, normalized2);
+  const maxLength = Math.max(normalized1.length, normalized2.length);
+  
+  return 1 - (distance / maxLength);
+ },
+ 
+ // คำนวณระยะห่างระหว่างข้อความ (Levenshtein Distance)
+ levenshteinDistance(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+  
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  
+  for (let i = 1; i <= m; i++) {
+   for (let j = 1; j <= n; j++) {
+    if (str1[i - 1] === str2[j - 1]) {
+     dp[i][j] = dp[i - 1][j - 1];
+    } else {
+     dp[i][j] = 1 + Math.min(
+      dp[i - 1][j], // ลบ
+      dp[i][j - 1], // เพิ่ม
+      dp[i - 1][j - 1] // แทนที่
+     );
+    }
+   }
+  }
+  
+  return dp[m][n];
+ }
 };
+
+// เพิ่ม Event Listener สำหรับการ resize หน้าจอ
+window.addEventListener('resize', () => {
+ NavigationManager.scrollActiveButtonToLeft();
+});
+
+// เพิ่ม Event Listener สำหรับการโหลดหน้าเว็บครั้งแรก
+document.addEventListener('DOMContentLoaded', () => {
+ NavigationManager.updateButtonStates();
+});
 
     // Content Management
     const ContentManager = {

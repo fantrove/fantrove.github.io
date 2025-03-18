@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ฟังก์ชันนำทางกลับหน้าหลัก
     const redirectToHome = () => {
-        window.location.href = '/hub.fantrove/';
+        window.location.href = '/';
     };
 
     // เพิ่ม event listener สำหรับปุ่มย้อนกลับ

@@ -33,6 +33,7 @@ header {
     background: var(--main-color);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    touch-action: none;
 }
 
 /* Logo Styles */
@@ -87,6 +88,7 @@ nav ul {
     scrollbar-width: none;
     border-top: var(--navbar-border);
     border-bottom: var(--navbar-border);
+    touch-action: pan-x;
 }
 
 nav ul::-webkit-scrollbar {
@@ -132,6 +134,21 @@ nav ul li button.active {
     font-weight: 600;
     /* ใช้ text-shadow เพียงเล็กน้อย */
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
+    /* เพิ่มส่วนนี้เพื่อให้มีการเน้นปุ่มที่ active ชัดเจนขึ้น */
+    position: relative;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+/* เพิ่ม JavaScript Observer สำหรับปุ่มที่ active */
+.button-observer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    pointer-events: none;
+    opacity: 0;
 }
 
 /* เส้นใต้แบบ Optimized */
