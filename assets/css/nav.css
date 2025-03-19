@@ -29,15 +29,6 @@
     touch-action: none;
 }
 
-.navbar-title img {
- width: auto;
- height: var(--height);
- margin-left: 5px;
- align-items: center;
- justify-content: center;
- display: flex;
-}
-
 .navbar-title {
     font-family: cursive;
     font-size: var(--font-size);
@@ -48,8 +39,17 @@
     align-items: center;
     justify-content: center;
     display: flex;
-    margin-left: 20px;
+    margin-left: 8.2px;
     margin-top: 0px;
+}
+
+.navbar-title img {
+ width: auto;
+ height: var(--height);
+ margin-left: 5px;
+ align-items: center;
+ justify-content: center;
+ display: flex;
 }
 
 .navbar-title span {
