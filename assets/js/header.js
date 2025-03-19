@@ -261,38 +261,106 @@ const NavigationManager = {
         }
     },
 
-    // อัพเดทสถานะปุ่ม
-    async updateButtonStates(route) {
-        try {
-            const normalizedRoute = this.normalizeUrl(route);
-            const [mainRoute, subRoute] = normalizedRoute.split('-');
-
-            // ล้างสถานะปุ่มทั้งหมด
-            document.querySelectorAll('button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // อัพเดทปุ่มหลัก
-            const mainButton = document.querySelector(`button[data-url="${mainRoute}"]`);
-            if (mainButton) {
-                mainButton.classList.add('active');
-            }
-
-            // อัพเดทปุ่มย่อย
-            if (subRoute) {
-                const subButton = document.querySelector(`button[data-url="${normalizedRoute}"]`);
-                if (subButton) {
-                    subButton.classList.add('active');
-                }
-            }
-
-            // เลื่อนปุ่มที่ active เข้ามาในมุมมอง
-            this.scrollActiveButtonsIntoView();
-
-        } catch (error) {
-            console.error('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม:', error);
-        }
-    },
+// ปรับปรุงฟังก์ชัน updateButtonStates ใน NavigationManager
+async updateButtonStates() {
+  try {
+   const currentUrl = window.location.hash || '';
+   const normalizedCurrentUrl = this.normalizeUrl(currentUrl);
+   
+   // แยกการจัดการปุ่มหลักและปุ่มย่อย
+   await Promise.all([
+    this.updateMainButtons(normalizedCurrentUrl),
+    this.updateSubButtons(normalizedCurrentUrl)
+   ]);
+   
+  } catch (error) {
+   console.error('Error updating button states:', error);
+   throw new AppError('เกิดข้อผิดพลาดในการอัพเดทสถานะปุ่ม', 'button-state', error);
+  }
+ },
+ 
+ // เพิ่มฟังก์ชันใหม่สำหรับจัดการปุ่มหลัก
+ async updateMainButtons(normalizedCurrentUrl) {
+   // ทำงานเฉพาะใน #nav-list
+   const navList = document.getElementById('nav-list');
+   if (!navList) return;
+   
+   // ดึงปุ่มหลักทั้งหมดภายใน nav-list เท่านั้น
+   const mainButtons = navList.querySelectorAll('button');
+   
+   // ล้าง active state ทั้งหมดก่อน
+   mainButtons.forEach(button => button.classList.remove('active'));
+   
+   // ตรวจสอบและ active ปุ่มที่ตรงกับ URL
+   mainButtons.forEach(button => {
+    const buttonUrl = button.getAttribute('data-url');
+    if (!buttonUrl) return;
+    
+    const normalizedButtonUrl = this.normalizeUrl(buttonUrl);
+    
+    // เช็คว่าเป็น URL หลักหรือไม่
+    if (normalizedCurrentUrl.startsWith(normalizedButtonUrl)) {
+     button.classList.add('active');
+    }
+   });
+  },
+  
+  // เพิ่มฟังก์ชันใหม่สำหรับจัดการปุ่มย่อย
+  async updateSubButtons(normalizedCurrentUrl) {
+    // ทำงานเฉพาะใน #sub-buttons-container
+    const subContainer = document.getElementById('sub-buttons-container');
+    if (!subContainer) return;
+    
+    // ดึงปุ่มย่อยทั้งหมดภายใน sub-buttons-container เท่านั้น
+    const subButtons = subContainer.querySelectorAll('.button-sub');
+    
+    // ล้าง active state ทั้งหมดก่อน
+    subButtons.forEach(button => button.classList.remove('active'));
+    
+    // ตรวจสอบและ active ปุ่มที่ตรงกับ URL
+    subButtons.forEach(button => {
+     const buttonUrl = button.getAttribute('data-url');
+     if (!buttonUrl) return;
+     
+     const normalizedButtonUrl = this.normalizeUrl(buttonUrl);
+     
+     // เช็คว่าเป็น URL ที่ตรงกันพอดี (สำหรับปุ่มย่อย)
+     if (normalizedCurrentUrl === normalizedButtonUrl) {
+      button.classList.add('active');
+     }
+    });
+   },
+   
+   // ปรับปรุงฟังก์ชัน handleSubButtonClick ใน ButtonManager
+   async handleSubButtonClick(button, fullUrl, jsonFile) {
+    try {
+     const subContainer = document.getElementById('sub-buttons-container');
+     if (!subContainer) return;
+     
+     // ล้าง active state เฉพาะภายใน sub-buttons-container
+     subContainer.querySelectorAll('.button-sub').forEach(btn => {
+      btn.classList.remove('active');
+     });
+     
+     // เพิ่ม active state ให้ปุ่มที่ถูกคลิก
+     button.classList.add('active');
+     
+     // เลื่อนปุ่มไปทางซ้ายทันที
+     this.scrollActiveSubButtonIntoView(button);
+     
+     // อัพเดท URL และโหลดเนื้อหา
+     await Promise.all([
+      NavigationManager.navigateTo(fullUrl),
+      jsonFile ? (async () => {
+       const data = await DataManager.fetchWithRetry(jsonFile);
+       await ContentManager.renderContent(data);
+      })() : Promise.resolve()
+     ]);
+     
+    } catch (error) {
+     utils.showNotification(error.message, 'error');
+    }
+   },
 
     // เลื่อนปุ่มที่ active เข้ามาในมุมมอง
     scrollActiveButtonsIntoView() {
