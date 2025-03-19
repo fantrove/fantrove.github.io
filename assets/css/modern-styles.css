@@ -101,11 +101,11 @@
   user-select: none;
 }
 
-.nav-item.active svg {
+.nav-item.actives svg {
   stroke: var(--primary-600);
 }
 
-.nav-item.active .label {
+.nav-item.actives .label {
   color: var(--primary-600);
 }
 
@@ -130,12 +130,12 @@
   }
 
   .nav-item:hover svg,
-  .nav-item.active svg {
+  .nav-item.actives svg {
     stroke: var(--primary-400);
   }
 
   .nav-item:hover .label,
-  .nav-item.active .label {
+  .nav-item.actives .label {
     color: var(--primary-400);
   }
 }

@@ -11,7 +11,7 @@ class ModernNavigation {
   // ค่าเริ่มต้นพื้นฐาน
   this.cssPath = config.cssPath || './assets/css/modern-styles.css';
   this.configPath = config.configPath || './assets/json/buttons.json';
-  this.activeClass = config.activeClass || 'active';
+  this.activeClass = config.activeClass || 'actives'; // เปลี่ยนจาก active เป็น actives
   this.navItemSelector = config.navItemSelector || '.nav-item';
   
   // Template HTML สำหรับ Navigation
@@ -23,7 +23,7 @@ class ModernNavigation {
   
   // Template HTML สำหรับปุ่มนำทาง
   this.buttonTemplate = `
-      <button class="nav-item" data-url="{url}">
+      <button class="nav-item" data-link="{link}">
         {icon}
         <div class="label">{label}</div>
       </button>
@@ -97,7 +97,7 @@ class ModernNavigation {
   
   navContainer.innerHTML = this._config.navigation.map(item => {
    return this.buttonTemplate
-    .replace('{url}', item.url)
+    .replace('{link}', item.url)
     .replace('{icon}', item.icon || '')
     .replace('{label}', item[`${this.currentLang}_label`] || item.en_label || 'Missing Label');
   }).join('');
@@ -141,8 +141,8 @@ class ModernNavigation {
    const labelElement = item.querySelector('.label');
    if (!labelElement) return;
    
-   const itemUrl = item.dataset.url;
-   const configItem = this._config?.navigation.find(nav => nav.url === itemUrl);
+   const itemLink = item.dataset.link;
+   const configItem = this._config?.navigation.find(nav => nav.url === itemLink);
    if (!configItem) return;
    
    labelElement.textContent = configItem[`${this.currentLang}_label`] ||
@@ -158,11 +158,11 @@ class ModernNavigation {
   */
  _handleClick(event) {
   const item = event.currentTarget;
-  const targetUrl = item.dataset.url;
+  const targetLink = item.dataset.link;
   
-  if (targetUrl && !item.classList.contains(this.activeClass)) {
-   if (window.location.pathname.endsWith(targetUrl)) return;
-   window.location.href = targetUrl;
+  if (targetLink && !item.classList.contains(this.activeClass)) {
+   if (window.location.pathname.endsWith(targetLink)) return;
+   window.location.href = targetLink;
   }
  }
  
@@ -186,7 +186,7 @@ class ModernNavigation {
  _updateActiveState() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll(this.navItemSelector).forEach(item => {
-   item.classList.toggle(this.activeClass, item.dataset.url === currentPage);
+   item.classList.toggle(this.activeClass, item.dataset.link === currentPage);
   });
  }
  
