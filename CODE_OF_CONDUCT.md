@@ -69,7 +69,7 @@ We take copyright matters seriously and will work diligently to ensure that **Fa
 If you encounter any behavior that violates this Code of Conduct, please report it to the project maintainers at the following contact:
 
 - Email: [fantrovehub@gmail.com]  
-- GitHub Issues: [https://github.com/fantrove-hub.github.io/issues]  
+- GitHub Issues: [https://github.com/fantrove-hub/fantrove-hub.github.io/issues]  
 
 We take all reports seriously and will handle them in a timely and respectful manner. Depending on the severity of the violation, appropriate action may be taken, ranging from a warning to permanent removal from the project.
 
