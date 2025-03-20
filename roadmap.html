@@ -11,11 +11,11 @@
     <!-- กำหนดสีของแถบส่วนหัวสำหรับ Safari บน iOS -->
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
  
-    <link rel="stylesheet" href="./assets/css/bg.min.css">
-    <link rel="stylesheet" href="./assets/css/roadmap.min.css">
-    <link rel="stylesheet" href="./assets/css/top-navigation-bar.min.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="./assets/css/general.min.css">
-    <link rel="stylesheet" href="./assets/css/wake-effect.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/bg.min.css">
+    <link rel="stylesheet" href="/assets/css/roadmap.min.css">
+    <link rel="stylesheet" href="/assets/css/top-navigation-bar.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/general.min.css">
+    <link rel="stylesheet" href="/assets/css/wake-effect.min.css" type="text/css" media="all" />
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8233915433564101"
      crossorigin="anonymous"></script>
@@ -57,15 +57,15 @@
      </div>
     </footer>
 
-    <script src="./assets/js/roadmap.min.js"></script>
-    <script src="./assets/js/back-button.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="./assets/js/language.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="./assets/js/wake-effect.min.js"></script>
+    <script src="/assets/js/roadmap.min.js"></script>
+    <script src="/assets/js/back-button.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/assets/js/language.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/assets/js/wake-effect.min.js"></script>
 
     <script>
      document.addEventListener("DOMContentLoaded", function() {
       // ฟังก์ชันสำหรับโหลดข้อมูลเวอร์ชัน
-      fetch('./assets/json/version.min.json')
+      fetch('/assets/json/version.min.json')
        .then(response => response.json())
        .then(data => {
         const currentVersion = data.version;
