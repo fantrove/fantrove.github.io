@@ -1,0 +1,119 @@
+@import url('variables.min.css');
+
+/* Style สำหรับ Navigation Bar */
+nav {
+  display: grid; /* เปลี่ยนเป็น grid แทน flex */
+  grid-template-columns: 50px 1fr 50px; /* แบ่งเป็น 3 ส่วน: ปุ่มซ้าย, เนื้อหา, พื้นที่ขวา */
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  padding: 0;
+  background-image: var(--main-color);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  touch-action: none;
+}
+
+/* จัดการการวางตำแหน่งของปุ่มย้อนกลับ */
+.back-button {
+  grid-column: 1; /* วางในคอลัมน์แรก */
+  justify-self: center; /* จัดกึ่งกลางในคอลัมน์ */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 1010;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 5px;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.back-button:active svg {
+  transform: scale(0.9);
+}
+
+/* ปุ่มย้อนกลับ - SVG icon */
+.back-button svg {
+  width: 30px;
+  height: 30px;
+  color: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+/* ชื่อหน้า (Page Title) - ปรับปรุงใหม่ */
+.page-title {
+  grid-column: 2; /* วางในคอลัมน์กลาง */
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center; /* จัดข้อความกึ่งกลาง */
+  padding: 0 10px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis; /* แสดง ... เมื่อข้อความยาวเกิน */
+  white-space: nowrap;
+}
+
+.date {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* แท็บเล็ตแนวตั้ง */
+@media (min-width: 600px) {
+  body { font-size: 15px; }
+  .page-title { font-size: 16px; }
+  .back-button svg { width: 32px; height: 32px; }
+  nav { grid-template-columns: 60px 1fr 60px; }
+}
+
+/* แท็บเล็ตแนวนอน */
+@media (min-width: 768px) {
+  body { font-size: 16px; }
+  .page-title { font-size: 18px; }
+  .back-button svg { width: 34px; height: 34px; }
+  nav { grid-template-columns: 70px 1fr 70px; }
+}
+
+/* เดสก์ท็อปเล็ก */
+@media (min-width: 1024px) {
+  body { font-size: 18px; }
+  .page-title { font-size: 20px; }
+  .back-button svg { width: 36px; height: 36px; }
+  nav { grid-template-columns: 80px 1fr 80px; }
+}
+
+/* เดสก์ท็อปกลาง */
+@media (min-width: 1280px) {
+  body { font-size: 19px; }
+  .page-title { font-size: 22px; }
+  .back-button svg { width: 38px; height: 38px; }
+  nav { grid-template-columns: 90px 1fr 90px; }
+}
+
+/* เดสก์ท็อปใหญ่ */
+@media (min-width: 1440px) {
+  body { font-size: 20px; }
+  .page-title { font-size: 24px; }
+  .back-button svg { width: 40px; height: 40px; }
+  nav { grid-template-columns: 100px 1fr 100px; }
+}
+
+/* หน้าจอ 4K+ */
+@media (min-width: 1920px) {
+  body { font-size: 22px; }
+  .page-title { font-size: 26px; }
+  .back-button svg { width: 42px; height: 42px; }
+  nav { grid-template-columns: 120px 1fr 120px; }
+}
