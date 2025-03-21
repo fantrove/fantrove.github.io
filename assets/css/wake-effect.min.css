@@ -8,16 +8,16 @@
 
 :root {
     /* ตัวแปรหลัก - เพิ่มความพรีเมี่ยม */
-    --wave-opacity-start: 0.78;
-    --wave-opacity-mid: 0.45;
-    --wave-opacity-hold: 0.32;
+    --wave-opacity-start: 0.58;
+    --wave-opacity-mid: 0.35;
+    --wave-opacity-hold: 0.22;
     --wave-opacity-end: 0;
-    --wave-scale: 1.25;
+    --wave-scale: 3.15;
     
     /* ระบบจังหวะการเคลื่อนไหว - เร็วขึ้น */
-    --wave-expand-time: 400ms;
-    --wave-hold-time: 600ms;  /* ลดลงจาก 1100ms */
-    --wave-fade-time: 500ms;  /* ลดลงจาก 580ms */
+    --wave-expand-time: 780ms;
+    --wave-hold-time: 850ms;  /* ลดลงจาก 1100ms */
+    --wave-fade-time: 420ms;  /* ลดลงจาก 580ms */
     
     /* คุณสมบัติการแสดงผล */
     --wave-back-color: #00000058;
@@ -104,20 +104,24 @@
 
 @keyframes wave-expand {
     0% {
-        transform: scale(0) translate3d(0,0,0);
+        transform: scale(0.26) translate3d(0,0,0);
         opacity: var(--wave-opacity-start);
     }
     15% {
         opacity: var(--wave-opacity-start);
+        transform: scale(calc(var(--wave-scale) * 0.35)) translate3d(0,0,0);
     }
     35% {
         opacity: var(--wave-opacity-mid);
+        transform: scale(calc(var(--wave-scale) * 0.55)) translate3d(0,0,0);
     }
     65% {
         opacity: calc(var(--wave-opacity-hold) * 1.1);
+        transform: scale(calc(var(--wave-scale) * 0.80)) translate3d(0,0,0);
     }
     85% {
         opacity: calc(var(--wave-opacity-hold) * 1.05);
+        transform: scale(calc(var(--wave-scale) * 0.95)) translate3d(0,0,0);
     }
     100% {
         transform: scale(var(--wave-scale)) translate3d(0,0,0);

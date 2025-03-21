@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <!-- กำหนดสีของแถบส่วนหัว (สำหรับเบราว์เซอร์ทั่วไป) -->
+    <meta name="theme-color" content="#7A2EE2">
+
+    <!-- กำหนดสีของแถบส่วนหัวสำหรับ Safari บน iOS -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <link rel="stylesheet" href="/assets/css/general.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/assets/css/setting.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/top-navigation-bar.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/language-error.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/wake-effect.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/assets/css/bg.min.css" type="text/css" media="all">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <span class="page-title" data-translate="page-setting">Setting</span>
+    </nav>
+
+    <div id="language-selector-container" wake=""></div>
+
+    <h1 data-translate="about-text">About</h1>
+
+    <button class="buttons" onclick="window.location.href='about.html'" data-translate="about-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        About FanTrove Hub
+    </button>
+
+    <button class="buttons" onclick="window.location.href='new.html'" data-translate="new-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        What's New
+    </button>
+
+    <button class="buttons" onclick="window.location.href='roadmap.html'" data-translate="planned-features-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h18v18H3z"/>
+            <path d="M9 3v18"/>
+            <path d="M3 9h18"/>
+        </svg>
+        Planned Features
+    </button>
+
+    <button class="buttons tap" onclick="window.location.href='https://0zscukk0.forms.app/fantrove-report-official'" data-translate="report-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+            <line x1="4" y1="22" x2="4" y2="15"></line>
+        </svg>
+        Report
+    </button>
+
+    <button class="buttons buy tap" onclick="window.location.href='https://www.patreon.com/LedpAeroWings'" data-translate="support-button" wake="">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        We know you love FanTrove
+    </button>
+
+    <footer>
+        <div class="footer-content">
+            <p data-translate="footer">&copy; 2025 FanTrove (Beta). All rights reserved.</p>
+            <p data-translate="footer-deve">Developed by Lédp Aero Wings Company</p>
+        </div>
+    </footer>
+
+    <script src="/assets/js/language.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/assets/js/modern-navigation.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/assets/js/Intelligent-system.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/assets/js/wake-effect.min.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
