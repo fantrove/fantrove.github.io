@@ -1,3 +1,7 @@
+:root {
+ --footer-color: #42445A;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     margin-bottom: 80px !important;
@@ -7,7 +11,7 @@ body {
 footer {
     width: 100%; /* ขยายให้เต็มความกว้าง */
     padding: 90px 0 !important; /* เพิ่ม padding ด้านบนและล่าง */
-    color: #42445A;
+    color: var(--footer-color);
     text-align: center;
     left: 0; /* ให้ footer เริ่มต้นจากขอบซ้ายของหน้าจอ */
     align-items: center;

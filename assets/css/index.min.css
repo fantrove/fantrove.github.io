@@ -47,6 +47,13 @@ main p {
   line-height: 1.8;
 }
 
+.img-d1 {
+ margin-top: 90px;
+ width: 100%;
+ height: auto;
+ border-radius: 10px;
+}
+
 .buttons-in {
   margin-top: 40px;
   display: flex;
