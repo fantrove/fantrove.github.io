@@ -47,11 +47,11 @@ main p {
   line-height: 1.8;
 }
 
-main img {
- margin-top: 90px;
- width: 100%;
- height: auto;
- border-radius: 10px;
+.img-d1 {
+ margin-top: 90px !important;
+ width: 100% !important;
+ height: auto !important;
+ border-radius: 10px !important;
 }
 
 .buttons-in {
