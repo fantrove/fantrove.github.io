@@ -1,41 +1,32 @@
-/* Root variables - ปรับปรุงค่าตัวแปรให้พรีเมียมขึ้น */
+/* Root variables - ปรับปรุงค่าตัวแปรให้พรีเมี่ยมและเรียบง่าย */
 :root {
-  /* Theme Colors - ปรับโทนสีให้ดูหรูขึ้น */
+  /* Theme Colors */
   --app-theme-indigo: #6051FF;
   --app-theme-indigo-hover: #7667FF;
-  --app-theme-indigo-active: #5046E5;
   --app-theme-indigo-light: rgba(96, 81, 255, 0.08);
   --app-theme-indigo-lighter: rgba(96, 81, 255, 0.04);
   --app-theme-indigo-border: rgba(96, 81, 255, 0.15);
+  --app-theme-indigo-border-strong: rgba(96, 81, 255, 0.8);  /* เพิ่มตัวแปรสีขอบที่เข้มสำหรับ hover */
   --app-theme-indigo-border2: rgba(96, 81, 255, 0.3);
   
-  /* Text Colors - ปรับค่าสีให้อ่านง่ายและดูพรีเมียม */
+  /* Text Colors */
   --app-text-heading: #14141B;
   --app-text-body: #2F2F3A;
   --app-text-light: #6F6F82;
   
-  /* Background & Surface Colors */
+  /* Background & Surface */
   --app-surface-primary: #FFFFFF;
   --app-surface-secondary: #FAFBFF;
   
-  /* Border Colors */
+  /* Borders & Shadows */
   --app-border-subtle: #EAEAF1;
   --app-border-hover: #DCDCE6;
-  
-  /* Shadow Styles - ปรับเงาให้ดูนุ่มนวลและมีมิติ */
-  --app-elevation-small: 
-    0 1px 2px rgba(0, 0, 0, 0.03),
-    0 1px 6px rgba(0, 0, 0, 0.02);
-  --app-elevation-medium: 
-    0 3px 8px rgba(0, 0, 0, 0.03),
-    0 2px 4px rgba(0, 0, 0, 0.02);
-  --app-elevation-large: 
-    0 6px 12px rgba(0, 0, 0, 0.03),
-    0 4px 8px rgba(0, 0, 0, 0.02);
+  --app-elevation-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --app-elevation-medium: 0 3px 6px rgba(0, 0, 0, 0.1);
   
   /* Motion & Animation */
-  --app-motion-quick: 0.15s cubic-bezier(0.3, 0, 0.2, 1);
-  --app-motion-natural: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --app-motion-quick: 0.12s ease-out;
+  --app-motion-natural: 0.18s ease-out;
   
   /* Component Specific */
   --app-card-padding: 16px;
@@ -45,10 +36,10 @@
 }
 
 main {
- padding: 20px 10px 0 10px;
+  padding: 20px 5px 0 5px;
 }
 
-/* ปุ่มย่อย - ปรับปรุงให้ดูพรีเมียมขึ้น */
+/* ปุ่มย่อย */
 .button-sub {
   margin: 0 -5px 0 0;
   padding: 8px 16px;
@@ -61,9 +52,9 @@ main {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  transition: all var(--app-motion-quick);
+  transition: background var(--app-motion-quick), border-color var(--app-motion-quick), color var(--app-motion-quick);
   letter-spacing: 0.01em;
-  backdrop-filter: blur(8px);
+  /* ไม่ใช้ backdrop-filter เพื่อลดการใช้ RAM */
 }
 
 .button-sub:hover {
@@ -73,6 +64,7 @@ main {
   box-shadow: var(--app-elevation-small);
 }
 
+/* .active สำหรับปุ่มใช้งาน navigation */
 .button-sub.active {
   color: var(--app-theme-indigo);
   background: var(--app-theme-indigo-light);
@@ -81,18 +73,12 @@ main {
   box-shadow: var(--app-elevation-small);
 }
 
-.button-sub:active {
-  transform: translateY(1px);
-  background: var(--app-theme-indigo-light);
-  box-shadow: none;
-}
-
-/* ปุ่มในเนื้อหา - เพิ่มความพรีเมียม */
+/* ปุ่มในเนื้อหา */
 .button-content {
-  display: inline-flex;
+  display: flexbox;
   align-items: center;
   justify-content: center;
-  margin: 6px 0px;
+  margin: 6px 0;
   padding: 12px 22px;
   background-color: var(--app-surface-primary);
   color: var(--app-theme-indigo);
@@ -101,107 +87,73 @@ main {
   cursor: pointer;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 14px;
-  font-weight: 500;
   text-align: center;
-  white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
-  transition: all var(--app-motion-natural);
-  letter-spacing: 0.01em;
+  transition: background-color var(--app-motion-natural), color var(--app-motion-natural), border-color var(--app-motion-natural);
   position: relative;
-  overflow: hidden;
 }
 
-.button-content:hover {
-  background-color: var(--app-theme-indigo);
-  color: var(--app-surface-primary);
-  border-color: var(--app-theme-indigo);
-  box-shadow: var(--app-elevation-medium);
-  transform: translateY(-1px);
-}
-
-.button-content:active {
-  background-color: var(--app-theme-indigo-active);
-  transform: translateY(1px);
-  box-shadow: var(--app-elevation-small);
-}
-
-/* Card - ปรับปรุงให้ดูพรีเมียมและทันสมัย */
+/* Card */
 .card {
-  width: 140px;
-  margin: 4px;
+  display: flex; /* จัดวางเป็นแนวนอน */
+  align-items: center; /* จัดให้อยู่กึ่งกลาง */
+  width: 100%; /* ให้การ์ดเต็มความกว้าง */
+  max-width: 500px; /* ลดขนาดสูงสุดของการ์ดลง */
+  margin: 10px 30px; /* จัดให้อยู่ตรงกลาง */
   padding: var(--app-card-padding);
   cursor: pointer;
   border-radius: var(--app-card-radius);
-  -webkit-tap-highlight-color: transparent;
-  border: 1px solid var(--app-border-subtle);
+  border: 1px solid var(--app-theme-indigo-border);
   background: var(--app-surface-primary);
   user-select: none;
-  transition: all var(--app-motion-natural);
+  transition: border-color var(--app-motion-natural), box-shadow var(--app-motion-natural);
   position: relative;
-  isolation: isolate;
-  backdrop-filter: blur(8px);
+  -webkit-tap-highlight-color: transparent; /* ปิดแสงไฮไลท์เมื่อแตะบนมือถือ */
+  touch-action: manipulation; /* ป้องกันการซูมโดยไม่ตั้งใจ */
 }
 
-.card:hover {
-  border-color: var(--app-theme-indigo-border);
-  box-shadow: var(--app-elevation-medium);
-  transform: translateY(-2px);
+.card:hover, .button-content:hover {
+  border-color: var(--app-theme-indigo-border-strong);
+  box-shadow: 0 3px 8px rgba(96, 81, 255, 0.3);
 }
 
-.card:hover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--app-theme-indigo-lighter);
-  border-radius: var(--app-card-radius);
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.8;
-}
-
-.card:active {
-  transform: translateY(0);
-  box-shadow: var(--app-elevation-small);
-  background: var(--app-theme-indigo-light);
-}
-
+/* Card Image */
 .card-image {
-  width: 100%;
-  height: auto;
+  width: 85px; /* ลดขนาดภาพลงอีก */
+  height: 85px; /* ลดขนาดให้สมดุล */
   border-radius: calc(var(--app-card-radius) - 4px);
-  user-select: none;
-  transition: var(--app-motion-quick);
-  position: relative;
-  z-index: 2;
-  object-fit: cover;
-  filter: contrast(1.02) brightness(1.02);
+  object-fit: cover; /* ให้ภาพครอบคลุมพื้นที่ */
+  flex-shrink: 0; /* ป้องกันการบีบภาพ */
 }
 
+/* Card Content (พื้นที่ของข้อความ) */
+.card-content {
+  flex: 1; /* ให้ขยายเต็มพื้นที่ด้านขวา */
+  padding-left: 10px; /* ลดช่องว่างระหว่างรูปภาพกับข้อความ */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Title */
 .card-title {
-  margin-top: 14px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 13.5px;
+  font-size: 13.5px; /* ลดขนาดลงเล็กน้อย */
   font-weight: 600;
   color: var(--app-text-heading);
-  transition: var(--app-motion-quick);
-  position: relative;
-  z-index: 2;
+  margin-bottom: 2px;
   letter-spacing: -0.01em;
   line-height: 1.4;
 }
 
+/* Card Description */
 .card-description {
-  font-size: 13px;
+  font-size: 10.5px; /* ลดขนาดตัวอักษรลงอีก */
   color: var(--app-text-body);
-  margin-top: 6px;
-  line-height: 1.5;
-  transition: var(--app-motion-quick);
-  position: relative;
-  z-index: 2;
+  line-height: 1.4;
   letter-spacing: 0.01em;
 }
 
-/* Container layouts - ปรับปรุงระยะห่าง */
+/* Container layouts */
 #main-buttons-container,
 #sub-buttons-container {
   display: flex;
@@ -223,66 +175,67 @@ main {
 }
 
 .group-header {
- padding: 10px 20px;
- border-bottom: 1px solid rgba(96, 81, 255, 0.1);
- width: 100%;
+  padding: 10px 30px;
+  border-bottom: 1px solid rgba(96, 81, 255, 0.1);
+  width: 100%;
 }
 
 .group-header-text {
- font-size: 1.5rem;
- font-weight: 600;
- margin: 0;
- color: #464646;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #464646;
 }
 
 .group-header-description {
- margin: 0.5rem 0 0;
- font-size: 1rem;
- color: #666;
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #666;
 }
 
-.card-content-container, .button-content-container {
- border: 1px solid var(--app-theme-indigo-border2);
- border-radius: 25px;
- margin: 0 0 40px 0;
- padding: 1rem 0 1rem 0;
+.card-content-container, 
+.button-content-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  margin: 0 0 40px 0 !important;
+  padding: 1rem 0 !important;
+  background: rgba(255, 255, 255, 1);
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 5px;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.2);
 }
 
 .button-content-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 12px !important;
 }
 
 .card-content-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  gap: 16px !important;
 }
 
-/* Animations */
+/* Animations: ใช้เฉพาะ property ที่ไม่สร้างภาระหนักต่อการ repaint */
 .fade-in {
   opacity: 0;
-  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  will-change: opacity, transform, filter;
+  animation: fadeIn 0.25s ease-out forwards;
+  will-change: opacity;
 }
 
 .fade-out {
   opacity: 1;
-  animation: fadeOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  will-change: opacity, transform, filter;
+  animation: fadeOut 0.25s ease-out forwards;
+  will-change: opacity;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-0.313rem);
-    filter: blur(4px);
+    transform: translateY(-0.3rem);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 
@@ -290,16 +243,14 @@ main {
   from {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
   to {
     opacity: 0;
-    transform: translateY(-0.313rem);
-    filter: blur(4px);
+    transform: translateY(-0.3rem);
   }
 }
 
-/* Responsive */
+/* Responsive adjustments */
 @media screen and (max-width: 480px) {
   .card-content-container {
     justify-content: center;
@@ -311,83 +262,84 @@ main {
   }
 }
 
-  .notification {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
-    z-index: 1000;
-    min-width: 280px;
-    max-width: 400px;
-  }
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 400px;
+}
 
-  .notification.success {
-    background: #4caf50;
-    color: white;
-  }
+.notification.success {
+  background: #4caf50;
+  color: white;
+}
 
-  .notification.error {
-    background: #f44336;
-    color: white;
-  }
+.notification.error {
+  background: #f44336;
+  color: white;
+}
 
-  .notification.warning {
-    background: #ff9800;
-    color: white;
-  }
+.notification.warning {
+  background: #ff9800;
+  color: white;
+}
 
-  .notification.info {
-    background: #2196f3;
-    color: white;
-  }
+.notification.info {
+  background: #2196f3;
+  color: white;
+}
 
-  .notification-icon {
-    font-size: 18px;
-  }
+.notification-icon {
+  font-size: 18px;
+}
 
-  .notification-message {
-    flex-grow: 1;
-    font-size: 14px;
-  }
+.notification-message {
+  flex-grow: 1;
+  font-size: 14px;
+}
 
-  .notification-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 10px;
-    opacity: 0.8;
-  }
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  opacity: 0.8;
+}
 
-  .notification-close:hover {
+.notification-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
     opacity: 1;
   }
+}
 
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
   }
-
-  @keyframes slideOut {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
-    }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
+}
