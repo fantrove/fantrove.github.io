@@ -1,16 +1,16 @@
-@import url('variables.min.css'); /* นำเข้าไฟล์ CSS ที่มีตัวแปร */
+@import url('variables.min.css');
 
 body {
-  font-family: 'Arial', sans-serif;
-  padding: 0;
-  color: #333;
+  font-family: 'Inter', 'Arial', sans-serif; /* เปลี่ยนเป็น Inter font ที่อ่านง่ายกว่า */
   display: flex;
-  justify-content: center; 
-  align-items: center; 
-  min-height: 100vh; 
-  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased; /* เพิ่มการแสดงผลตัวอักษรที่คมชัดขึ้น */
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, p {
@@ -18,26 +18,29 @@ h1, h2, h3, p {
   text-align: center;
 }
 
-/* ส่วนเนื้อหาหลัก */
 main {
   padding: 40px 8%;
   text-align: center;
-  flex-grow: 1; 
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  max-width: 1400px; /* จำกัดความกว้างสูงสุดเพื่อการอ่านที่ดีขึ้น */
+  margin: 0 auto;
 }
 
 main h1 {
   font-size: 1.8rem;
-  font-weight: bold;
+  font-weight: 800; /* เพิ่มความหนาของตัวอักษร */
   background: var(--main-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 2px;
   margin-bottom: 20px;
-  text-transform: uppercase; /* เพิ่มการเปลี่ยนตัวอักษรเป็นตัวพิมพ์ใหญ่ทั้งหมด */
+  text-transform: uppercase;
+  transition: transform 0.3s ease; /* เพิ่มการเคลื่อนไหวเล็กน้อย */
 }
 
 main p {
@@ -45,13 +48,16 @@ main p {
   margin-top: 10px;
   opacity: 0.8;
   line-height: 1.8;
+  max-width: 800px; /* จำกัดความกว้างของย่อหน้าเพื่อการอ่านที่ดีขึ้น */
 }
 
 .img-d1 {
- margin-top: 90px !important;
- width: 100% !important;
- height: auto !important;
- border-radius: 10px !important;
+  margin-top: 90px !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้รูปภาพ */
+  transition: transform 0.3s ease !important;
 }
 
 .buttons-in {
@@ -61,6 +67,8 @@ main p {
   gap: 15px;
   flex-wrap: wrap;
   flex-direction: column;
+  width: 100%;
+  max-width: 300px; /* จำกัดความกว้างของกลุ่มปุ่ม */
 }
 
 .buttons-in button {
@@ -73,28 +81,57 @@ main p {
   border-radius: 50px;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(39, 117, 252, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-image 0.3s ease !important;
+  transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  width: 100%; 
+  width: 100%;
   max-width: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* อัพเดทเอฟเฟกต์เงาที่เลื่อนตลอดเวลา */
+.buttons-in button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shineEffect 3s infinite linear; /* เพิ่ม animation ที่ทำงานตลอดเวลา */
+}
+
+/* เพิ่ม keyframes สำหรับเอฟเฟกต์เงาที่เลื่อน */
+@keyframes shineEffect {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 .buttons-in button:active {
-  transform: scale(0.98);
+  transform: scale(0.95);
   box-shadow: 0 5px 15px rgba(39, 117, 252, 0.3);
 }
 
-/* แท็บเล็ตแนวตั้ง */
+/* Media Queries คงเดิม แต่เพิ่มประสิทธิภาพ */
 @media (min-width: 600px) {
     body { font-size: 15px; }
     main { padding: 35px 7%; }
     main h1 { font-size: 2.8rem; }
     main p { font-size: 1.1rem; }
     .buttons-in button { font-size: 1rem; padding: 14px 28px; }
+    .buttons-in { flex-direction: row; max-width: 600px; }
 }
 
-/* แท็บเล็ตแนวนอน */
 @media (min-width: 768px) {
     body { font-size: 16px; }
     main { padding: 40px 6%; }
@@ -103,7 +140,6 @@ main p {
     .buttons-in button { font-size: 1.1rem; padding: 15px 30px; }
 }
 
-/* เดสก์ท็อปเล็ก */
 @media (min-width: 1024px) {
     body { font-size: 18px; }
     main { padding: 50px 5%; }
@@ -112,7 +148,6 @@ main p {
     .buttons-in button { font-size: 1.2rem; padding: 16px 32px; }
 }
 
-/* เดสก์ท็อปกลาง */
 @media (min-width: 1280px) {
     body { font-size: 19px; }
     main { padding: 60px 4%; }
@@ -121,7 +156,6 @@ main p {
     .buttons-in button { font-size: 1.3rem; padding: 18px 36px; }
 }
 
-/* เดสก์ท็อปใหญ่ */
 @media (min-width: 1440px) {
     body { font-size: 20px; }
     main { padding: 70px 3%; }
@@ -130,11 +164,17 @@ main p {
     .buttons-in button { font-size: 1.4rem; padding: 20px 40px; }
 }
 
-/* หน้าจอ 4K+ */
 @media (min-width: 1920px) {
     body { font-size: 22px; }
     main { padding: 80px 2%; }
     main h1 { font-size: 4.5rem; }
     main p { font-size: 1.6rem; }
     .buttons-in button { font-size: 1.5rem; padding: 22px 44px; }
+}
+
+/* เพิ่ม CSS สำหรับการโหลดที่ราบรื่น */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
 }

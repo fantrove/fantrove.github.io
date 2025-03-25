@@ -1,31 +1,158 @@
+/* Modern Background System v4 */
+:root {
+  /* Background Variables */
+  --bg-primary: #F2F3F5;
+  --bg-secondary: #FFFFFF;
+  --bg-overlay: rgba(255, 255, 255, 0.8);
+  --bg-gradient-start: #F8F9FA;
+  --bg-gradient-end: #E9ECEF;
+  
+  /* Animation Timings */
+  --fade-in-duration: 800ms;
+  --fade-out-duration: 500ms;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Background Styles */
 body {
-    background: #F2F3F5;
-    background-repeat: repeat;
-    background-size: auto;
-    background-attachment: fixed;
+  background-color: var(--bg-primary);
+  background-image: 
+    linear-gradient(
+      120deg,
+      var(--bg-gradient-start) 0%,
+      var(--bg-gradient-end) 100%
+    );
+  background-attachment: fixed;
+  background-size: cover;
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
 }
 
-/* อนิเมชั่นขาเข้า */
-@keyframes fadeIn8 {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+/* Modern Gradient Mesh - Subtle and Light */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(
+      45deg,
+      transparent 48%,
+      rgba(255, 255, 255, 0.03) 50%,
+      transparent 52%
+    );
+  background-size: 30px 30px;
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* อนิเมชั่นขาออก */
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+/* Soft Background Animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-/* ใช้คลาสนี้เมื่อหน้าเว็บกำลังจะออก */
+/* Page Transitions */
+@keyframes fadeIn-1 {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut-1 {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Apply Animations */
+.page-content {
+  animation: fadeIn-1 var(--fade-in-duration) var(--transition-timing);
+}
+
 .fadeOut {
-    animation: fadeOut 0.5s forwards;
+  animation: fadeOut-1 var(--fade-out-duration) var(--transition-timing) forwards;
+}
+
+/* Performance Optimizations */
+.reduce-motion {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #121212;
+    --bg-secondary: #1E1E1E;
+    --bg-overlay: rgba(0, 0, 0, 0.8);
+    --bg-gradient-start: #1A1B1E;
+    --bg-gradient-end: #121212;
+  }
+
+  body::before {
+    background-image: 
+      linear-gradient(
+        45deg,
+        transparent 48%,
+        rgba(255, 255, 255, 0.015) 50%,
+        transparent 52%
+      );
+  }
+}
+
+/* Responsive Optimizations */
+@media (max-width: 768px) {
+  body::before {
+    background-size: 20px 20px;
+  }
+}
+
+/* High-Performance Mode */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fade-in-duration: 0ms;
+    --fade-out-duration: 0ms;
+  }
+
+  body {
+    background-image: none;
+    background-color: var(--bg-primary);
+  }
+
+  body::before {
+    display: none;
+  }
+}
+
+/* Print Mode */
+@media print {
+  body {
+    background: none !important;
+    background-color: white !important;
+  }
+
+  body::before {
+    display: none;
+  }
 }
