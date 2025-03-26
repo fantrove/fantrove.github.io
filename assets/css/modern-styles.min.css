@@ -114,7 +114,7 @@
 
 .nav-item .label {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--neutral-600);
   transition: color var(--transition-fast);
   white-space: nowrap;
@@ -122,18 +122,18 @@
 }
 
 /* Active State */
-.nav-item.active {
+.nav-item.actives {
   background: var(--primary-50);
 }
 
-.nav-item.active svg {
+.nav-item.actives svg {
   color: var(--primary-600);
   transform: scale(1.1);
 }
 
-.nav-item.active .label {
+.nav-item.actives .label {
   color: var(--primary-600);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* Hover & Press Effects */
@@ -162,12 +162,12 @@
     color: var(--neutral-400);
   }
 
-  .nav-item.active {
+  .nav-item.actives {
     background: rgba(255, 255, 255, 0.05);
   }
 
-  .nav-item.active svg,
-  .nav-item.active .label {
+  .nav-item.actives svg,
+  .nav-item.actives .label {
     color: var(--primary-400);
   }
 

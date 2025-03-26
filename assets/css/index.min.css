@@ -71,6 +71,8 @@ main p {
   max-width: 300px; /* จำกัดความกว้างของกลุ่มปุ่ม */
 }
 
+/* ... โค้ดส่วนอื่นๆ คงเดิม ... */
+
 .buttons-in button {
   padding: 12px 30px;
   font-size: 0.9rem;
@@ -80,46 +82,91 @@ main p {
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(39, 117, 252, 0.4);
-  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   width: 100%;
   max-width: 300px;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* เพิ่มเอฟเฟกต์เงาแบบพรีเมี่ยม */
+  box-shadow: 
+    0 2px 4px rgba(39, 117, 252, 0.1),
+    0 4px 8px rgba(39, 117, 252, 0.1),
+    0 8px 16px rgba(39, 117, 252, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 
-/* อัพเดทเอฟเฟกต์เงาที่เลื่อนตลอดเวลา */
+/* เอฟเฟกต์เงาเคลื่อนไหว */
 .buttons-in button:before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
-  width: 100%;
+  width: 200%;
   height: 100%;
   background: linear-gradient(
     120deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.2) 40%,
+    rgba(255, 255, 255, 0.2) 60%,
+    transparent 70%,
+    transparent 100%
   );
-  animation: shineEffect 3s infinite linear; /* เพิ่ม animation ที่ทำงานตลอดเวลา */
+  animation: premium-shine 4s infinite linear;
+  transform: skewX(-30deg);
 }
 
-/* เพิ่ม keyframes สำหรับเอฟเฟกต์เงาที่เลื่อน */
-@keyframes shineEffect {
+@keyframes premium-shine {
   0% {
-    left: -100%;
+    left: -200%;
   }
   100% {
     left: 100%;
   }
 }
 
+/* เอฟเฟกต์ Hover แบบพรีเมี่ยม */
+.buttons-in button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 8px rgba(39, 117, 252, 0.2),
+    0 8px 16px rgba(39, 117, 252, 0.2),
+    0 16px 32px rgba(39, 117, 252, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* เอฟเฟกต์เมื่อกดปุ่ม */
 .buttons-in button:active {
-  transform: scale(0.95);
-  box-shadow: 0 5px 15px rgba(39, 117, 252, 0.3);
+  transform: translateY(1px);
+  box-shadow: 
+    0 2px 4px rgba(39, 117, 252, 0.1),
+    0 4px 8px rgba(39, 117, 252, 0.1),
+    0 8px 16px rgba(39, 117, 252, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* เพิ่มเอฟเฟกต์เรืองแสงรอบปุ่ม */
+.buttons-in button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.buttons-in button:hover::after {
+  opacity: 1;
 }
 
 /* Media Queries คงเดิม แต่เพิ่มประสิทธิภาพ */
