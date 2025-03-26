@@ -138,171 +138,102 @@ h1 {
 }
 
 .buttons.buy {
- color: #FF0081;
- background-image:
-  /* เพิ่ม gradient layers */
-  linear-gradient(135deg,
-   rgba(116, 0, 255, 0.05) 0%,
-   rgba(59, 131, 255, 0.05) 50%,
-   rgba(116, 0, 255, 0.05) 100%),
-  /* เพิ่ม gradient แบบวงกลม */
-  radial-gradient(circle at center,
-   rgba(116, 0, 255, 0.03) 0%,
-   rgba(59, 131, 255, 0.03) 50%,
-   rgba(116, 0, 255, 0.03) 100%),
-  /* ไอคอนเดิม */
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FF0081' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
- background-blend-mode: overlay, soft-light, normal, normal;
- position: relative;
- overflow: hidden;
- -webkit-tap-highlight-color: transparent;
- user-select: none;
- transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
- animation: changingShadow 4s infinite linear;
- backdrop-filter: blur(5px);
- border: 1px solid rgba(116, 0, 255, 0.1);
+  color: #FF0081;
+  background-image: 
+    linear-gradient(
+      135deg,
+      rgba(116, 0, 255, 0.05) 0%,
+      rgba(59, 131, 255, 0.05) 100%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FF0081' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
+  background-blend-mode: overlay;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(116, 0, 255, 0.1);
+  box-shadow: 
+    0 2px 4px rgba(116, 0, 255, 0.1),
+    0 8px 16px rgba(116, 0, 255, 0.1),
+    0 16px 32px rgba(59, 131, 255, 0.08),
+    inset 0 0 2px rgba(116, 0, 255, 0.2);
 }
 
+/* ปรับปรุงเอฟเฟกต์เงาให้วิ่งไป-กลับ */
 .buttons.buy:before {
- content: '';
- position: absolute;
- top: 0;
- left: -100%;
- width: 200%;
- height: 100%;
- background: linear-gradient(120deg,
-   transparent 0%,
-   transparent 25%,
-   rgba(116, 0, 255, 0.3) 35%,
-   rgba(59, 131, 255, 0.3) 50%,
-   rgba(116, 0, 255, 0.3) 65%,
-   transparent 75%,
-   transparent 100%);
- animation: premium-shine 4s infinite linear;
- transform: skewX(-30deg);
- filter: blur(3px);
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(116, 0, 255, 0.2) 45%,
+    rgba(59, 131, 255, 0.2) 55%,
+    transparent 100%
+  );
+  /* เปลี่ยนเป็น animation แบบไป-กลับ */
+  animation: premium-shine-reverse 8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  transform: skewX(-25deg);
+  filter: blur(2px);
 }
 
 .buttons.buy::after {
- content: '';
- position: absolute;
- inset: 0;
- background:
-  /* เพิ่ม micro patterns */
-  repeating-linear-gradient(45deg,
-   rgba(116, 0, 255, 0.03) 0%,
-   rgba(59, 131, 255, 0.03) 1px,
-   transparent 1px,
-   transparent 2px),
-  /* เพิ่ม gradient วงกลมที่เคลื่อนไหว */
-  radial-gradient(circle at var(--x, 50%) var(--y, 50%),
-   rgba(116, 0, 255, 0.05) 0%,
-   rgba(59, 131, 255, 0.05) 30%,
-   transparent 60%);
- opacity: 0.7;
- z-index: -1;
- animation: moveGradient 8s infinite linear;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(116, 0, 255, 0.05) 0%,
+    rgba(59, 131, 255, 0.05) 50%,
+    transparent 100%
+  );
+  opacity: 0.5;
+  z-index: -1;
 }
 
-/* เพิ่ม animation สำหรับการเคลื่อนที่ของ gradient */
-@keyframes moveGradient {
- 0% {
-  --x: 0%;
-  --y: 0%;
- }
- 
- 25% {
-  --x: 100%;
-  --y: 0%;
- }
- 
- 50% {
-  --x: 100%;
-  --y: 100%;
- }
- 
- 75% {
-  --x: 0%;
-  --y: 100%;
- }
- 
- 100% {
-  --x: 0%;
-  --y: 0%;
- }
-}
-
-/* ส่วน keyframes อื่นๆ คงเดิม */
-@keyframes premium-shine {
- 0% {
-  left: -200%;
- }
- 
- 100% {
-  left: 100%;
- }
-}
-
-@keyframes changingShadow {
- 0% {
-  box-shadow:
-   0 2px 4px rgba(116, 0, 255, 0.1),
-   0 4px 8px rgba(116, 0, 255, 0.1),
-   0 8px 16px rgba(116, 0, 255, 0.1),
-   0 16px 32px rgba(59, 131, 255, 0.08),
-   0 32px 64px rgba(116, 0, 255, 0.05),
-   inset 0 0 2px rgba(116, 0, 255, 0.2);
- }
- 
- 30% {
-  box-shadow:
-   0 2px 4px rgba(116, 0, 255, 0.15),
-   0 4px 8px rgba(116, 0, 255, 0.15),
-   0 8px 16px rgba(116, 0, 255, 0.15),
-   0 16px 32px rgba(59, 131, 255, 0.12),
-   0 32px 64px rgba(116, 0, 255, 0.08),
-   inset 0 0 3px rgba(59, 131, 255, 0.3);
- }
- 
- 40% {
-  box-shadow:
-   0 2px 4px rgba(116, 0, 255, 0.2),
-   0 4px 8px rgba(116, 0, 255, 0.2),
-   0 8px 16px rgba(116, 0, 255, 0.2),
-   0 16px 32px rgba(59, 131, 255, 0.15),
-   0 32px 64px rgba(116, 0, 255, 0.1),
-   inset 0 0 4px rgba(116, 0, 255, 0.4);
- }
- 
- 60% {
-  box-shadow:
-   0 2px 4px rgba(59, 131, 255, 0.2),
-   0 4px 8px rgba(59, 131, 255, 0.2),
-   0 8px 16px rgba(59, 131, 255, 0.2),
-   0 16px 32px rgba(59, 131, 255, 0.15),
-   0 32px 64px rgba(59, 131, 255, 0.1),
-   inset 0 0 4px rgba(59, 131, 255, 0.4);
- }
- 
- 70% {
-  box-shadow:
-   0 2px 4px rgba(116, 0, 255, 0.15),
-   0 4px 8px rgba(116, 0, 255, 0.15),
-   0 8px 16px rgba(116, 0, 255, 0.15),
-   0 16px 32px rgba(59, 131, 255, 0.12),
-   0 32px 64px rgba(116, 0, 255, 0.08),
-   inset 0 0 3px rgba(116, 0, 255, 0.3);
- }
- 
- 100% {
-  box-shadow:
-   0 2px 4px rgba(116, 0, 255, 0.1),
-   0 4px 8px rgba(116, 0, 255, 0.1),
-   0 8px 16px rgba(116, 0, 255, 0.1),
-   0 16px 32px rgba(59, 131, 255, 0.08),
-   0 32px 64px rgba(116, 0, 255, 0.05),
-   inset 0 0 2px rgba(116, 0, 255, 0.2);
- }
+/* ปรับปรุง keyframes ให้มีการเคลื่อนที่ไป-กลับ */
+@keyframes premium-shine-reverse {
+  0% {
+    left: -150%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  45% {
+    left: 150%;
+    opacity: 1;
+  }
+  46% {
+    opacity: 0;
+  }
+  50% {
+    left: 150%;
+    transform: skewX(-25deg);
+  }
+  51% {
+    left: 150%;
+    transform: skewX(25deg);
+  }
+  52% {
+    opacity: 0;
+  }
+  65% {
+    opacity: 1;
+  }
+  95% {
+    left: -150%;
+    opacity: 1;
+  }
+  100% {
+    left: -150%;
+    opacity: 0;
+    transform: skewX(25deg);
+  }
 }
 
 .setting-item select:focus {
