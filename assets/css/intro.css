@@ -1,0 +1,90 @@
+/* ปรับปรุง CSS ให้ทำงานได้ดีขึ้น */
+.intro-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+  will-change: opacity; /* เพิ่มประสิทธิภาพการ transition */
+  backface-visibility: hidden; /* ช่วยเพิ่มประสิทธิภาพการแสดงผล */
+  touch-action: none;
+  transform: translateZ(0); /* เปิดใช้ hardware acceleration */
+}
+
+.intro-content {
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  animation: fade-in 3s forwards, gg 2.5s forwards;
+  transform: scale(0.7);
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gg {
+  0% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.intro-content h1 {
+  font-size: 2rem; /* ขนาดที่ยังคงสมดุล */
+  margin-bottom: 15px;
+  color: transparent; /* ซ่อนสีพื้นฐาน */
+  background: linear-gradient(90deg, #7400FF, #3B83FF); /* ไล่สีหลัก */
+  -webkit-background-clip: text; /* ให้ไล่สีอยู่ในตัวอักษร */
+  animation: gradient-animation 2.5s infinite linear, text-pop 3s forwards; /* เล่นวนไล่สีและปรับขนาดแบบพรีเมี่ยม */
+  text-shadow:
+    0 1px 3px rgba(116, 0, 255, 0.3),
+    0 4px 8px rgba(59, 131, 255, 0.3); /* ลดความซับซ้อนของเงา */
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes text-pop {
+  0% {
+    transform: scale(0.9); /* เริ่มเล็กลง */
+  }
+  100% {
+    transform: scale(1); /* ขยายขนาดกลับมาสมดุล */
+  }
+}
+
+.intro-content p {
+  font-size: 1.2rem; /* ขนาดข้อความอ่านง่าย */
+  color: transparent; /* ซ่อนสีพื้นฐาน */
+  background: linear-gradient(90deg, #7400FF, #3B83FF); /* สีแบบไล่สี */
+  -webkit-background-clip: text; /* สีอยู่ในตัวอักษร */
+  animation: gradient-animation 2.5s infinite linear; /* การไล่สีแบบไหลลื่น */
+  text-shadow:
+    0 1px 3px rgba(116, 0, 255, 0.2),
+    0 3px 6px rgba(59, 131, 255, 0.2); /* เงาเพียงเล็กน้อยเพื่อช่วยให้ข้อความชัดเจน */
+}
+
+.intro-container.fade-out {
+  opacity: 0;
+  pointer-events: none; /* ป้องกันการคลิกระหว่างที่จางหาย */
+}
