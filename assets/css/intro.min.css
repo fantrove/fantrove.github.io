@@ -24,7 +24,7 @@
   opacity: 0;
   will-change: transform, opacity;
   transform: translateZ(0);
-  animation: fade-in 3s forwards, gg 2.5s forwards;
+  animation: fade-in 2s forwards, gg 1.5s forwards;
   transform: scale(0.7);
 }
 
@@ -49,7 +49,7 @@
   color: transparent; /* ซ่อนสีพื้นฐาน */
   background: linear-gradient(90deg, #7400FF, #3B83FF); /* ไล่สีหลัก */
   -webkit-background-clip: text; /* ให้ไล่สีอยู่ในตัวอักษร */
-  animation: gradient-animation 2.5s infinite linear, text-pop 3s forwards; /* เล่นวนไล่สีและปรับขนาดแบบพรีเมี่ยม */
+  animation: gradient-animation 1.5s infinite linear, text-pop 1s forwards; /* เล่นวนไล่สีและปรับขนาดแบบพรีเมี่ยม */
   text-shadow:
     0 1px 3px rgba(116, 0, 255, 0.3),
     0 4px 8px rgba(59, 131, 255, 0.3); /* ลดความซับซ้อนของเงา */
@@ -78,7 +78,7 @@
   color: transparent; /* ซ่อนสีพื้นฐาน */
   background: linear-gradient(90deg, #7400FF, #3B83FF); /* สีแบบไล่สี */
   -webkit-background-clip: text; /* สีอยู่ในตัวอักษร */
-  animation: gradient-animation 2.5s infinite linear; /* การไล่สีแบบไหลลื่น */
+  animation: gradient-animation 1.5s infinite linear; /* การไล่สีแบบไหลลื่น */
   text-shadow:
     0 1px 3px rgba(116, 0, 255, 0.2),
     0 3px 6px rgba(59, 131, 255, 0.2); /* เงาเพียงเล็กน้อยเพื่อช่วยให้ข้อความชัดเจน */

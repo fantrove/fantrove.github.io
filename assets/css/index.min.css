@@ -128,19 +128,9 @@ main p {
   }
 }
 
-/* เอฟเฟกต์ Hover แบบพรีเมี่ยม */
-.buttons-in button:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 4px 8px rgba(39, 117, 252, 0.2),
-    0 8px 16px rgba(39, 117, 252, 0.2),
-    0 16px 32px rgba(39, 117, 252, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-}
-
 /* เอฟเฟกต์เมื่อกดปุ่ม */
 .buttons-in button:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
   box-shadow: 
     0 2px 4px rgba(39, 117, 252, 0.1),
     0 4px 8px rgba(39, 117, 252, 0.1),
