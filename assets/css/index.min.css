@@ -19,7 +19,7 @@ h1, h2, h3, p {
 }
 
 main {
-  padding: 40px 8%;
+  padding: 10px 10px 0 10px !important;
   text-align: center;
   flex-grow: 1;
   display: flex;
@@ -52,7 +52,7 @@ main p {
 }
 
 .img-d1 {
-  margin-top: 40px !important;
+  margin-top: 0px !important;
   width: 100% !important;
   height: auto !important;
   border-radius: 10px !important;

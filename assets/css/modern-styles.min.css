@@ -72,9 +72,9 @@
   left: 0;
   width: 100%;
   height: calc(var(--nav-height) + var(--safe-area-bottom));
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   justify-content: space-evenly;
   align-items: center;
