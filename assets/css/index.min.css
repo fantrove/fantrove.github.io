@@ -71,8 +71,6 @@ main p {
   max-width: 300px; /* จำกัดความกว้างของกลุ่มปุ่ม */
 }
 
-/* ... โค้ดส่วนอื่นๆ คงเดิม ... */
-
 .buttons-in button {
   padding: 12px 30px;
   font-size: 0.9rem;
