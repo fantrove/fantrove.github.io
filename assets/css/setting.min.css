@@ -126,6 +126,13 @@ h1 {
 .buttons {
  display: flex;
  gap: 15px;
+ background-image: 
+    repeating-linear-gradient(45deg, 
+      rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px,  /* เส้นบางๆ */
+      transparent 1px, transparent 10px  /* ช่องว่างระหว่างเส้น */
+    );
+      background-size: auto, cover;  /* ให้ SVG ใช้ขนาดเดิม, ลายเส้นเฉียงขยายเต็มพื้นหลัง */
+     background-repeat: no-repeat, repeat; /* ให้ SVG ไม่ซ้ำ แต่ลายเส้นเฉียงซ้ำเต็มพื้นที่ */
 }
 
 .buttons svg {
