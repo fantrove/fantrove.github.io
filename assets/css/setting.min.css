@@ -27,7 +27,7 @@
   --ui-shadow-focus: 0 0 0 3px rgba(147, 51, 234, 0.2);
   
   /* Transitions */
-  --ui-transition-speed-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ui-transition-speed-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --ui-transition-speed-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Spacing */
@@ -58,6 +58,10 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+ padding-bottom: 20px;
 }
 
 /* ส่วนการตั้งค่า */
@@ -105,7 +109,7 @@ h1 {
   border-radius: var(--ui-border-radius-medium);
   background-color: var(--ui-color-background-main);
   color: var(--ui-color-text-primary);
-  transition: all var(--ui-transition-speed-normal);
+  transition: all var(--ui-transition-speed-fast);
   outline: none;
   cursor: pointer;
   appearance: none;
@@ -126,13 +130,10 @@ h1 {
 .buttons {
  display: flex;
  gap: 15px;
- background-image: 
-    repeating-linear-gradient(45deg, 
-      rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px,  /* เส้นบางๆ */
-      transparent 1px, transparent 10px  /* ช่องว่างระหว่างเส้น */
-    );
-      background-size: auto, cover;  /* ให้ SVG ใช้ขนาดเดิม, ลายเส้นเฉียงขยายเต็มพื้นหลัง */
-     background-repeat: no-repeat, repeat; /* ให้ SVG ไม่ซ้ำ แต่ลายเส้นเฉียงซ้ำเต็มพื้นที่ */
+}
+
+.buttons:active, .setting-item.select:active, #language-button:active {
+  background-color: #F5F5F5;
 }
 
 .buttons svg {
@@ -312,12 +313,12 @@ h1 {
   border: none;
   text-align: left;
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .language-option:hover {
   background-color: var(--ui-color-purple-600);
   color: #ffffff;
-  transform: translateX(0.25rem);
 }
 
 .language-error {

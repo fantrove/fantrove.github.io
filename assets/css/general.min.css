@@ -10,7 +10,7 @@ body {
 /* Footer */
 footer {
     width: 100%; /* ขยายให้เต็มความกว้าง */
-    padding: 90px 0 !important; /* เพิ่ม padding ด้านบนและล่าง */
+    padding: 0 !important; /* เพิ่ม padding ด้านบนและล่าง */
     color: var(--footer-color);
     text-align: center;
     left: 0; /* ให้ footer เริ่มต้นจากขอบซ้ายของหน้าจอ */
@@ -24,7 +24,7 @@ footer {
 
 .footer-content p {
     font-size: 0.8rem;
-    margin-bottom: -15px !important;
+    line-height: 0.3 !important;
 }
 
 /* Mobile-First (ค่าเริ่มต้นใช้ได้กับมือถือ) */
