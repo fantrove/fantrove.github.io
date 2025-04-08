@@ -53,7 +53,7 @@ nav {
 /* ชื่อหน้า (Page Title) - ปรับปรุงใหม่ */
 .page-title {
   grid-column: 2; /* วางในคอลัมน์กลาง */
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   color: #FFFFFF;
   text-align: center; /* จัดข้อความกึ่งกลาง */

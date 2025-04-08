@@ -20,9 +20,9 @@
  
  /* Typography */
  --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
- --font-size-base: 14px;
+ --font-size-base: 15px;
  --font-weight-normal: 400;
- --font-weight-semi-bold: 600;
+ --font-weight-semi-bold: bold;
  
  /* Spacing */
  --spacing-xs: 10px;
@@ -95,7 +95,7 @@ main {
 
 .content,
 .developer-name {
- font-size: 12px;
+ font-size: 13px;
  color: var(--color-text-primary);
  font-weight: var(--font-weight-normal);
  margin-top: var(--spacing-xs);

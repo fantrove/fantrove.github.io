@@ -122,23 +122,23 @@
 }
 
 /* Active State */
-.nav-item.actives {
+.nav-item.active-1 {
   background: var(--primary-50);
 }
 
-.nav-item.actives svg {
+.nav-item.active-1 svg {
   color: var(--primary-600);
   transform: scale(1.1);
 }
 
-.nav-item.actives .label {
+.nav-item.active-1 .label {
   color: var(--primary-600);
   font-weight: 700;
 }
 
 /* Hover & Press Effects */
 @media (hover: hover) {
-  .nav-item:hover:not(.active) {
+  .nav-item:hover:not(.active-1) {
     background: var(--neutral-100);
   }
 }
@@ -162,12 +162,12 @@
     color: var(--neutral-400);
   }
 
-  .nav-item.actives {
+  .nav-item.active-1 {
     background: rgba(255, 255, 255, 0.05);
   }
 
-  .nav-item.actives svg,
-  .nav-item.actives .label {
+  .nav-item.active-1 svg,
+  .nav-item.active-2 .label {
     color: var(--primary-400);
   }
 
