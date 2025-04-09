@@ -113,8 +113,8 @@ main {
   touch-action: manipulation;
 }
 
-.card:active {
-  background: #F5F5F5;
+.card:active, .button-content:active {
+  background: #E6E6E6;
 }
 
 .card:hover, .button-content:hover {
