@@ -87,4 +87,5 @@
 .intro-container.fade-out {
   opacity: 0;
   pointer-events: none; /* ป้องกันการคลิกระหว่างที่จางหาย */
+  transform: translateZ(0);
 }

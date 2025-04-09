@@ -50,11 +50,11 @@ body {
  font-family: var(--font-primary);
  height: 100vh;
  color: var(--color-text-primary);
- margin-top: var(--spacing-lg);
+ margin-top: var(--spacing-sm);
 }
 
 main {
- padding: var(--spacing-xl) var(--spacing-sm) 140px;
+ padding: var(--spacing-sm) 20px 50px;
  max-width: 900px;
  margin: 0 auto;
 }
