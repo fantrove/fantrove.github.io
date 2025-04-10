@@ -114,7 +114,7 @@ main {
 }
 
 .card:active, .button-content:active {
-  background: #E6E6E6;
+  background: #F1F4FF;
 }
 
 .card:hover, .button-content:hover {
