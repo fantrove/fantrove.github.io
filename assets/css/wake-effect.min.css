@@ -8,16 +8,16 @@
 
 :root {
     /* ตัวแปรหลัก - เพิ่มความพรีเมี่ยม */
-    --wave-opacity-start: 0.58;
+    --wave-opacity-start: 0.48;
     --wave-opacity-mid: 0.35;
     --wave-opacity-hold: 0.22;
     --wave-opacity-end: 0;
-    --wave-scale: 3.15;
+    --wave-scale: 2;
     
     /* ระบบจังหวะการเคลื่อนไหว - เร็วขึ้น */
-    --wave-expand-time: 780ms;
-    --wave-hold-time: 850ms;  /* ลดลงจาก 1100ms */
-    --wave-fade-time: 420ms;  /* ลดลงจาก 580ms */
+    --wave-expand-time: 800ms;
+    --wave-hold-time: 450ms;  /* ลดลงจาก 1100ms */
+    --wave-fade-time: 320ms;  /* ลดลงจาก 580ms */
     
     /* คุณสมบัติการแสดงผล */
     --wave-back-color: #00000058;
