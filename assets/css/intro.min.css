@@ -44,7 +44,7 @@
 }
 
 .intro-content h1 {
-  font-size: 2rem; /* ขนาดที่ยังคงสมดุล */
+  font-size: 26px; /* ขนาดที่ยังคงสมดุล */
   margin-bottom: 15px;
   color: transparent; /* ซ่อนสีพื้นฐาน */
   background: linear-gradient(90deg, #7400FF, #3B83FF); /* ไล่สีหลัก */
@@ -74,7 +74,7 @@
 }
 
 .intro-content p {
-  font-size: 1.2rem; /* ขนาดข้อความอ่านง่าย */
+  font-size: 16px; /* ขนาดข้อความอ่านง่าย */
   color: transparent; /* ซ่อนสีพื้นฐาน */
   background: linear-gradient(90deg, #7400FF, #3B83FF); /* สีแบบไล่สี */
   -webkit-background-clip: text; /* สีอยู่ในตัวอักษร */
