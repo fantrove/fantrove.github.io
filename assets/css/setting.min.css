@@ -52,7 +52,6 @@
 
 /* พื้นฐานของเว็บไซต์ */
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   padding: 5rem 1.25rem 1.25rem;
   color: var(--ui-color-text-primary);
   line-height: 1.5;
@@ -110,6 +109,7 @@ h1 {
   background-color: var(--ui-color-background-main);
   color: var(--ui-color-text-primary);
   transition: all var(--ui-transition-speed-fast);
+  font-family: 'IBM Plex Sans', sans-serif;
   outline: none;
   cursor: pointer;
   appearance: none;
@@ -310,6 +310,7 @@ h1 {
   transition: all var(--ui-transition-speed-fast);
   cursor: pointer;
   border: none;
+  font-family: 'Manrope', 'Noto Sans Thai', sans-serif;
   text-align: left;
   -webkit-tap-highlight-color: transparent;
   user-select: none;

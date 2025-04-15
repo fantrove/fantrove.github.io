@@ -57,6 +57,7 @@ nav {
   font-weight: bold;
   color: #FFFFFF;
   text-align: center; /* จัดข้อความกึ่งกลาง */
+  font-family: 'Manrope', 'Noto Sans Thai', sans-serif;
   padding: 0 10px;
   width: 100%;
   box-sizing: border-box;

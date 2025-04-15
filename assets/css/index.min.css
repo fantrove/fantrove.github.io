@@ -1,16 +1,9 @@
 @import url('variables.min.css');
 
 body {
-  font-family: 'Inter', 'Arial', sans-serif; /* เปลี่ยนเป็น Inter font ที่อ่านง่ายกว่า */
-  display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  flex-direction: column;
-  overflow-x: hidden;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased; /* เพิ่มการแสดงผลตัวอักษรที่คมชัดขึ้น */
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, p {
@@ -19,7 +12,7 @@ h1, h2, h3, p {
 }
 
 main {
-  padding: 10px 10px 0 10px !important;
+  padding: 40px 10px 130px 10px !important;
   text-align: center;
   flex-grow: 1;
   display: flex;
@@ -94,6 +87,7 @@ main p {
     0 4px 8px rgba(39, 117, 252, 0.1),
     0 8px 16px rgba(39, 117, 252, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
 /* เอฟเฟกต์เงาเคลื่อนไหว */

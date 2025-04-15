@@ -47,7 +47,6 @@
    ========================================================================== */
 
 body {
- font-family: var(--font-primary);
  height: 100vh;
  color: var(--color-text-primary);
  margin-top: var(--spacing-sm);
@@ -79,6 +78,7 @@ main {
  background-color: var(--color-background);
  border-radius: var(--border-radius-lg);
  box-shadow: var(--shadow-card);
+ line-height: 1.2em !important;
 }
 
 /* Typography Components */

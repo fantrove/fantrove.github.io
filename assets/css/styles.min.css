@@ -30,7 +30,7 @@
   
   /* Component Specific */
   --app-card-padding: 16px;
-  --app-card-radius: 16px;
+  --app-card-radius: 12px;
   --app-button-radius: 12px;
   --app-pill-radius: 100px;
 }
@@ -45,7 +45,7 @@ main {
   padding: 8px 16px;
   background: var(--app-surface-primary);
   color: var(--app-text-body);
-  border: 1px solid var(--app-border-subtle);
+  border: 0.5px solid var(--app-border-subtle);
   border-radius: var(--app-pill-radius);
   font-size: 13.5px;
   font-weight: 500;
@@ -55,6 +55,7 @@ main {
   transition: background var(--app-motion-quick), border-color var(--app-motion-quick), color var(--app-motion-quick);
   letter-spacing: 0.01em;
   /* ไม่ใช้ backdrop-filter เพื่อลดการใช้ RAM */
+  font-family: 'Manrope', 'Noto Sans Thai', sans-serif;
 }
 
 .button-sub:hover {
@@ -82,10 +83,9 @@ main {
   padding: 14px 24px;
   background-color: var(--app-surface-primary);
   color: var(--app-theme-indigo);
-  border: 1px solid var(--app-theme-indigo-border);
+  border: 0.5px solid var(--app-theme-indigo-border);
   border-radius: var(--app-button-radius);
   cursor: pointer;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 14px;
   text-align: center;
   -webkit-tap-highlight-color: transparent;
@@ -99,16 +99,16 @@ main {
   justify-content: flex-start;
   width: 100%;
   max-width: 500px;
-  margin: 0px 0px;
+  margin: 5px 0px;
   padding: var(--app-card-padding);
   cursor: pointer;
   border-radius: var(--app-card-radius);
-  border-top: 1px solid var(--app-theme-indigo-border);
-  border-bottom: 1px solid var(--app-theme-indigo-border);
-  background: var(--app-surface-primary);
+  border: 0.5px solid var(--app-theme-indigo-border);
+  background: rgba(255, 255, 255, 1);
   user-select: none;
   transition: border-color var(--app-motion-natural), box-shadow var(--app-motion-natural), background 200ms cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -139,7 +139,6 @@ main {
 }
 
 .card-title {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--app-text-heading);

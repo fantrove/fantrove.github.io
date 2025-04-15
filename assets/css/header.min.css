@@ -12,7 +12,6 @@
 }
 
 body {
- font-family: Arial, sans-serif;
  margin: 0;
  padding: 0;
  overflow-x: hidden;
@@ -20,7 +19,6 @@ body {
 
 /* Header Container */
 header {
-    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,10 +28,11 @@ header {
     left: 0;
     z-index: 9000;
     background: var(--main-color);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(180, 111, 255, 1);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     touch-action: none;
     margin-bottom: 10px;
+    border-radius: 0 0 15px 15px;
 }
 
 /* Logo Styles */
@@ -46,7 +45,7 @@ header {
     padding: var(--logo-padding) 0 4.5px var(--logo-padding);
     white-space: nowrap;
     color: var(--text-color);
-    text-shadow: 0 2px 6px rgba(255, 255, 255, 0.7);
+    text-shadow: 0 2px 6px rgba(255, 255, 255, 1);
     pointer-events: none;
     align-self: flex-start;
     margin-left: 14px;
@@ -86,8 +85,7 @@ nav ul {
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
-    border-top: var(--navbar-border);
-    border-bottom: var(--navbar-border);
+    border-top: 0.8px solid #B46FFF;
     touch-action: pan-x;
 }
 
@@ -110,6 +108,7 @@ nav ul li button {
     color: var(--nav-text-default);
     font-size: 13px;
     font-weight: 500;
+    font-family: 'Manrope', 'Noto Sans Thai', sans-serif;
     cursor: pointer;
     white-space: nowrap;
     position: relative;
