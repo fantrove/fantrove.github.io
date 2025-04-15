@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "api": "U+1F600",
+      "text": "😀",
+      "collection": "emoji",
+      "category": "face"
+    },
+    {
+      "api": "U+2665",
+      "text": "♥",
+      "collection": "symbol",
+      "category": "heart"
+    }
+  ]
+}
