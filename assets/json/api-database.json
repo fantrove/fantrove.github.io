@@ -1,16 +1,72 @@
 {
-  "items": [
-    {
-      "api": "U+1F600",
-      "text": "😀",
-      "collection": "emoji",
-      "category": "face"
-    },
-    {
-      "api": "U+2665",
-      "text": "♥",
-      "collection": "symbol",
-      "category": "heart"
-    }
-  ]
+  "emoji": {
+    "type": "emoji",
+    "category": [
+      {
+        "name": "face",
+        "data": [
+          {
+            "api": "U+1F600",
+            "text": "😀"
+          },
+          {
+            "api": "U+1F602",
+            "text": "😂"
+          },
+          {
+            "api": "U+1F609",
+            "text": "😉"
+          }
+        ]
+      },
+      {
+        "name": "animal",
+        "data": [
+          {
+            "api": "U+1F436",
+            "text": "🐶"
+          },
+          {
+            "api": "U+1F431",
+            "text": "🐱"
+          }
+        ]
+      }
+    ]
+  },
+  "symbol": {
+    "type": "symbol",
+    "category": [
+      {
+        "name": "heart",
+        "data": [
+          {
+            "api": "U+2665",
+            "text": "♥"
+          },
+          {
+            "api": "U+2764",
+            "text": "❤"
+          }
+        ]
+      },
+      {
+        "name": "arrows",
+        "data": [
+          {
+            "api": "U+2190",
+            "text": "←"
+          },
+          {
+            "api": "U+2192",
+            "text": "→"
+          },
+          {
+            "api": "U+21D2",
+            "text": "⇒"
+          }
+        ]
+      }
+    ]
+  }
 }
