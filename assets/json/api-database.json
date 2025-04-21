@@ -3,19 +3,19 @@
     "type": "emoji",
     "category": [
       {
-        "name": "face",
+        "name": "Smileys & Emotion",
         "data": [
           {
             "api": "U+1F600",
             "text": "😀"
           },
           {
-            "api": "U+1F602",
-            "text": "😂"
+            "api": "U+1F603",
+            "text": "😃"
           },
           {
-            "api": "U+1F609",
-            "text": "😉"
+            "api": "U+1F604",
+            "text": "😄"
           }
         ]
       },
