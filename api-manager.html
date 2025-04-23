@@ -28,7 +28,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label><i class="fas fa-layer-group"></i> ประเภทหลัก:</label>
-                            <select id="mainType" class="form-control">
+                            <select id="mainType" class="global-form">
                                 <option value="emoji">Emoji</option>
                                 <option value="symbol">Symbol</option>
                             </select>
@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <label><i class="fas fa-tags"></i> หมวดหมู่:</label>
                             <div class="category-control">
-                                <select id="category" class="form-control"></select>
+                                <select id="category" class="global-form"></select>
                                 <button id="addNewCategory" class="btn btn-secondary" title="เพิ่มหมวดหมู่ใหม่">
                                     <i class="fas fa-folder-plus"></i>
                                 </button>
@@ -44,12 +44,12 @@
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-font"></i> ข้อความ/สัญลักษณ์:</label>
-                            <input type="text" id="symbolText" class="form-control" 
+                            <input type="text" id="symbolText" class="global-form" 
                                    placeholder="ใส่สัญลักษณ์หรือข้อความ">
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-code"></i> รหัส API:</label>
-                            <input type="text" id="apiCode" class="form-control" 
+                            <input type="text" id="apiCode" class="global-form" 
                                    placeholder="เช่น U+1F600">
                             <div class="api-format-hint">รูปแบบ: U+XXXX หรือ \uXXXX</div>
                         </div>
@@ -94,7 +94,7 @@
                                     <i class="fas fa-filter"></i>
                                     กรองตามประเภท:
                                 </label>
-                                <select id="filterType" class="filter-select">
+                                <select id="filterType" class="global-form">
                                     <option value="all">แสดงทั้งหมด</option>
                                     <option value="emoji">Emoji เท่านั้น</option>
                                     <option value="symbol">Symbol เท่านั้น</option>
@@ -105,7 +105,7 @@
                                     <i class="fas fa-tags"></i>
                                     กรองตามหมวดหมู่:
                                 </label>
-                                <select id="filterCategory" class="filter-select">
+                                <select id="filterCategory" class=" global-form">
                                     <option value="all">ทุกหมวดหมู่</option>
                                 </select>
                             </div>
