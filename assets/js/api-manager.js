@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('ไม่สามารถโหลดข้อมูลได้:', error);
             showToast('ไม่สามารถโหลดข้อมูลได้', 'error');
-            // สร้างข้อมูลเริ่มต้นถ้าไม่สามารถโหลดได้
             apiData = {
                 emoji: { category: [] },
                 symbol: { category: [] }
@@ -271,6 +270,8 @@ document.addEventListener('DOMContentLoaded', function() {
         items.forEach(item => {
             item.addEventListener('dragstart', handleDragStart);
             item.addEventListener('dragend', handleDragEnd);
+            item.addEventListener('dragenter', handleDragEnter);
+            item.addEventListener('dragleave', handleDragLeave);
         });
 
         containers.forEach(container => {
@@ -279,9 +280,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // จัดการการลากและวาง
+    // จัดการเมื่อเริ่มลาก
     function handleDragStart(e) {
         e.target.classList.add('dragging');
+        e.target.style.opacity = '0.6';
         e.dataTransfer.effectAllowed = 'move';
         const container = e.target.closest('.data-items');
         e.dataTransfer.setData('text/plain', JSON.stringify({
@@ -291,15 +293,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }));
     }
 
-    function handleDragEnd(e) {
-        e.target.classList.remove('dragging');
+    // จัดการเมื่อลากผ่านรายการอื่น
+    function handleDragEnter(e) {
+        e.preventDefault();
+        if (e.target.classList.contains('data-item') && !e.target.classList.contains('dragging')) {
+            e.target.style.opacity = '0.4';
+            e.target.classList.add('drop-target');
+        }
     }
 
+    // จัดการเมื่อลากออกจากรายการ
+    function handleDragLeave(e) {
+        e.preventDefault();
+        if (e.target.classList.contains('data-item')) {
+            e.target.style.opacity = '1';
+            e.target.classList.remove('drop-target');
+        }
+    }
+
+    // จัดการเมื่อลากอยู่เหนือพื้นที่ที่สามารถวางได้
     function handleDragOver(e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
+        
+        const container = e.target.closest('.data-items');
+        if (!container) return;
+
+        const draggingItem = document.querySelector('.dragging');
+        if (!draggingItem) return;
+
+        const items = [...container.querySelectorAll('.data-item:not(.dragging)')];
+        const afterElement = items.reduce((closest, item) => {
+            const box = item.getBoundingClientRect();
+            const offset = e.clientY - (box.top + box.height / 2);
+            
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: item };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+        items.forEach(item => {
+            item.style.opacity = '1';
+            item.classList.remove('drop-target');
+        });
+        
+        if (afterElement) {
+            afterElement.style.opacity = '0.4';
+            afterElement.classList.add('drop-target');
+        }
     }
 
+    // จัดการเมื่อวางรายการ
     function handleDrop(e) {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
@@ -307,24 +353,43 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!targetContainer) return;
 
+        document.querySelectorAll('.data-item').forEach(item => {
+            item.style.opacity = '1';
+            item.classList.remove('drop-target');
+        });
+
         const sourceType = data.type;
         const sourceCategory = data.category;
         const targetType = targetContainer.dataset.type;
         const targetCategory = targetContainer.dataset.category;
         
-        moveItem(sourceType, sourceCategory, parseInt(data.index), targetType, targetCategory);
+        const dropTarget = e.target.closest('.data-item');
+        const targetIndex = dropTarget ? 
+            Array.from(targetContainer.children).indexOf(dropTarget) : 
+            targetContainer.children.length;
+        
+        moveItem(sourceType, sourceCategory, parseInt(data.index), targetType, targetCategory, targetIndex);
         updateUI();
     }
 
+    // จัดการเมื่อการลากสิ้นสุด
+    function handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('.data-item').forEach(item => {
+            item.style.opacity = '1';
+            item.classList.remove('drop-target');
+        });
+    }
+
     // ย้ายรายการ
-    function moveItem(fromType, fromCategory, fromIndex, toType, toCategory) {
+    function moveItem(fromType, fromCategory, fromIndex, toType, toCategory, toIndex) {
         const sourceCat = apiData[fromType].category.find(c => c.name === fromCategory);
         const targetCat = apiData[toType].category.find(c => c.name === toCategory);
         
         if (sourceCat && sourceCat.data && targetCat) {
             if (!targetCat.data) targetCat.data = [];
             const [item] = sourceCat.data.splice(fromIndex, 1);
-            targetCat.data.push(item);
+            targetCat.data.splice(toIndex, 0, item);
         }
     }
 
