@@ -8,160 +8,147 @@
     <link rel="stylesheet" href="/assets/css/api-manager.css">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
+    <div class="container">
+        <header>
             <h1><i class="fas fa-database"></i> ระบบจัดการ API Database</h1>
-            <div class="header-controls">
-                <button id="themeSwitcher" class="theme-switcher" title="สลับธีม">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
+            <button id="themeSwitcher" title="สลับธีม">
+                <i class="fas fa-moon"></i>
+            </button>
         </header>
 
-        <div class="main-content">
+        <main>
             <!-- ส่วนเพิ่มข้อมูลใหม่ -->
-            <div class="add-section card">
-                <div class="card-header">
-                    <h2><i class="fas fa-plus-circle"></i> เพิ่มข้อมูลใหม่</h2>
-                </div>
-                <div class="card-body">
+            <section class="panel">
+                <h2><i class="fas fa-plus-circle"></i> เพิ่มข้อมูลใหม่</h2>
+                <div class="panel-content">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-layer-group"></i> ประเภทหลัก:</label>
+                        <div class="form-item">
+                            <label><i class="fas fa-layer-group"></i> ประเภทหลัก</label>
                             <select id="mainType" class="global-form">
                                 <option value="emoji">Emoji</option>
                                 <option value="symbol">Symbol</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-tags"></i> หมวดหมู่:</label>
-                            <div class="category-control">
+                        <div class="form-item">
+                            <label><i class="fas fa-tags"></i> หมวดหมู่</label>
+                            <div class="input-group">
                                 <select id="category" class="global-form"></select>
-                                <button id="addNewCategory" class="btn btn-secondary" title="เพิ่มหมวดหมู่ใหม่">
+                                <button id="addNewCategory" title="เพิ่มหมวดหมู่ใหม่">
                                     <i class="fas fa-folder-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-font"></i> ข้อความ/สัญลักษณ์:</label>
+                        <div class="form-item">
+                            <label><i class="fas fa-font"></i> ข้อความ/สัญลักษณ์</label>
                             <input type="text" id="symbolText" class="global-form" 
                                    placeholder="ใส่สัญลักษณ์หรือข้อความ">
                         </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-code"></i> รหัส API:</label>
+                        <div class="form-item">
+                            <label><i class="fas fa-code"></i> รหัส API</label>
                             <input type="text" id="apiCode" class="global-form" 
                                    placeholder="เช่น U+1F600">
-                            <div class="api-format-hint">รูปแบบ: U+XXXX หรือ \uXXXX</div>
+                            <span class="hint">รูปแบบ: U+XXXX หรือ \uXXXX</span>
                         </div>
                     </div>
-                    <div class="form-actions">
-                        <button id="addNewItem" class="btn btn-primary">
+                    <div class="button-group">
+                        <button id="addNewItem" class="btn-primary">
                             <i class="fas fa-plus"></i> เพิ่มข้อมูล
                         </button>
-                        <button id="clearForm" class="btn btn-secondary">
+                        <button id="clearForm">
                             <i class="fas fa-eraser"></i> ล้างฟอร์ม
                         </button>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- ส่วนแสดงข้อมูล -->
-            <div class="data-section card">
-                <div class="card-header">
+            <section class="panel">
+                <div class="panel-header">
                     <h2><i class="fas fa-table"></i> ข้อมูลทั้งหมด</h2>
-                    <div class="card-actions">
-                        <button id="copyJSON" class="btn btn-secondary" title="คัดลอก JSON">
+                    <div class="button-group">
+                        <button id="copyJSON" title="คัดลอก JSON">
                             <i class="fas fa-copy"></i> คัดลอก JSON
                         </button>
-                        <button id="exportCSV" class="btn btn-secondary" title="ส่งออกเป็น CSV">
+                        <button id="exportCSV" title="ส่งออกเป็น CSV">
                             <i class="fas fa-file-export"></i> ส่งออก CSV
                         </button>
                     </div>
                 </div>
 
-                <!-- ส่วนค้นหาและตัวกรอง -->
-                <div class="data-controls">
-                    <div class="search-filter-bar">
-                        <div class="search-box">
-                            <i class="fas fa-search search-icon"></i>
+                <div class="search-section">
+                    <div class="search-container">
+                        <div class="search-input">
+                            <i class="fas fa-search"></i>
                             <input type="text" id="searchInput" 
                                    placeholder="ค้นหาข้อความหรือรหัส API..."
-                                   title="พิมพ์คำที่ต้องการค้นหา">
+                                   class="global-form">
                         </div>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="filterType" class="filter-label">
-                                    <i class="fas fa-filter"></i>
-                                    กรองตามประเภท:
-                                </label>
+                        <div class="filter-group">
+                            <div class="form-item">
+                                <label><i class="fas fa-filter"></i> กรองตามประเภท</label>
                                 <select id="filterType" class="global-form">
                                     <option value="all">แสดงทั้งหมด</option>
                                     <option value="emoji">Emoji เท่านั้น</option>
                                     <option value="symbol">Symbol เท่านั้น</option>
                                 </select>
                             </div>
-                            <div class="filter-group">
-                                <label for="filterCategory" class="filter-label">
-                                    <i class="fas fa-tags"></i>
-                                    กรองตามหมวดหมู่:
-                                </label>
-                                <select id="filterCategory" class=" global-form">
+                            <div class="form-item">
+                                <label><i class="fas fa-tags"></i> กรองตามหมวดหมู่</label>
+                                <select id="filterCategory" class="global-form">
                                     <option value="all">ทุกหมวดหมู่</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="filter-info">
-                        <span class="filter-tip">
-                            <i class="fas fa-info-circle"></i>
-                            คำแนะนำ: เลือกตัวกรองเพื่อแสดงเฉพาะข้อมูลที่ต้องการ หรือค้นหาด้วยคำสำคัญ
-                        </span>
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <span>คำแนะนำ: เลือกตัวกรองเพื่อแสดงเฉพาะข้อมูลที่ต้องการ หรือค้นหาด้วยข้อความ</span>
                     </div>
                 </div>
 
-                <!-- ส่วนแสดงสถิติ -->
-                <div class="data-stats">
-                    <div class="stat-item stat-emoji" title="จำนวน Emoji ทั้งหมด">
+                <div class="stats-grid">
+                    <div class="stat-box emoji">
                         <i class="fas fa-smile"></i>
-                        <div class="stat-content">
-                            <div class="stat-label">Emoji</div>
-                            <div class="stat-value"><span id="emojiCount">0</span> รายการ</div>
+                        <div>
+                            <span>Emoji</span>
+                            <strong id="emojiCount">0</strong>
+                            <span>รายการ</span>
                         </div>
                     </div>
-                    <div class="stat-item stat-symbol" title="จำนวน Symbol ทั้งหมด">
+                    <div class="stat-box symbol">
                         <i class="fas fa-infinity"></i>
-                        <div class="stat-content">
-                            <div class="stat-label">Symbol</div>
-                            <div class="stat-value"><span id="symbolCount">0</span> รายการ</div>
+                        <div>
+                            <span>Symbol</span>
+                            <strong id="symbolCount">0</strong>
+                            <span>รายการ</span>
                         </div>
                     </div>
-                    <div class="stat-item stat-category" title="จำนวนหมวดหมู่ทั้งหมด">
+                    <div class="stat-box category">
                         <i class="fas fa-folder"></i>
-                        <div class="stat-content">
-                            <div class="stat-label">หมวดหมู่</div>
-                            <div class="stat-value"><span id="categoryCount">0</span> หมวด</div>
+                        <div>
+                            <span>หมวดหมู่</span>
+                            <strong id="categoryCount">0</strong>
+                            <span>หมวด</span>
                         </div>
                     </div>
                 </div>
 
-                <div id="dataContainer" class="data-container">
-                    <!-- ข้อมูลจะถูกเพิ่มที่นี่ด้วย JavaScript -->
-                </div>
-            </div>
-        </div>
+                <div id="dataContainer" class="data-list"></div>
+            </section>
+        </main>
     </div>
 
-    <!-- Modal สำหรับแสดงรายละเอียด -->
+    <!-- Modal -->
     <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <span class="close" title="ปิด">&times;</span>
+        <div class="modal-box">
+            <button class="close" title="ปิด">&times;</button>
             <h3>รายละเอียดข้อมูล</h3>
             <div id="modalContent"></div>
         </div>
     </div>
 
     <!-- Toast notifications -->
-    <div id="toastContainer" class="toast-container"></div>
+    <div id="toastContainer"></div>
 
     <script src="/assets/js/api-manager.js"></script>
 </body>
