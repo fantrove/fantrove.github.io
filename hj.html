@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สนับสนุนเรา</title>
+    <meta name="theme-color" content="#ff69b4">
+    <meta name="msapplication-navbutton-color" content="#ff69b4">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#ff69b4">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- หน้าหลัก -->
+    <div id="main-page" class="page active">
+        <h1>ขอบคุณที่คุณสนใจสนับสนุนเรา!</h1>
+        <p>คุณไม่จำเป็นต้อง donate อะไรเพิ่มเติม เราแค่ขอบคุณที่คุณเข้ามาดู</p>
+        <div class="button-container">
+            <button onclick="showConfirmation()" class="btn-primary">ฉันยินดี donate</button>
+            <button onclick="goBack()" class="btn-secondary">ฉันแค่เข้ามาดูเฉยๆ</button>
+        </div>
+    </div>
+
+    <!-- หน้ายืนยัน -->
+    <div id="confirmation-page" class="page">
+        <h2>ว้าว! คุณอยากจะ donate ให้เราจริงๆ หรอ?</h2>
+        <div class="button-container">
+            <button onclick="showPaymentMethods()" class="btn-primary">ใช่</button>
+            <button onclick="goBack()" class="btn-secondary">ขอโทษ, ฉันไม่ได้ตั้งใจ</button>
+        </div>
+    </div>
+
+    <!-- หน้าเลือกช่องทางการสนับสนุน -->
+    <div id="payment-methods-page" class="page">
+        <h2>เลือกช่องทางการสนับสนุน</h2>
+        <p>คุณสามารถเลือกสนับสนุนเราได้ทั้งแบบครั้งเดียวหรือรายเดือน</p>
+        <div class="payment-options">
+            <!-- ข้อมูลช่องทางการชำระเงินจะถูกเพิ่มโดย JavaScript -->
+        </div>
+        <div class="button-container">
+            <button onclick="showThanks()" class="btn-primary">ตกลง, ฉันจะสนับสนุน</button>
+            <button onclick="goBack()" class="btn-secondary">ย้อนกลับ</button>
+        </div>
+    </div>
+
+    <!-- หน้าขอบคุณ -->
+    <div id="thanks-page" class="page">
+        <h2>ขอบคุณที่สนับสนุนเรา!</h2>
+        <p>ถึงแม้การโอนจะสำเร็จหรือไม่สำเร็จ เราก็ขอขอบคุณจริงๆ</p>
+        <div class="button-container">
+            <button onclick="startRocketAnimation()" class="btn-primary">🫠 เอาล่ะ ลุยเล้ย!!</button>
+            <button onclick="showPaymentMethods()" class="btn-secondary">ขอคิดดูก่อน</button>
+        </div>
+    </div>
+
+    <!-- Animation Overlay -->
+    <div id="animation-overlay" class="animation-overlay">
+        <div class="stars"></div>
+        <div id="rocket" class="rocket">
+            <div class="rocket-body">🚀</div>
+            <div class="rocket-exhaust">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

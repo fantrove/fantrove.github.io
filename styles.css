@@ -1,0 +1,325 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* ปิด highlight สีฟ้าบนอุปกรณ์สัมผัส */
+}
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.page {
+    display: none;
+    opacity: 0;
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    transition: opacity 0.4s ease;
+}
+
+.page.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 16px 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 500;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 200px;
+}
+
+.btn-primary {
+    background-color: #ff69b4; /* สีชมพูหลัก */
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #404040;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #ff5ca8; /* สีชมพูเข้มขึ้นเมื่อ hover */
+    transform: translateY(-2px);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 50px auto;
+    max-width: 900px;
+}
+
+.payment-option {
+    padding: 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fff0f7; /* พื้นหลังสีชมพูอ่อน */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    border: 2px solid transparent;
+}
+
+.payment-option:hover {
+    background-color: #ffe6f3; /* พื้นหลังสีชมพูอ่อนกว่าเมื่อ hover */
+    transform: translateY(-3px);
+}
+
+.payment-option.selected {
+    background-color: #fff0f7;
+    border: 2px solid #ff69b4;
+}
+
+.payment-icon {
+    font-size: 46px;
+    margin-bottom: 10px;
+}
+
+/* อนิเมชันจรวด */
+.animation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1a0011; /* พื้นหลังดำอมชมพู */
+    visibility: hidden;
+    opacity: 0;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.animation-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffd1e8, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #ffd1e8, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, #ffd1e8, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #ffd1e8, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 130px 80px, #ffd1e8, rgba(0,0,0,0));
+    background-repeat: repeat;
+    animation: rotateStars 240s linear infinite;
+}
+
+.rocket {
+    position: fixed;
+    font-size: 60px;
+    visibility: hidden;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    left: 50%;
+    top: 50%;
+}
+
+.rocket-body {
+    filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.4));
+    animation: rocketHover 1s infinite alternate ease-in-out;
+}
+
+.rocket-exhaust {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+}
+
+.rocket-exhaust span {
+    width: 6px;
+    height: 18px;
+    background: #ff69b4;
+    border-radius: 50%;
+    animation: exhaustParticle 0.6s infinite;
+    box-shadow: 0 0 15px #ff69b4;
+}
+
+.rocket-exhaust span:nth-child(1) { animation-delay: 0.1s; }
+.rocket-exhaust span:nth-child(2) { animation-delay: 0.2s; }
+.rocket-exhaust span:nth-child(3) { animation-delay: 0.3s; }
+.rocket-exhaust span:nth-child(4) { animation-delay: 0.4s; }
+.rocket-exhaust span:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes rocketPath {
+    0% {
+        transform: translate(-100vw, 0) rotate(-45deg);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    50%, 100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes rocketHover {
+    0% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(5px);
+    }
+}
+
+@keyframes exhaustParticle {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(25px) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes rotateStars {
+    from { background-position: 0 0; }
+    to { background-position: 1000px 1000px; }
+}
+
+h1 {
+    font-size: 3.5rem;
+    margin-bottom: 25px;
+    color: #1a1a1a;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+p {
+    color: #404040;
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    line-height: 1.8;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* สีลิงก์ */
+a {
+    color: #ff69b4;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #ff5ca8;
+}
+
+/* ปรับแต่งสำหรับอุปกรณ์มือถือ */
+@media (max-width: 768px) {
+    .page {
+        padding: 30px 15px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1.1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .payment-options {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .rocket {
+        font-size: 50px;
+    }
+
+    .rocket-exhaust span {
+        width: 4px;
+        height: 14px;
+    }
+}
+
+/* Selection color */
+::selection {
+    background: #ff69b4;
+    color: white;
+}
+
+/* เพิ่มส่วนนี้ในไฟล์ CSS ที่มีอยู่ */
+.payment-option {
+    position: relative;
+}
+
+.support-type {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff69b4;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.payment-option:hover .support-type {
+    background: #ff5ca8;
+}
