@@ -8,16 +8,16 @@
     <meta name="msapplication-navbutton-color" content="#ff69b4">
     <meta name="apple-mobile-web-app-status-bar-style" content="#ff69b4">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/assets/css/support.min.css" type="text/css" media="all">
 </head>
 <body>
     <!-- หน้าหลัก -->
     <div id="main-page" class="page active">
         <h1>ขอบคุณที่คุณสนใจสนับสนุนเรา!</h1>
-        <p>คุณไม่จำเป็นต้อง donate อะไรเพิ่มเติม เราแค่ขอบคุณที่คุณเข้ามาดู</p>
+        <p>คุณไม่จำเป็นต้องโดเนทอะไรเพิ่มเติมก็ได้ แค่คุณเข้ามาใช้งานเว็บไซต์ของเรา เราก็มีรายได้เล็กๆน้อยๆจาก google adsense อยู่แล้ว</p>
         <div class="button-container">
-            <button onclick="showConfirmation()" class="btn-primary">ฉันยินดี donate</button>
-            <button onclick="goBack()" class="btn-secondary">ฉันแค่เข้ามาดูเฉยๆ</button>
+            <button onclick="showConfirmation()" class="btn-primary">เปย์ได้ ไม่ติด~</button>
+            <button onclick="goBack()" class="btn-secondary">ไว้คราวหน้าเนอะ~</button>
         </div>
     </div>
 
@@ -25,8 +25,8 @@
     <div id="confirmation-page" class="page">
         <h2>ว้าว! คุณอยากจะ donate ให้เราจริงๆ หรอ?</h2>
         <div class="button-container">
-            <button onclick="showPaymentMethods()" class="btn-primary">ใช่</button>
-            <button onclick="goBack()" class="btn-secondary">ขอโทษ, ฉันไม่ได้ตั้งใจ</button>
+            <button onclick="showPaymentMethods()" class="btn-primary">ช่ายแล้ววว~</button>
+            <button onclick="goBack()" class="btn-secondary">ไว้คราวหน้าเนอะ~</button>
         </div>
     </div>
 
@@ -38,8 +38,8 @@
             <!-- ข้อมูลช่องทางการชำระเงินจะถูกเพิ่มโดย JavaScript -->
         </div>
         <div class="button-container">
-            <button onclick="showThanks()" class="btn-primary">ตกลง, ฉันจะสนับสนุน</button>
-            <button onclick="goBack()" class="btn-secondary">ย้อนกลับ</button>
+            <button onclick="showThanks()" class="btn-primary">จัดไปดิ รออะไร~</button>
+            <button onclick="goBack()" class="btn-secondary">ไว้คราวหน้าเนอะ~</button>
         </div>
     </div>
 
@@ -49,7 +49,7 @@
         <p>ถึงแม้การโอนจะสำเร็จหรือไม่สำเร็จ เราก็ขอขอบคุณจริงๆ</p>
         <div class="button-container">
             <button onclick="startRocketAnimation()" class="btn-primary">🫠 เอาล่ะ ลุยเล้ย!!</button>
-            <button onclick="showPaymentMethods()" class="btn-secondary">ขอคิดดูก่อน</button>
+            <button onclick="goBack()" class="btn-secondary">ขอคิดดูก่อน</button>
         </div>
     </div>
 
@@ -68,6 +68,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="/assets/js/support.min.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

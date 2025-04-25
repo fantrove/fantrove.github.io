@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent; /* ปิด highlight สีฟ้าบนอุปกรณ์สัมผัส */
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -44,19 +44,19 @@ body {
 }
 
 .btn-primary, .btn-secondary {
-    padding: 16px 32px;
+    padding: 12px 28px;
     border: none;
-    border-radius: 8px;
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     font-family: 'Kanit', sans-serif;
     font-weight: 500;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     min-width: 200px;
 }
 
 .btn-primary {
-    background-color: #ff69b4; /* สีชมพูหลัก */
+    background-color: #ff69b4;
     color: white;
 }
 
@@ -65,13 +65,8 @@ body {
     color: white;
 }
 
-.btn-primary:hover {
-    background-color: #ff5ca8; /* สีชมพูเข้มขึ้นเมื่อ hover */
-    transform: translateY(-2px);
-}
-
-.btn-secondary:hover {
-    transform: translateY(-2px);
+.btn-primary:active, .btn-secondary:active {
+    transform: scale(0.96);
 }
 
 .payment-options {
@@ -83,11 +78,12 @@ body {
 }
 
 .payment-option {
+    position: relative;
     padding: 25px;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: #fff0f7; /* พื้นหลังสีชมพูอ่อน */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #fff0f7;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,9 +91,12 @@ body {
     border: 2px solid transparent;
 }
 
+.payment-option:active {
+    transform: scale(0.95);
+}
+
 .payment-option:hover {
-    background-color: #ffe6f3; /* พื้นหลังสีชมพูอ่อนกว่าเมื่อ hover */
-    transform: translateY(-3px);
+    background-color: #ffe6f3;
 }
 
 .payment-option.selected {
@@ -106,18 +105,62 @@ body {
 }
 
 .payment-icon {
-    font-size: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
     margin-bottom: 10px;
 }
 
-/* อนิเมชันจรวด */
+.payment-icon svg {
+    width: 40px;
+    height: 40px;
+    color: #ff69b4;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-option:hover .payment-icon svg {
+    transform: scale(1.0);
+}
+
+.payment-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-option:hover .payment-img {
+    transform: scale(1.0);
+}
+
+.support-type {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff69b4;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.payment-option:hover .support-type {
+    background: #ff5ca8;
+}
+
+/* Animation Overlay */
 .animation-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #1a0011; /* พื้นหลังดำอมชมพู */
+    background: #1a0011;
     visibility: hidden;
     opacity: 0;
     z-index: 9999;
@@ -224,7 +267,7 @@ body {
 }
 
 h1 {
-    font-size: 3.5rem;
+    font-size: 1.8rem;
     margin-bottom: 25px;
     color: #1a1a1a;
     font-weight: 600;
@@ -232,7 +275,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2.8rem;
+    font-size: 1.5rem;
     margin-bottom: 20px;
     color: #1a1a1a;
     font-weight: 600;
@@ -240,7 +283,7 @@ h2 {
 
 p {
     color: #404040;
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin-bottom: 30px;
     line-height: 1.8;
     max-width: 600px;
@@ -248,7 +291,6 @@ p {
     margin-right: auto;
 }
 
-/* สีลิงก์ */
 a {
     color: #ff69b4;
     text-decoration: none;
@@ -259,22 +301,26 @@ a:hover {
     color: #ff5ca8;
 }
 
-/* ปรับแต่งสำหรับอุปกรณ์มือถือ */
+::selection {
+    background: #FFBEDE;
+    color: white;
+}
+
 @media (max-width: 768px) {
     .page {
         padding: 30px 15px;
     }
 
     h1 {
-        font-size: 2.5rem;
-    }
-
-    h2 {
         font-size: 2rem;
     }
 
+    h2 {
+        font-size: 1.5rem;
+    }
+
     p {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     .btn-primary, .btn-secondary {
@@ -295,31 +341,9 @@ a:hover {
         width: 4px;
         height: 14px;
     }
-}
 
-/* Selection color */
-::selection {
-    background: #ff69b4;
-    color: white;
-}
-
-/* เพิ่มส่วนนี้ในไฟล์ CSS ที่มีอยู่ */
-.payment-option {
-    position: relative;
-}
-
-.support-type {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ff69b4;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.payment-option:hover .support-type {
-    background: #ff5ca8;
+    .support-type {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
 }

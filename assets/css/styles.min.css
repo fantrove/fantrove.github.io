@@ -29,7 +29,7 @@
   --app-motion-natural: 0.18s ease-out;
   
   /* Component Specific */
-  --app-card-padding: 10px;
+  --app-card-padding: 15px;
   --app-card-radius: 15px;
   --app-button-radius: 12px;
   --app-pill-radius: 100px;
@@ -129,7 +129,7 @@ main {
   border-color: var(--app-theme-indigo-border-strong);
 }
 
-.button-content:hover {
+.card:hover, .button-content:hover {
   background: #F3F3F3;
 }
 
