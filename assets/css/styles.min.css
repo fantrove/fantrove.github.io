@@ -1,45 +1,31 @@
 /* Root variables - ปรับปรุงค่าตัวแปรให้พรีเมี่ยมและเรียบง่าย */
 :root {
-  /* Theme Colors */
   --app-theme-indigo: #6051FF;
   --app-theme-indigo-hover: #7667FF;
   --app-theme-indigo-light: rgba(96, 81, 255, 0.08);
   --app-theme-indigo-lighter: rgba(96, 81, 255, 0.04);
   --app-theme-indigo-border: rgba(96, 81, 255, 0.15);
-  --app-theme-indigo-border-strong: rgba(96, 81, 255, 0.8);  /* เพิ่มตัวแปรสีขอบที่เข้มสำหรับ height: ;ver */
+  --app-theme-indigo-border-strong: rgba(96, 81, 255, 0.8);
   --app-theme-indigo-border2: rgba(96, 81, 255, 0.3);
-  
-  /* Text Colors */
   --app-text-heading: #14141B;
   --app-text-body: #2F2F3A;
   --app-text-light: #6F6F82;
-  
-  /* Background & Surface */
   --app-surface-primary: #FFFFFF;
   --app-surface-secondary: #FAFBFF;
-  
-  /* Borders & Shadows */
   --app-border-subtle: #EAEAF1;
   --app-border-hover: #DCDCE6;
   --app-elevation-small: 0 1px 3px rgba(0, 0, 0, 0.1);
   --app-elevation-medium: 0 3px 6px rgba(0, 0, 0, 0.1);
-  
-  /* Motion & Animation */
   --app-motion-quick: 0.12s ease-out;
   --app-motion-natural: 0.18s ease-out;
-  
-  /* Component Specific */
   --app-card-padding: 15px;
   --app-card-radius: 15px;
   --app-button-radius: 12px;
   --app-pill-radius: 100px;
 }
 
-main {
-  padding: 20px 0 0 0;
-}
+main { padding: 20px 0 0 0; }
 
-/* ปุ่มย่อย */
 .button-sub {
   margin: 0 -5px 0 0;
   padding: 8px 16px;
@@ -54,7 +40,6 @@ main {
   user-select: none;
   transition: background var(--app-motion-quick), border-color var(--app-motion-quick), color var(--app-motion-quick);
   letter-spacing: 0.01em;
-  /* ไม่ใช้ backdrop-filter เพื่อลดการใช้ RAM */
   font-family: 'Manrope', 'Noto Sans Thai', sans-serif;
 }
 
@@ -65,7 +50,6 @@ main {
   box-shadow: var(--app-elevation-small);
 }
 
-/* .active สำหรับปุ่มใช้งาน navigation */
 .button-sub.active {
   color: var(--app-theme-indigo);
   background: var(--app-theme-indigo-light);
@@ -74,19 +58,14 @@ main {
   box-shadow: var(--app-elevation-small);
 }
 
-.hi {
-  padding: 0 10px 0 10px;
-}
+.hi { padding: 0 10px 0 10px; }
+.hj { background: #FFFFFF; border-radius: 25px; border: 0.5px solid #E9E9E9; }
 
-.hj {
-  background: #FFFFFF;
-  border-radius: 25px;
-  border: 0.5px solid #E9E9E9;
-}
-
-/* ปรับปรุงรายละเอียดเฉพาะในคลาส .button-content */
+/* BUTTON CONTENT */
 .button-content {
-  display: flex; 
+  position: relative;
+  overflow: hidden;
+  display: flex;
   align-items: center;
   justify-content: center;
   margin: 8px 0;
@@ -98,82 +77,126 @@ main {
   font-size: 14px;
   text-align: center;
   -webkit-tap-highlight-color: transparent;
-  transition: background-color var(--app-motion-natural), color var(--app-motion-natural), border-color var(--app-motion-natural), box-shadow var(--app-motion-natural);
+  transition:
+    border-color var(--app-motion-natural),
+    box-shadow var(--app-motion-natural),
+    transform 200ms cubic-bezier(0.4,0,0.2,1),
+    color 0.18s;
+  border: 1px solid var(--app-theme-indigo-border);
+  box-shadow: var(--app-elevation-small);
+}
+.button-content > * {
   position: relative;
+  z-index: 1;
+}
+.button-content::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.28s cubic-bezier(0.4,0,0.2,1);
+  background: linear-gradient(
+    120deg,
+    rgba(247,248,255,0.13) 70%,
+    rgba(96,81,255,0.10) 100%
+  );
+  border-radius: inherit;
+}
+.button-content:hover::before { opacity: 1; }
+.button-content:hover {
+  border-color: var(--app-theme-indigo-border-strong);
+  box-shadow: 0 4px 16px rgba(96,81,255,0.10), var(--app-elevation-medium);
+  transform: translateY(-1px) scale(1.008);
 }
 
+/* CARD */
 .card {
+  position: relative;
+  overflow: hidden;
   display: flex;
-  align-items: flex-start; /* ขยับทุกอย่างไปด้านบน */
+  align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
   max-width: 500px;
-  margin: 5px 15px;
-  padding: var(--app-card-padding);
+  margin: 8px 18px;
+  padding: calc(var(--app-card-padding) + 2px) calc(var(--app-card-padding) + 4px);
   cursor: pointer;
-  border-radius: var(--app-card-radius);
-  background: rgba(255, 255, 255, 1);
+  border-radius: calc(var(--app-card-radius) + 4px);
+  background: linear-gradient(120deg, rgba(255,255,255,0.97) 80%, rgba(96,81,255,0.04) 100%);
   user-select: none;
-  transition: border-color var(--app-motion-natural), box-shadow var(--app-motion-natural), background 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition:
+    border-color var(--app-motion-natural),
+    box-shadow var(--app-motion-natural),
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  border: 1px solid var(--app-theme-indigo-border);
+  box-shadow: 0 2px 10px rgba(96,81,255,0.07), var(--app-elevation-small);
 }
-
-.card, .button-content {
-  border: 0.3px solid var(--app-theme-indigo-border);
-  box-shadow: var(--app-elevation-small);
+.card > * {
+  position: relative;
+  z-index: 1;
 }
-
-.card:hover, .button-content:hover {
+.card::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.28s cubic-bezier(0.4,0,0.2,1);
+  background: linear-gradient(
+    120deg,
+    rgba(247,248,255,0.13) 75%,
+    rgba(96,81,255,0.10) 100%
+  );
+  border-radius: inherit;
+}
+.card:hover::before { opacity: 1; }
+.card:hover {
   border-color: var(--app-theme-indigo-border-strong);
+  box-shadow: 0 4px 16px rgba(96,81,255,0.13), var(--app-elevation-medium);
+  transform: translateY(-2px) scale(1.012);
 }
-
-.card:hover, .button-content:hover {
-  background: #F3F3F3;
-}
-
 .card:hover .card-image {
-  opacity: 0.8;
-  transform: scale(1.05);
+  opacity: 0.88;
+  transform: scale(1.04);
 }
-
 .card:hover .card-content {
-  opacity: 0.6;
+  opacity: 0.72;
 }
-
 .card-image {
   width: 85px;
   height: 85px;
-  border-radius: calc(var(--app-card-radius) - 4px);
+  border-radius: calc(var(--app-card-radius) - 2px);
   object-fit: cover;
   flex-shrink: 0;
   transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 6px rgba(96,81,255,0.09);
 }
-
 .card-content {
   flex: 1;
-  padding-left: 12px;
+  padding-left: 16px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* ขยับข้อความให้ขึ้นบน */
-  padding-top: 2px; /* เพิ่มเติมเล็กน้อยให้แนบกับด้านบน */
+  justify-content: flex-start;
+  padding-top: 6px;
   transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .card-title {
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--app-text-heading);
-  margin-bottom: 2px;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
+  margin-bottom: 4px;
+  letter-spacing: 0;
+  line-height: 1.5;
 }
-
 .card-description {
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: var(--app-text-body);
-  line-height: 1.4;
+  line-height: 1.6;
   letter-spacing: 0.01em;
 }
 
@@ -186,39 +209,22 @@ main {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
-#main-buttons-container {
-  padding: 4px;
-}
-
+#main-buttons-container { padding: 4px; }
 #main-buttons-container::-webkit-scrollbar,
-#sub-buttons-container::-webkit-scrollbar {
-  display: none;
-}
-
-#sub-buttons-container {
-  gap: 8px;
-  padding: 5px;
-}
-
-.group-header {
-  padding: 10px 10px;
-  width: 100%;
-}
-
+#sub-buttons-container::-webkit-scrollbar { display: none; }
+#sub-buttons-container { gap: 8px; padding: 5px; }
+.group-header { padding: 10px 10px; width: 100%; }
 .group-header-text {
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
   color: #464646;
 }
-
 .group-header-description {
   margin: 0.5rem 0 0;
   font-size: 1rem;
   color: #666;
 }
-
 .card-content-container, 
 .button-content-container {
   display: flex !important;
@@ -230,14 +236,8 @@ main {
   align-items: center !important;
   border-radius: 0;
 }
-
-.button-content-container {
-  gap: 12px !important;
-}
-
-.card-content-container {
-  gap: 6px !important;
-}
+.button-content-container { gap: 12px !important; }
+.card-content-container { gap: 6px !important; }
 
 /* Animations: ใช้เฉพาะ property ที่ไม่สร้างภาระหนักต่อการ repaint */
 .fade-in {
@@ -245,45 +245,26 @@ main {
   animation: fadeIn 0.25s ease-out forwards;
   will-change: opacity;
 }
-
 .fade-out {
   opacity: 1;
   animation: fadeOut 0.25s ease-out forwards;
   will-change: opacity;
 }
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-0.3rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-0.3rem); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-0.3rem);
-  }
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-0.3rem); }
 }
 
 /* Responsive adjustments */
 @media screen and (max-width: 480px) {
-  .card-content-container {
-    justify-content: center;
-    gap: 12px;
-  }
-  
-  .button-content {
-    width: 100%;
-  }
+  .card-content-container { justify-content: center; gap: 12px; }
+  .button-content { width: 100%; }
+  .card { margin: 8px 4px; padding: calc(var(--app-card-padding) + 1px) 10px; }
+  .card-content { padding-left: 10px; padding-top: 4px; }
 }
 
 /* Notifications */
@@ -301,36 +282,12 @@ main {
   min-width: 280px;
   max-width: 400px;
 }
-
-.notification.success {
-  background: #4caf50;
-  color: white;
-}
-
-.notification.error {
-  background: #f44336;
-  color: white;
-}
-
-.notification.warning {
-  background: #ff9800;
-  color: white;
-}
-
-.notification.info {
-  background: #2196f3;
-  color: white;
-}
-
-.notification-icon {
-  font-size: 18px;
-}
-
-.notification-message {
-  flex-grow: 1;
-  font-size: 14px;
-}
-
+.notification.success { background: #4caf50; color: white; }
+.notification.error { background: #f44336; color: white; }
+.notification.warning { background: #ff9800; color: white; }
+.notification.info { background: #2196f3; color: white; }
+.notification-icon { font-size: 18px; }
+.notification-message { flex-grow: 1; font-size: 14px; }
 .notification-close {
   background: none;
   border: none;
@@ -341,29 +298,12 @@ main {
   margin-left: 10px;
   opacity: 0.8;
 }
-
-.notification-close:hover {
-  opacity: 1;
-}
-
+.notification-close:hover { opacity: 1; }
 @keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes slideOut {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
 }
