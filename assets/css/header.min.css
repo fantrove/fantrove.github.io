@@ -3,20 +3,20 @@
 
 :root {
     --primary-color: #FFFFFF;
-    --hover-color: rgba(206, 206, 206, 0.08);
+    --hover-color: rgba(19, 180, 127, 0.08);
     --background-color: #FFFFFF;
-    --text-color: #FFFFFF;
-    --active-border-color: #009C5F;
+    --text-color: #52638a;
+    --active-border-color: #E5FFF6;
     --shadow-color: rgba(0, 0, 0, 0.05); /* ลดความเข้มของ shadow */
     --nav-bg-color: var(--background-color);
-    --text-primary: #FFFFFF;
+    --text-primary: #10B981;
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --text-secondary: rgba(255, 255, 255, 0.85);
+    --text-secondary: #52638a;
     --nav-hover-bg: rgba(255, 255, 255, 0.12);
-    --nav-active-bg: rgba(255, 255, 255, 0.18);
+    --nav-active-bg:  #FFFFFF;
     --nav-active-glow:
-        0 0 10px rgba(255, 255, 255, 0.15),
-        0 0 5px rgba(255, 255, 255, 0.1);
+        0 0 5px rgba(19, 180, 127, 0.18),
+        0 0 2px rgba(19, 180, 127, 0.1);
 }
 
 body {
@@ -29,17 +29,18 @@ body {
 header {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    
+    align-items: flex-start; /* เปลี่ยนจาก center เป็น flex-start */
     width: 100%;
     top: 0;
     left: 0;
     z-index: 9000;
-    background: var(--main-color);
-    border-bottom: 1px solid rgba(180, 111, 255, 1);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(-190deg, rgba(240, 252, 255, 0.8) 70%, rgba(224, 255, 245, 0.8) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(19, 180, 127, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     touch-action: none;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     border-radius: 0 0 15px 15px;
 }
 
@@ -50,13 +51,13 @@ header {
     font-family: "Sofia", sans-serif;
     font-size: var(--font-size);
     font-weight: 600;
-    padding: 9px 0;
+    padding: 10px 0 10px 0;
     white-space: nowrap;
-    color: var(--text-color);
-    text-shadow: 0 2px 6px rgba(255, 255, 255, 1);
+    color: #10B981;
+    text-shadow: 0 0 3px rgba(0, 255, 171, 0.5);
     pointer-events: none;
-    margin: auto;
-    align-self: center; /* เปลี่ยนจาก flex-start */
+    margin-left: 10px;
+    align-self: flex-start; /* เปลี่ยนจาก center เป็น flex-start */
     display: flex;
     align-items: center;
 }
@@ -88,12 +89,12 @@ nav ul {
     display: flex;
     list-style-type: none;
     margin: 0;
-    padding: var(--nav-spacing) var(--nav-spacing) 2px;
+    padding: var(--nav-spacing) var(--nav-spacing);
     justify-content: flex-start;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
-    border-top: 0.8px solid #B46FFF;
+    border-top: 0.8px solid rgba(19, 180, 127, 0.3);
     touch-action: pan-x;
 }
 
@@ -149,7 +150,7 @@ nav ul li button.active {
     color: var(--text-primary);
     font-weight: 600;
     background: var(--nav-active-bg);
-    box-shadow: var(--nav-active-glow);
+    border: 0.5px solid #10B981;
 }
 
 nav ul li button.active::after {
