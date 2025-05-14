@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <title>ระบบค้นหา</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/assets/js/back-to-top.min.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="/assets/css/search.css">
+    
+    <!-- Fallback เป็น ICO -->
+    <link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico">
 </head>
 
 <body>
@@ -14,12 +18,12 @@
         <form id="searchForm" autocomplete="off">
             <div class="search-input-wrapper">
                 <span class="search-input-icon" aria-hidden="true">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
                         <circle cx="9" cy="9" r="7" stroke="#8196b6" stroke-width="2" />
                         <path d="M15.2 15.2L18 18" stroke="#8196b6" stroke-width="2" stroke-linecap="round" />
                     </svg>
                 </span>
-                <input type="text" id="searchInput" placeholder="ชื่อ หมวดหมู่" autofocus inputmode="search" />
+                <input type="search" id="searchInput" placeholder="ชื่อ หมวดหมู่" autofocus inputmode="search" enterkeyhint="search" />
             </div>
         </form>
     </header>

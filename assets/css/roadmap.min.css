@@ -7,26 +7,26 @@ body {
 .container {
     width: 80%;
     max-width: 1200px;
-    margin: 60px auto 0 auto;
+    margin: 40px auto 0 auto;
     padding: 20px 10px;
 }
 
 header {
     text-align: center;
-    background-color: #6C63FF;
+    background-color: #13b47f;
     color: white;
     padding: 20px 15px;
-    border-radius: 12px;
+    border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 1.2em;
     letter-spacing: 1px;
 }
 
 h2, h3 {
-    color: #6C63FF;
+    color: #13b47f;
     font-weight: 600;
 }
 
@@ -37,8 +37,8 @@ h2 span {
 #current-version {
     text-align: center;
     margin-top: 30px;
-    font-size: 1.2em;
-    color: #6C63FF;
+    font-size: 0.8em;
+    color: #13b47f;
 }
 
 #feature-list {
@@ -49,7 +49,7 @@ h2 span {
 #feature-list li {
     padding: 12px;
     margin: 30px 0;
-    border-radius: 8px;
+    border-radius: 20px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูพรีเมียม */
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
@@ -64,7 +64,7 @@ h2 span {
 .past-feature small {
     display: block;
     font-size: 0.9em;
-    color: #6C63FF;
+    color: #13b47f;
     font-weight: 500;
 }
 
@@ -88,7 +88,7 @@ h2 span {
     background-image: url(https://fantrove-hub.github.io/assets/images/bokeh-1780209_1280.png);
     color: #FFFFFF;
     padding: 15px;
-    border: 1px solid #A6A2FF;
+    border: 1px solid #27C5AA;
 }
 
 .new-feature small {
@@ -110,13 +110,13 @@ h2 span {
 .question-mark {
     margin-left: 10px;
     font-size: 1.8em;
-    color: #9B4DCA;
+    color: #0A9869;
     cursor: pointer;
     transition: color 0.3s ease;
 }
 
 .question-mark:hover {
-    color: #6C63FF;
+    color: #13b47f;
 }
 
 /* แท็บเล็ตแนวตั้ง */

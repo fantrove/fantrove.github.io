@@ -26,7 +26,7 @@ const LANG_TEXTS = {
         typo: "แนะนำจากคำที่อาจสะกดผิด",
         emoji_suggestion_cat: "แนะนำอีโมจิ",
         symbol_suggestion_cat: "แนะนำสัญลักษณ์",
-        search_placeholder: "ชื่อ หมวดหมู่",
+        search_placeholder: "ค้นหาบน FanTrove",
         search_result_here: "ผลการค้นหาจะแสดงที่นี่"
     },
     en: {
@@ -45,7 +45,7 @@ const LANG_TEXTS = {
         typo: "Suggested for possible typo",
         emoji_suggestion_cat: "Emoji Suggestion",
         symbol_suggestion_cat: "Symbol Suggestion",
-        search_placeholder: "Name, Category",
+        search_placeholder: "Search on FanTrove",
         search_result_here: "Search results will appear here"
     }
 };
@@ -564,6 +564,14 @@ function prepareSuggestionCaches(apiData) {
     }
 }
 
+// ปิดแป้นพิมพ์มือถือเมื่อค้นหาด้วย Enter หรือปุ่ม Search
+function closeMobileKeyboard() {
+    const input = document.getElementById('searchInput');
+    if (input && document.activeElement === input) {
+        input.blur();
+    }
+}
+
 function doSearch(e) {
     if (e) e.preventDefault();
     const q = document.getElementById('searchInput').value;
@@ -614,9 +622,18 @@ function setupMobileSelectEnter() {
 
 function setupAutoSearchInput() {
     const input = document.getElementById('searchInput');
+    // เพิ่ม enterkeyhint ให้ input
+    input.setAttribute('enterkeyhint', 'search');
     input.addEventListener('input', function() {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => doSearch(), 160);
+    });
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            doSearch();
+            closeMobileKeyboard();
+        }
     });
 }
 
@@ -644,7 +661,15 @@ fetch('/assets/json/api-database.json')
         updateUILanguage();
     });
 
-document.getElementById('searchForm').addEventListener('submit', e => { e.preventDefault(); });
+document.getElementById('searchForm').addEventListener('submit', e => { 
+    e.preventDefault();
+    doSearch();
+    closeMobileKeyboard();
+});
 document.getElementById('searchInput').addEventListener('keydown', function(e){
-    if(e.key === 'Enter') e.preventDefault();
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        doSearch();
+        closeMobileKeyboard();
+    }
 });

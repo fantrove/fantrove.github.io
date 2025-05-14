@@ -1,5 +1,10 @@
 @import url(variables.min.css);
 @import url('nav.min.css');
+@font-face {
+  font-family: 'MunroSmall';
+  src: url('/assets/fonts/MunroSmall.ttf') format('truetype');
+}
+
 
 :root {
     --primary-color: #FFFFFF;
@@ -27,6 +32,7 @@ body {
 
 /* Header Container */
 header {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* เปลี่ยนจาก center เป็น flex-start */
@@ -38,22 +44,21 @@ header {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-bottom: 1px solid rgba(19, 180, 127, 0.3);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     touch-action: none;
     margin-bottom: 30px;
-    border-radius: 0 0 15px 15px;
+    border-radius: 0 0 20px 20px;
 }
 
 /* Logo Styles */
 .logo {
     --logo-padding: 9px;
     
-    font-family: "Sofia", sans-serif;
-    font-size: var(--font-size);
-    font-weight: 600;
+    font-family: 'MunroSmall', monospace;
+    font-size: 25px;
     padding: 10px 0 10px 0;
     white-space: nowrap;
-    color: #10B981;
+    color: #1e957c;
     text-shadow: 0 0 3px rgba(0, 255, 171, 0.5);
     pointer-events: none;
     margin-left: 10px;
@@ -228,6 +233,70 @@ nav ul li button.active:hover::after {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Container หลักที่แสดงเนื้อหา */
+.content-loading-spinner {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,1);
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+}
+
+.content-loading-fade-in {
+    opacity: 1 !important;
+}
+
+.content-loading-fade-out {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.spinner-svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.spinner-svg svg {
+    width: 48px;
+    height: 48px;
+    display: block;
+}
+
+.spinner-svg-bg {
+    stroke: #eee;
+}
+
+.spinner-svg-fg {
+    stroke: #4285f4;
+    stroke-dasharray: 90 125;
+    stroke-dashoffset: 0;
+    transform-origin: 50% 50%;
+    animation: spinner-svg-rotate 1s linear infinite;
+}
+
+@keyframes spinner-svg-rotate {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
+
+.loading-message {
+    font-size: 0.82rem;
+    color: #444;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 0;
 }
 
 /* แท็บเล็ตแนวตั้ง */

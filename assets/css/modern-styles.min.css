@@ -68,7 +68,7 @@
 /* Bottom Navigation - Refined & Efficient */
 .bottom-nav {
   position: fixed;
-  border-radius: 15px 15px 0 0;
+  border-radius: 29px 20px 0 0;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -93,9 +93,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 72px;
-  max-width: 96px;
-  height: 48px;
   padding: 8px;
   border: none;
   background: transparent;
@@ -108,8 +105,9 @@
 }
 
 .nav-item svg {
-  width: 22px;
-  height: 22px;
+  width: 15px;
+  height: 15px;
+  margin-bottom: 5px;
   transition: transform var(--transition-fast);
   color: var(--neutral-600);
 }
@@ -124,17 +122,11 @@
 }
 
 .nav-item.active-1 {
- background: linear-gradient(135deg, var(--primary-50), rgba(255, 255, 255, 0.05));
- box-shadow: inset 0 0 0 1px var(--primary-200), 0 2px 4px rgba(0, 0, 0, 0.05);
- backdrop-filter: blur(6px);
- -webkit-backdrop-filter: blur(6px);
- border-radius: var(--radius-lg);
  transition: all var(--transition-fast);
 }
 
 .nav-item.active-1 svg {
  color: var(--primary-600);
- transform: scale(1.1);
  transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
@@ -153,7 +145,7 @@
 }
 
 .nav-item:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
 
 /* Dark Mode Support */
@@ -190,7 +182,6 @@
 /* Responsive Adjustments */
 @media (min-width: 768px) {
   .bottom-nav {
-    max-width: 420px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
