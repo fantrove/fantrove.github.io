@@ -67,7 +67,7 @@ async function copyToClipboard(content) {
   }
 }
 
-fetch('assets/json/api-database.json')
+fetch('/assets/json/api-database.json')
   .then(res => res.json())
   .then(data => renderHomePage(data))
   .catch(() => {
