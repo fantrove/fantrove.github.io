@@ -3,14 +3,14 @@
 
 const viewAllConfigs = {
   emoji: {
-    url: "https://fantrove-hub.github.io/emoji/all",
+    url: "/datum_verse/#?main=emojis-?page=1",
     labels: {
       th: "ดูทั้งหมด",
       en: "View All",
     }
   },
   symbol: {
-    url: "https://fantrove-hub.github.io/symbol/all",
+    url: "/datum_verse/#?main=symbols-?page=1",
     labels: {
       th: "ดูทั้งหมด",
       en: "View All",
