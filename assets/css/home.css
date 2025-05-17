@@ -387,12 +387,12 @@ strong, b { color: #13b47f; font-weight: 700; }
 
 /* ---------- NOTICE ---------- */
 .notice {
-  background: linear-gradient(90deg, #f6f7fb 60%, #f1fbfa 100%);
-  color: #b6930b;
-  border-left: 4px solid #ffe35e;
-  border-radius: 20px;
+  background: #FFFFFF;
+  color: #EABE12;
+  border-left: 4px solid #FFE980;
+  border-radius: 20px !important;
   padding: 1.18rem 2.1rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   display: flex;
   align-items: center;
   gap: 1.1rem;
@@ -534,14 +534,14 @@ strong, b { color: #13b47f; font-weight: 700; }
   font-weight: 700;
   padding: 0.45em 1.1em;
   border-radius: 20px;
-  background: linear-gradient(90deg, #0eb0d5 0%, #13b47f 100%);
+  background: #FFFFFF;
   border: 1.5px solid #13b47f;
-  color: #fff;
+  color: #13b47f;
   transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.14s, filter 0.14s;
   user-select: none;
 }
 .text-h button:active {
-  filter: brightness(0.92);
+  filter: brightness(0.9);
 }
 
 /* ---------- APP CATEGORY SECTION ---------- */
@@ -666,8 +666,8 @@ strong, b { color: #13b47f; font-weight: 700; }
   font-weight: 500;
 }
 .item-card:hover, .item-card:focus-visible {
-  border-color: #0eb0d5;
-  background: #e8fcf7;
+  border-color: #11C3EC;
+  background: #F1FFFC;
   z-index: 2;
   /* NO transform/scale! */
   box-shadow: 0 4px 20px 0 rgba(13,180,127,0.14);
