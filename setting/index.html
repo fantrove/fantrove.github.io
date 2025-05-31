@@ -28,6 +28,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <!-- เพิ่มในส่วน <head> ของไฟล์ HTML หลัก -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 
 <!-- Fallback เป็น ICO -->
 <link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico">
@@ -62,17 +63,133 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <nav>
         <span class="page-title" data-translate="page-setting">Setting</span>
     </nav>
-    <h5 data-translate="lang-text">Language:</h5>
 <div id="language-selector-container">
     <button id="language-button" class="default-lang-class" type="button">
         <!-- JS จะเติม <span class="lang-btn-txt" data-lang="xx">...</span> ให้โดยอัตโนมัติ -->
     </button>
 </div>
 
-    <h1 data-translate="about-text">About</h1>
+<button type="button" class="buttons auto-update-toggle" id="auto-update-toggle-btn">
+    <!-- Icon -->
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2.5 2v6h6M21.5 22v-6h-6" />
+        <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2" />
+    </svg>
+    
+    <!-- Text -->
+    <div class="text-content">
+        ระบบตรวจสอบเวอร์ชันอัตโนมัติ<br>
+        <span class="auto-update-desc">เปิด/ปิดการแจ้งเตือนและอัปเดตเวอร์ชันเว็บไซต์อัตโนมัติ</span>
+    </div>
+    
+    <!-- Toggle -->
+    <span class="switch-outer">
+        <input type="checkbox" id="auto-update-switch" style="display:none;">
+        <span class="slider"></span>
+    </span>
+</button>
 
-    <button class="buttons" onclick="window.location.href='/information/about/'" data-translate="about-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<style>
+    .buttons.auto-update-toggle {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+        padding-right: 1rem;
+    }
+    
+    .icon {
+        height: 18px !important;
+        flex-shrink: 0;
+        display: block;
+        color: #9333EA;
+    }
+    
+    .text-content {
+        flex: 1;
+        overflow-wrap: break-word;
+        white-space: normal;
+        word-break: break-word;
+    }
+    
+    .auto-update-desc {
+        display: block;
+        font-size: 0.83em;
+        color: var(--ui-color-text-secondary);
+        font-weight: 400;
+        margin-top: 0.17em;
+    }
+    
+    .switch-outer {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        height: 22px;
+    }
+    
+    .slider {
+        position: relative;
+        width: 36px;
+        height: 22px;
+        background-color: #ccc;
+        border-radius: 22px;
+        cursor: pointer;
+        transition: background-color 0.5s ease;
+        box-shadow: inset 0 0 0 1px #0001;
+        overflow: hidden;
+    }
+    
+    .slider:before {
+        content: "";
+        position: absolute;
+        left: 2.5px;
+        top: 2.5px;
+        width: 17px;
+        height: 17px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), inset -1px -1px 1px rgba(255, 255, 255, 0.8);
+        transition:
+            transform 0.75s cubic-bezier(0.25, 1.75, 0.5, 1),
+            box-shadow 0.3s ease;
+        will-change: transform;
+    }
+    
+    .slider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 140%;
+        height: 140%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        transition:
+            opacity 0.3s ease,
+            transform 0.45s cubic-bezier(0.5, 1.8, 0.5, 1);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    
+    .switch-outer input:checked+.slider {
+        background-color: #00BA7E;
+    }
+    
+    .switch-outer input:checked+.slider:before {
+        transform: translateX(14px) scale(1.08);
+    }
+    
+    .switch-outer input:checked+.slider::after {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+</style>
+
+    <h1 class=".h" data-translate="about-text">About</h1>
+
+    <button class="buttons a" onclick="window.location.href='/information/about'" data-translate="about-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -80,34 +197,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         About FanTrove Hub
     </button>
 
-    <button class="buttons" onclick="window.location.href='/information/whats_new/'" data-translate="new-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
+    <button class="buttons e" onclick="window.location.href='/information/whats_new'" data-translate="new-button">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge" viewBox="0 0 16 16">
+    <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41z" />
+</svg>
         What's New
     </button>
 
-    <button class="buttons" onclick="window.location.href='/information/roadmap/'" data-translate="planned-features-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3h18v18H3z"/>
-            <path d="M9 3v18"/>
-            <path d="M3 9h18"/>
-        </svg>
+    <button class="buttons" onclick="window.location.href='/information/roadmap'" data-translate="planned-features-button">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         Planned Features
     </button>
 
-    <button class="buttons tap" onclick="window.location.href='https://0zscukk0.forms.app/fantrove-report-official'" data-translate="report-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-            <line x1="4" y1="22" x2="4" y2="15"></line>
-        </svg>
-        Report
+    <button class="buttons e tap" onclick="window.location.href='/contact'" data-translate="report-button">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor" viewBox="0 0 16 16">
+    <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52z" />
+</svg>
+        Contact us
     </button>
 
     <button class="buttons buy tap" onclick="window.location.href='/support'" data-translate="support-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-        </svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+</svg>
         We know you love FanTrove
     </button>
   </main>
@@ -123,6 +235,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script src="/assets/js/Intelligent-system.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/assets/js/wake-effect.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/assets/js/modern-navigation.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/assets/js/version.min.js" type="text/javascript"  charset="utf-8"></script>
 
 </body>
 </html>

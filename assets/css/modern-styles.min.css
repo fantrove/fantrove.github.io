@@ -84,6 +84,7 @@
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform var(--transition-normal);
   touch-action: none;
+  box-shadow:0 0 10px rgba(58, 60, 79, 0.08);
 }
 
 /* Navigation Items - Enhanced */
@@ -99,7 +100,7 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   border-radius: var(--radius-md);
-  gap: 4px;
+  gap: 2px;
   user-select: none;
   font-family: 'IBM Plex Sans', sans-serif;
 }
@@ -107,13 +108,14 @@
 .nav-item svg {
   width: 15px;
   height: 15px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   transition: transform var(--transition-fast);
   color: var(--neutral-600);
+  stroke-width: 1.7;
 }
 
 .nav-item .label {
-  font-size: 11px;
+  font-size: 11.3px;
   font-weight: 400;
   color: var(--neutral-600);
   transition: color var(--transition-fast);

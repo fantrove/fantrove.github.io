@@ -75,6 +75,10 @@ main {
   border: 1px solid var(--ui-color-purple-200);
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+}
+
 /* สไตล์หัวข้อ */
 h1 {
   font-size: var(--ui-font-size-heading);
@@ -85,7 +89,7 @@ h1 {
 
 h5 {
   font-size: 13px;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
   color: #13b47f;
 }
 
@@ -115,7 +119,7 @@ h5 {
   background-color: var(--ui-color-background-main);
   color: var(--ui-color-text-primary);
   transition: all var(--ui-transition-speed-fast);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: inherit;
   outline: none;
   cursor: pointer;
   appearance: none;
@@ -128,6 +132,7 @@ h5 {
   margin-bottom: 15px;
   user-select: none;
   align-items: center;
+  box-shadow: 0 0 10px rgba(58, 60, 79, 0.1);
 }
 
 .setting-item.select, #language-button {
@@ -139,17 +144,28 @@ h5 {
  gap: 15px;
 }
 
-.buttons:active, .setting-item.select:active, #language-button:active {
-  background-color: #F5F5F5;
+.buttons:active, .setting-item.select:active, #language-button:active, .buttons.auto-update-toggle:active {
+  background-color: #F5F7F9;
 }
 
 .buttons svg {
- height: 18px;
+ height: 18.5px;
  width: auto;
+ flex-shrink: 0;
+ display: block;
+ align-items: center;
 }
 
 .buttons.tap {
  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");  
+}
+
+.buttons.e svg {
+  height: 18.5px;
+}
+
+.buttons.a svg {
+  height: 18.5px;
 }
 
 .buttons.buy {
@@ -161,6 +177,10 @@ h5 {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   border: 1px solid rgba(0, 255, 156, 0.2);
+}
+
+.buttons.buy svg {
+  height: 17px !important;
 }
 
 .setting-item select:focus {

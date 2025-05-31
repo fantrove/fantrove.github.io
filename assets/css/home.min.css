@@ -14,7 +14,6 @@ html {
 body {
   font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
   margin: 0;
-  background: #F4F7FB;
   color: #212B2F;
   line-height: 1.85;
   min-height: 100vh;
@@ -27,7 +26,7 @@ body {
 }
 
 main {
-  padding: 0 10px !important;
+  padding: 0 0 !important;
 }
 
 .img-d1 {
@@ -35,7 +34,12 @@ main {
 }
 .img-d1 img {
   width: 100%;
-  border-radius: 20px;
+  border-radius: 25px;
+  box-shadow: 0 0 15px rgba(58, 60, 79, 1);
+}
+
+.main, .notice {
+  box-shadow: 0 0 10px rgba(58, 60, 79, 0.1) ;
 }
 
 /* ---------- HEADER/LOGO (UNCHANGED except logo font-size) ---------- */
@@ -52,7 +56,7 @@ header {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-bottom: 1px solid rgba(19, 180, 127, 0.3);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(58, 60, 79, 0.15);
     touch-action: none;
     margin-bottom: 30px;
     position: sticky;
@@ -151,7 +155,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 /* ---------- CARD ---------- */
 .card {
   background: #fff;
-  border-radius: 20px !important;
+  border-radius: 25px !important;
   border: 1.5px solid #e1f4f1;
   padding: 2.1rem 2.5rem;
   margin-bottom: 2.2rem;
@@ -163,7 +167,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   position: relative;
   transition: box-shadow 0.18s, border-color 0.16s;
   overflow: visible;
-  box-shadow: 0 2px 20px 0 rgba(19, 180, 127, 0.05);
+  box-shadow: 0 0px 15px 0 rgba(19, 180, 127, 0.08);
 }
 .card:before {
   content: "";
@@ -210,7 +214,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   border: 1px solid transparent;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 6px 0 rgba(13, 180, 127, 0.07);
+  box-shadow: 0 0px 10px 0 rgba(13, 180, 127, 0.08);
 }
 .oc {
   width: 100%;
@@ -234,7 +238,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 /* ---------- HERO ---------- */
 .hero {
   background: #fff;
-  border-radius: 20px !important;
+  border-radius: 25px !important;
   padding: 2.8rem 2.7rem 2.3rem 2.7rem;
   margin-bottom: 3rem;
   display: flex;
@@ -244,7 +248,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   border: 1.2px solid #e6ecf7;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 22px 0 rgba(13, 180, 127, 0.07);
+  box-shadow: 0 0px 15px 0 rgba(13, 180, 127, 0.12);
 }
 .hero-content {
   flex: 1.6;
@@ -318,7 +322,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 }
 .feature-item {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 25px;
   border: 1.5px solid #e6ecf7;
   flex: 1 1 210px;
   display: flex;
@@ -331,7 +335,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   position: relative;
   overflow: hidden;
   transition: border-color 0.15s, box-shadow 0.13s, filter 0.12s;
-  box-shadow: 0 1px 10px 0 rgba(13, 180, 127, 0.04);
+  box-shadow: 0 0px 15px 0 rgba(13, 180, 127, 0.08);
 }
 .feature-item::after {
   content: "";
@@ -349,7 +353,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 .feature-item:hover, .feature-item:focus-visible {
   border-color: #13b47f;
   filter: brightness(1.04);
-  box-shadow: 0 2px 20px 0 rgba(19,180,127,0.10);
+  box-shadow: 0 0px 20px 0 rgba(19,180,127,0.10);
 }
 .feature-item:hover::after, .feature-item:focus-visible::after {
   opacity: 0.34;
@@ -388,9 +392,9 @@ strong, b { color: #13b47f; font-weight: 700; }
 /* ---------- NOTICE ---------- */
 .notice {
   background: #FFFFFF;
-  color: #EABE12;
-  border-left: 4px solid #FFE980;
-  border-radius: 20px !important;
+  color: #CA8400;
+  border-left: 4px solid #FFD880;
+  border-radius: 25px !important;
   padding: 1.18rem 2.1rem;
   margin-bottom: 2.5rem;
   display: flex;
@@ -400,7 +404,6 @@ strong, b { color: #13b47f; font-weight: 700; }
   position: relative;
   overflow: hidden;
   font-weight: 600;
-  box-shadow: 0 2px 10px 0 #f6f7fb;
 }
 .notice-icon {
   font-size: 1.32em;
@@ -408,7 +411,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   background: #fffbe9;
   border-radius: 99px;
   padding: 0.15em 0.39em;
-  border: 1.3px solid #ffe35e;
+  border: 1.3px solid #FFD15E;
 }
 
 /* ---------- FAQ ---------- */
@@ -420,13 +423,13 @@ strong, b { color: #13b47f; font-weight: 700; }
 }
 .faq-item {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 25px;
   border: 1.1px solid #e6ecf7;
   padding: 0 1.2em;
   margin: 0;
   position: relative;
   overflow: visible;
-  box-shadow: 0 1px 5px 0 rgba(13,180,127,0.03);
+  box-shadow: 0 0px 15px rgba(13,180,127,0.08);
 }
 .faq-item::before {
   content: "";
@@ -492,7 +495,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 /* ---------- APP MAIN/CONTENT BOX ---------- */
 .main {
   background: #fff;
-  border-radius: 20px !important;
+  border-radius: 25px !important;
   border: 1.2px solid #e6ecf7;
   margin-bottom: 2.8rem;
   padding: 2.1rem 1.6rem 1.7rem 1.6rem;
@@ -502,12 +505,11 @@ strong, b { color: #13b47f; font-weight: 700; }
   display: flex;
   flex-direction: column;
   overflow: visible;
-  box-shadow: 0 2px 14px 0 rgba(13,180,127,0.04);
 }
 @media (max-width: 600px) {
   .main {
     border-radius: 11px;
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
+    padding: 1.3rem 0.7rem 1rem 0.7rem;
     margin-bottom: 3rem;
     font-size: 0.98em;
     gap: 0.9rem;
@@ -533,7 +535,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   font-size: 1.2em;
   font-weight: 700;
   padding: 0.45em 1.1em;
-  border-radius: 20px;
+  border-radius: 25px;
   background: #FFFFFF;
   border: 1.5px solid #13b47f;
   color: #13b47f;
@@ -583,7 +585,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 .carousel-track {
   display: flex;
   flex-direction: row;
-  gap: 0.39rem;
+  gap: 12px;
   overflow-x: auto;
   overflow-y: visible;
   scroll-behavior: smooth;
@@ -592,10 +594,11 @@ strong, b { color: #13b47f; font-weight: 700; }
   white-space: nowrap;
   min-width: 0;
   flex-wrap: nowrap;
+  padding: 10px;
 }
 .item-card {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 25px;
   width: 152px;
   padding: 1.55rem 0.95rem 1.18rem 0.95rem;
   display: flex;
@@ -614,7 +617,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   box-sizing: border-box;
   word-break: break-word;
   overflow: visible;
-  box-shadow: 0 2px 14px 0 rgba(13,180,127,0.04);
+  box-shadow: 0 0px 5px 0 rgba(191, 202, 210, 0.5);
 }
 .item-card::before {
   content: "";
@@ -670,7 +673,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   background: #F1FFFC;
   z-index: 2;
   /* NO transform/scale! */
-  box-shadow: 0 4px 20px 0 rgba(13,180,127,0.14);
+  box-shadow: 0 0px 10px rgba(13,180,127,0.14);
 }
 .item-card:hover::before, .item-card:focus-visible::before {
   opacity: 0.39;
@@ -682,7 +685,7 @@ strong, b { color: #13b47f; font-weight: 700; }
     min-width: 112px;
     max-width: 170px;
     padding: 0.97rem 0.36rem 0.77rem 0.36rem;
-    border-radius: 20px;
+    border-radius: 25px;
   }
 }
 /* ... (โค้ดส่วนอื่นๆ เหมือนเดิม) ... */
@@ -705,14 +708,14 @@ strong, b { color: #13b47f; font-weight: 700; }
     font-size: 1rem;
   }
   .h3, h3 {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   .lead {
-    font-size: 0.8em;
+    font-size: 0.9em;
   }
   .card {
-    font-size: 0.8rem;
-    padding: 1.05rem 0.7rem;
+    font-size: 0.9rem;
+    padding: 1.05rem 1.15rem;
     border-radius: 10px;
   }
   .button, .btn {
@@ -741,7 +744,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   }
   .main {
     font-size: 0.96em;
-    padding: 0.8rem 0.4rem 0.7rem 0.4rem;
+    padding: 0.8rem 0.8rem 0.7rem 0.8rem;
     border-radius: 8px;
   }
   .text-h h1 {
