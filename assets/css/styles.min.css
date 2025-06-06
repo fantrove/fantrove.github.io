@@ -2,12 +2,12 @@
 :root {
   --app-theme-indigo: #6051FF;
   --app-theme-indigo-hover: #7667FF;
-  --app-theme-indigo-light: rgba(96, 81, 255, 0.08);
+  --app-theme-indigo-light: #10B981;
   --app-theme-indigo-lighter: rgba(96, 81, 255, 0.04);
   --app-theme-indigo-border: rgba(96, 81, 255, 0.15);
   --app-theme-indigo-border-strong: rgba(96, 81, 255, 0.8);
   --app-theme-indigo-border2: rgba(96, 81, 255, 0.3);
-  --app-text-heading: #23272F;
+  --app-text-heading: #494E59;
   --app-text-body: #52638A;
   --app-text-light: #6F6F82;
   --app-surface-primary: #FFFFFF;
@@ -34,13 +34,12 @@ main { margin-top: 30px;}
   border: 0.5px solid var(--app-border-subtle);
   border-radius: var(--app-pill-radius);
   font-size: 13.5px;
-  font-weight: 500;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   transition: background var(--app-motion-quick), border-color var(--app-motion-quick), color var(--app-motion-quick);
   letter-spacing: 0.01em;
-  font-family: 'Manrope', 'Noto Sans Thai', sans-serif;
+  font-family: inherit;
 }
 
 .button-sub:hover {
@@ -50,10 +49,8 @@ main { margin-top: 30px;}
 
 .button-sub.active {
   color: var(--text-primary);
-  background: var(--nav-active-bg);
   border-color: var(--app-theme-indigo-light);
-  font-weight: 600;
-  box-shadow: var(--app-elevation-small);
+  font-weight: bold;
 }
 
 .hi { padding: 0 10px 0 10px; }
@@ -142,6 +139,7 @@ main { margin-top: 30px;}
   transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .card-content {
+  margin-top: 5px;
   padding: 12px;
   display: flex;
   flex-direction: column;

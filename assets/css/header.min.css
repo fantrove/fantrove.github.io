@@ -40,9 +40,7 @@ header {
     top: 0;
     left: 0;
     z-index: 9000;
-    background: linear-gradient(-190deg, rgba(240, 252, 255, 0.8) 70%, rgba(224, 255, 245, 0.8) 100%);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: linear-gradient(-190deg, rgba(203, 255, 242, 1) 5%,rgba(240, 252, 255, 1), rgba(240, 252, 255, 1), rgba(240, 252, 255, 1) 70%, rgba(203, 255, 242, 1) 100%);
     border-bottom: 1px solid rgba(19, 180, 127, 0.3);
     box-shadow: 0 0 15px rgba(58, 60, 79, 0.15);
     touch-action: none;
@@ -55,7 +53,7 @@ header {
     --logo-padding: 9px;
     
     font-family: 'MunroSmall', monospace;
-    font-size: 25px;
+    font-size: 23px;
     padding: 10px 0 10px 0;
     white-space: nowrap;
     color: #1e957c;
@@ -119,7 +117,6 @@ nav ul li button {
     padding: 9px 16px;
     color: var(--text-secondary);
     font-size: 13px;
-    font-weight: 500;
     background: transparent;
     border: none;
     border-radius: 25px;
@@ -153,7 +150,7 @@ nav ul li button:hover::before {
 /* Active Button State */
 nav ul li button.active {
     color: var(--text-primary);
-    font-weight: 600;
+    font-weight: bold;
     background: var(--nav-active-bg);
     border: 0.5px solid #10B981;
 }

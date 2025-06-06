@@ -1,7 +1,7 @@
 /* Modern Background System v4 */
 :root {
   /* Background Variables */
-  --bg-primary: #F4F7FB;
+  --bg-primary: linear-gradient(135deg, #f8fbfa 0%, #f0fcff 100%);
   --bg-secondary: #F2F3F5;
   --bg-overlay: rgba(255, 255, 255, 0.8);
   --bg-gradient-start: #F8F9FA;
@@ -13,9 +13,13 @@
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Base Background Styles */
 body {
-  background-color: var(--bg-primary);
+  background: var(--bg-primary);
+}
+
+/* Base Background Styles */
+bod {
+  background: var(--bg-primary);
   background-attachment: fixed;
   background-size: cover;
   position: relative;

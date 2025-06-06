@@ -52,7 +52,7 @@ header {
     top: 0;
     left: 0;
     z-index: 9000;
-    background: linear-gradient(-190deg, rgba(240, 252, 255, 0.8) 70%, rgba(224, 255, 245, 0.8) 100%);
+    background: linear-gradient(-190deg, rgba(203, 255, 242, 0.8) 5%,rgba(240, 252, 255, 0.8), rgba(240, 252, 255, 0.8), rgba(240, 252, 255, 0.8) 70%, rgba(203, 255, 242, 0.8) 100%);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-bottom: 1px solid rgba(19, 180, 127, 0.3);
@@ -653,6 +653,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   margin-bottom: 0.12em;
   overflow-wrap: break-word;
   z-index: 2;
+  white-space: normal;
 }
 .item-card .desc,
 .item-card .detail,
@@ -748,21 +749,21 @@ strong, b { color: #13b47f; font-weight: 700; }
     border-radius: 8px;
   }
   .text-h h1 {
-    font-size: 0.9em;
+    font-size: 1em;
   }
   .text-h button {
-    font-size: 0.8em !important;
+    font-size: 0.9em !important;
     padding: 0.75em 1.1em;
   }
   .category-section h2 {
-    font-size: 0.89em;
+    font-size: 0.99em;
     margin: 0.6rem 0 0.6rem 0;
   }
   .item-card {
     font-size: 0.91em;
   }
   .item-card .name {
-    font-size: 0.79em;
+    font-size: 1em;
   }
   .item-card .desc, .item-card .detail, .item-card .content {
     font-size: 0.7em;
