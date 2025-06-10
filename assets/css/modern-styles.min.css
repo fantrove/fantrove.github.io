@@ -73,14 +73,12 @@
   left: 0;
   width: 100%;
   height: calc(var(--nav-height) + var(--safe-area-bottom));
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 1);
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   padding: 0 max(env(safe-area-inset-left), 16px) calc(var(--safe-area-bottom)) max(env(safe-area-inset-right), 16px);
-  z-index: 1000;
+  z-index: 16000;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform var(--transition-normal);
   touch-action: none;

@@ -1,7 +1,7 @@
 /* Modern Background System v4 */
 :root {
   /* Background Variables */
-  --bg-primary: linear-gradient(135deg, #f8fbfa 0%, #f0fcff 100%);
+  --bg-primary: linear-gradient(135deg, #F8FBFA 0%, #F3FDFF 100%);
   --bg-secondary: #F2F3F5;
   --bg-overlay: rgba(255, 255, 255, 0.8);
   --bg-gradient-start: #F8F9FA;

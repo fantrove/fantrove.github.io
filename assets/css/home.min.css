@@ -52,9 +52,7 @@ header {
     top: 0;
     left: 0;
     z-index: 9000;
-    background: linear-gradient(-190deg, rgba(203, 255, 242, 0.8) 5%,rgba(240, 252, 255, 0.8), rgba(240, 252, 255, 0.8), rgba(240, 252, 255, 0.8) 70%, rgba(203, 255, 242, 0.8) 100%);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: linear-gradient(-190deg, rgba(203, 255, 242, 1) 5%,rgba(240, 252, 255, 1), rgba(240, 252, 255, 1), rgba(240, 252, 255, 1) 70%, rgba(203, 255, 242, 1) 100%);
     border-bottom: 1px solid rgba(19, 180, 127, 0.3);
     box-shadow: 0 0 15px rgba(58, 60, 79, 0.15);
     touch-action: none;
@@ -156,7 +154,7 @@ strong, b { color: #13b47f; font-weight: 700; }
 .card {
   background: #fff;
   border-radius: 25px !important;
-  border: 1.5px solid #e1f4f1;
+  border: 1.5px solid #E1F4F1;
   padding: 2.1rem 2.5rem;
   margin-bottom: 2.2rem;
   display: flex;
