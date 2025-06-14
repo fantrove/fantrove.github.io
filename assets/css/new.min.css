@@ -5,12 +5,12 @@ body {
 }
 
 .container {
- margin: 0 20px 0 20px;
+ margin: 0 20px 50px 20px;
  text-align: left;
  padding: 10px;
  max-width: 600px;
- background: #EDEDED;
- color: 131313;
+ background: #FFFFFF;
+ color: #131313;
  border-radius: 25px;
 }
 

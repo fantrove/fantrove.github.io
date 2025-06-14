@@ -615,14 +615,14 @@ strong, b { color: #13b47f; font-weight: 700; }
   box-sizing: border-box;
   word-break: break-word;
   overflow: visible;
-  box-shadow: 0 0px 5px 0 rgba(191, 202, 210, 0.5);
+
 }
 .item-card::before {
   content: "";
   display: block;
   width: 44%;
   height: 6px;
-  background: linear-gradient(90deg, #0eb0d5 0%, #13b47f 100%);
+  background: #0eb0d5;
   position: absolute;
   left: 28%;
   top: 0;
@@ -635,7 +635,6 @@ strong, b { color: #13b47f; font-weight: 700; }
 .item-card .emoji {
   font-size: 1.71rem;
   margin-bottom: 0.23rem;
-  text-shadow: 0 2px 13px #c4e7f7, 0 0.5px 2px #a6d9e8;
   transition: text-shadow 0.14s, filter 0.14s;
   z-index: 2;
 }
@@ -647,9 +646,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   opacity: 0.99;
   max-width: 100%;
   line-height: 1.37;
-  word-break: break-word;
   margin-bottom: 0.12em;
-  overflow-wrap: break-word;
   z-index: 2;
   white-space: normal;
 }
@@ -660,10 +657,8 @@ strong, b { color: #13b47f; font-weight: 700; }
   color: #295c73;
   margin-top: 0.31em;
   margin-bottom: 0.13em;
-  word-break: break-word;
   text-align: left;
   width: 100%;
-  overflow-wrap: break-word;
   z-index: 2;
   font-weight: 500;
 }
@@ -672,11 +667,10 @@ strong, b { color: #13b47f; font-weight: 700; }
   background: #F1FFFC;
   z-index: 2;
   /* NO transform/scale! */
-  box-shadow: 0 0px 10px rgba(13,180,127,0.14);
 }
 .item-card:hover::before, .item-card:focus-visible::before {
   opacity: 0.39;
-  background: linear-gradient(90deg, #0eb0d5 0%, #13b47f 100%);
+  background: #0eb0d5;
 }
 @media (max-width: 900px) {
   .item-card {
