@@ -14,7 +14,6 @@ body {
   font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
   margin: 0;
   color: #23272f;
-  background: #F7F9FB;
   line-height: 1.85;
   min-height: 100vh;
   font-size: 1.07rem;
@@ -500,7 +499,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   user-select: none;
 }
 .text-h button:active {
-  filter: brightness(0.99);
+  filter: brightness(0.90);
 }
 
 /* ---------- APP CATEGORY SECTION ---------- */
@@ -678,13 +677,16 @@ strong, b { color: #13b47f; font-weight: 700; }
 
 /* ---------- FOOTER ---------- */
 footer {
+  --color-b: #E6ECF7;
+  
   background: #fff;
-  border-top: 1.5px solid #e6ecf7;
+  border-top: 1.5px solid var(--color-b);
+  border-bottom: 1.5px solid var(--color-b);
   margin-top: 2.2rem;
   padding: 0;
   font-size: 1.03em;
   margin-bottom: 90px;
-  box-shadow: 0 -1px 3px #e6ecf7;
+  box-shadow: 0 0 3px #E6ECF7;
   border-radius: 25px;
 }
 .footer-inner {
