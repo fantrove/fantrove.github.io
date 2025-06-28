@@ -96,6 +96,7 @@ main { margin-top: 30px;}
   flex-direction: column; /* จัดเรียงแนวตั้ง */
   align-items: stretch;
   width: 160px;
+  height: 220px;
   max-height: 300px;
   max-width: 400px;
   padding: 0; /* ลบ padding */

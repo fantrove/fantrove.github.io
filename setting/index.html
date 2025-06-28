@@ -30,6 +30,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/gh/marcufer/Marcumat.js@latest/wake-effect.min.js"></script>
+<script>
+    // ใช้งานได้เลย
+    WakeEffect.upgradeAll();
+</script>
+
 <!-- Fallback เป็น ICO -->
 <link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico">
 
@@ -69,7 +75,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </button>
 </div>
 
-<button type="button" class="buttons auto-update-toggle" id="auto-update-toggle-btn">
+<button type="button" class="buttons auto-update-toggle" id="auto-update-toggle-btn" wake>
     <!-- Icon -->
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M2.5 2v6h6M21.5 22v-6h-6" />
@@ -78,8 +84,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     
     <!-- Text -->
     <div class="text-content">
-        ระบบตรวจสอบเวอร์ชันอัตโนมัติ<br>
-        <span class="auto-update-desc">เปิด/ปิดการแจ้งเตือนและอัปเดตเวอร์ชันเว็บไซต์อัตโนมัติ</span>
+        <span data-translate="avcs">Automatic version checking system</span>
+        <span class="auto-update-desc" data-translate="aud">Turn on/off notifications and automatic website version updates.</span>
     </div>
     
     <!-- Toggle -->
@@ -210,10 +216,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </button>
 
     <button class="buttons e tap" onclick="window.location.href='/us'" data-translate="contact-button">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor" viewBox="0 0 16 16">
-    <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52z" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
 </svg>
-        Contact us
+        Contact the Developer
     </button>
 
     <button class="buttons buy tap" onclick="window.location.href='/support'" data-translate="support-button">

@@ -566,7 +566,6 @@ strong, b { color: #13b47f; font-weight: 700; }
   transition: border-color 0.11s, background 0.11s;
   cursor: pointer;
   border: 1.2px solid #e6ecf7;
-  user-select: none;
   position: relative;
   text-align: center;
   font-size: 1.05em;
@@ -583,6 +582,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   margin-bottom: 0.16rem;
   transition: filter 0.10s;
   z-index: 2;
+  user-select: none;
 }
 .item-card .name {
   font-size: 1.15em;

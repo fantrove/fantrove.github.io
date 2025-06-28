@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="contact-other-title">General Contact</title>
+    <link rel="stylesheet" href="/assets/css/general.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/assets/css/setting.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/top-navigation-bar.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/language-error.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/wake-effect.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/assets/css/bg.min.css" type="text/css" media="all">
+    
+    <script src="/assets/js/back-button.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico">
+</head>
+<body style="opacity:0">
+
+    <!-- Navigation Bar -->
+    <nav>
+        <button class="back-button" id="back-button" aria-label="Go back">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
+            </svg>
+        </button>
+        <span class="page-title" data-translate="page-contact">General Contact</span>
+    </nav>
+
+    <main>
+        
+            <h1 data-translate="contact-other-title" style="margin-bottom:1.5rem;">General Contact</h1>
+            <p class="text-content" data-translate="contact-other-desc" style="margin-bottom:1.5rem;">
+                You can use this page to contact the FanTrove Hub developer for general inquiries, suggestions, collaboration, or other topics that are not bug reports or abuse reports.<br>
+                <br>
+                Available contact channels:<br>
+                • Gmail: fantrovehub@gmail.com<br>
+                • Form: Submit your message directly from the website.<br>
+            </p>
+            <div class="setting-item">
+                <label for="contact-method" data-translate="contact-method-label">Choose Contact Channel</label>
+                <select id="contact-method" class="setting-item select" style="margin-bottom:1rem;">
+                    <option value="gmail" data-translate="contact-method-gmail">Gmail</option>
+                    <option value="form" data-translate="contact-method-form">Form</option>
+                </select>
+            </div>
+            <div class="setting-item" id="contact-form-section" style="display:none;">
+                <label for="contact-form-lang" data-translate="contact-form-lang-label">Choose Language</label>
+                <select id="contact-form-lang" class="setting-item select" style="margin-bottom:1rem;">
+                    <!-- Dynamically filled by JS based on language.min.json -->
+                </select>
+                <button class="buttons tap" style="width:100%;" id="goto-form-btn">Go to Form</button>
+            </div>
+            <div class="setting-item" id="gmail-section" >
+                <label data-translate="contact-gmail-text">Send your message via Gmail:</label>
+                <button onclick="window.location.href='mailto:fantrovehub@gmail.com'" class="buttons tap" data-translate="contact-gmail-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Send via Gmail
+                </button>
+             </div>
+        
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p data-translate="footer">&copy; 2025 FanTrove (Beta). All rights reserved.</p>
+            <p data-translate="footer-deve">Developed by Lédp Aero Wings Company</p>
+        </div>
+    </footer>
+    <script src="/assets/js/language.min.js"></script>
+    <script>
+    // Google Form URLs by language code
+    const contactFormUrls = {
+        en: "https://docs.google.com/forms/d/e/1FAIpQLSe_en_contact_form_url/viewform",
+        th: "https://docs.google.com/forms/d/e/1FAIpQLSe_th_contact_form_url/viewform"
+        // Add more languages and URLs as needed
+    };
+
+    // Button text by language code
+    const contactFormBtnText = {
+        en: "Go to Contact Form",
+        th: "ไปที่แบบฟอร์มติดต่อ",
+        // Add more languages and texts as needed
+        default: "Go to Contact Form"
+    };
+
+    // Load language choices from language.min.json
+    async function loadLangOptions() {
+        const langSelect = document.getElementById('contact-form-lang');
+        langSelect.innerHTML = '';
+        let langs = {};
+        try {
+            let localConfigRaw = localStorage.getItem('__lang_cfg');
+            if (localConfigRaw) langs = JSON.parse(localConfigRaw);
+            else {
+                const resp = await fetch('/assets/json/language.min.json');
+                langs = await resp.json();
+            }
+        } catch (e) {}
+        Object.entries(langs).forEach(([key, val]) => {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = val.label;
+            langSelect.appendChild(opt);
+        });
+        // Auto-select user's language (if any)
+        const selectedLang = localStorage.getItem('selectedLang');
+        if (selectedLang && langSelect.querySelector(`option[value="${selectedLang}"]`))
+            langSelect.value = selectedLang;
+        updateGotoFormBtnText();
+    }
+
+    // Toggle between Gmail and Form
+    function updateContactMethod() {
+        const val = document.getElementById('contact-method').value;
+        document.getElementById('contact-form-section').style.display = (val === 'form') ? '' : 'none';
+        document.getElementById('gmail-section').style.display = (val === 'gmail') ? '' : 'none';
+    }
+
+    // Update goto form button text based on language
+    function updateGotoFormBtnText() {
+        const lang = document.getElementById('contact-form-lang').value;
+        const btn = document.getElementById('goto-form-btn');
+        btn.textContent = contactFormBtnText[lang] || contactFormBtnText.default;
+    }
+
+    document.getElementById('contact-form-lang').addEventListener('change', updateGotoFormBtnText);
+
+    // Go to Google Form
+    document.getElementById('goto-form-btn').addEventListener('click', function() {
+        const lang = document.getElementById('contact-form-lang').value;
+        const url = contactFormUrls[lang] || contactFormUrls['en'];
+        window.open(url, '_blank');
+    });
+
+    document.getElementById('contact-method').addEventListener('change', updateContactMethod);
+
+    // On page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadLangOptions();
+        updateContactMethod();
+    });
+    </script>
+</body>
+</html>
