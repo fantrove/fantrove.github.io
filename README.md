@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="300" src="assets/images/fantrove-hub.png" alt="FanTrove Hub Logo">
+  <img width="300" src="assets/images/fantrove-hub.ng" alt="FanTrove Hub Logo">
 </div>
 
 # 🌟 FanTrove Hub – The Ultimate Collection of Special Characters, Emojis & Symbols! 
