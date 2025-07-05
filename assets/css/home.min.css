@@ -94,8 +94,9 @@ h3, .h3 {
 .lead {
   font-size: 1.11em;
   color: #34535a;
-  margin-bottom: 1.55rem;
+  margin-bottom: 2rem;
   font-weight: 400;
+  text-align: center;
 }
 .text-center { text-align: center; }
 .text-muted { color: #8ea1b8; }
@@ -181,10 +182,6 @@ strong, b { color: #13b47f; font-weight: 700; }
   
   background: linear-gradient(90deg, #e6f7ff 0%, #e8f8f3 100%);
 }
-.button:focus-visible, .btn:focus-visible {
-  outline: 2px solid #13b47f;
-  outline-offset: 2px;
-}
 .button-primary, .btn-primary {
   background: linear-gradient(90deg, #11c3ec 0%, #13b47f 100%);
   color: #fff;
@@ -218,18 +215,21 @@ strong, b { color: #13b47f; font-weight: 700; }
 
 /* ---------- HERO ---------- */
 .hero {
-  background: #fff;
+  background: none;
   border-radius: 25px;
   padding: 2.2rem 2.1rem 1.7rem 2.1rem;
   margin-bottom: 2.3rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 2.5rem;
   min-height: 120px;
-  border: 1.2px solid #e6ecf7;
+  border: none;
   position: relative;
   overflow: hidden;
-
+}
+.hero h1 {
+  text-align: center;
 }
 .hero-content {
   flex: 2;
@@ -257,20 +257,6 @@ strong, b { color: #13b47f; font-weight: 700; }
   transition: border-color 0.1s;
   
 }
-.hero-img:hover, .hero-img:focus-visible {
-  border-color: #13b47f;
-}
-.hero::after {
-  content: "";
-  position: absolute;
-  right: -64px;
-  bottom: -60px;
-  width: 230px;
-  height: 230px;
-  background: radial-gradient(circle, #13B47F0A 0%, #0EB0D500 80%);
-  z-index: 1;
-  pointer-events: none;
-}
 @media (max-width: 900px) {
   .hero {
     flex-direction: column;
@@ -285,12 +271,6 @@ strong, b { color: #13b47f; font-weight: 700; }
     max-width: 80px;
     border-radius: 25px;
     margin-top: 3px;
-  }
-  .hero::after {
-    width: 120px;
-    height: 120px;
-    right: -30px;
-    bottom: -30px;
   }
 }
 

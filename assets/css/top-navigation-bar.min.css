@@ -35,9 +35,7 @@ nav {
   justify-content: center;
 }
 
-.back-button:active {
-  background: rgba(0, 0, 0, 0.1);
-}
+
 
 .back-button:active svg {
   transform: scale(0.9);
