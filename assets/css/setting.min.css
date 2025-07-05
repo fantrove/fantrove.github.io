@@ -108,14 +108,24 @@ h5 {
   letter-spacing: 0.025em;
 }
 
+section {
+  border-radius: 25px;
+  overflow: hidden;
+  
+}
+
+.m5 {
+  margin-bottom: 2px;
+}
+
 /* สไตล์ select และ button */
 .setting-item select,
 #language-button, .buttons {
   width: 100%;
   padding: var(--ui-spacing-medium) var(--ui-spacing-large);
   font-size: var(--ui-font-size-small);
-  border: 0.8px solid var(--ui-color-border-default);
-  border-radius: 20px;
+  border: none;
+  border-radius: 7px;
   background-color: var(--ui-color-background-main);
   color: var(--ui-color-text-primary);
   transition: all var(--ui-transition-speed-fast);
@@ -124,15 +134,13 @@ h5 {
   cursor: pointer;
   appearance: none;
   -webkit-tap-highlight-color: transparent;
-  display: flex;
+  display: block;
   background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1.25rem;
   padding-right: 2.5rem;
-  margin-bottom: 15px;
   user-select: none;
   align-items: center;
-  box-shadow: 0 0 10px rgba(58, 60, 79, 0.1);
 }
 
 .setting-item.select, #language-button {
@@ -170,13 +178,16 @@ h5 {
 
 .buttons.buy {
   color: #FF0081;
-  background-image: 
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FF0081' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
   position: relative;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   border: 1px solid rgba(0, 255, 156, 0.2);
+}
+
+.buttons.buy.tap {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FF0081' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
 }
 
 .buttons.buy svg {
