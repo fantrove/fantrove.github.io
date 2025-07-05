@@ -87,19 +87,22 @@ h1 {
   color: #13b47f;
 }
 
+.h {
+  font-size: 1em;
+  font-weight: 700;
+  margin-top: var(--ui-spacing-xlarge);
+  color: #38AA84;
+  margin-left: 10px;
+}
+
 h5 {
   font-size: 13px;
   margin-bottom: 5px;
   color: #13b47f;
 }
 
-/* รายการตั้งค่า */
-.setting-item {
-  margin-bottom: var(--ui-spacing-large);
-}
-
 /* สไตล์ label */
-.setting-item label {
+.setting-item label, label {
   display: block;
   font-size: var(--ui-font-size-small);
   color: var(--ui-color-text-secondary);
@@ -109,8 +112,8 @@ h5 {
 }
 
 section {
-  border-radius: 25px;
-  overflow: hidden;
+  border-radius: 30px !important;
+  overflow: hidden !important;
   
 }
 
@@ -134,7 +137,7 @@ section {
   cursor: pointer;
   appearance: none;
   -webkit-tap-highlight-color: transparent;
-  display: block;
+  display: flex;
   background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1.25rem;
@@ -182,7 +185,7 @@ section {
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  border: 1px solid rgba(0, 255, 156, 0.2);
+  border: none;
 }
 
 .buttons.buy.tap {
@@ -194,9 +197,8 @@ section {
   height: 17px !important;
 }
 
-.setting-item select:focus {
-  border-color: var(--ui-color-purple-500);
-  box-shadow: var(--ui-shadow-focus);
+.b2 {
+  border-radius: 25px !important;
 }
 
 /* Language Selector Styles */

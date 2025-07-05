@@ -18,7 +18,7 @@
 
     <!-- Navigation Bar -->
     <nav>
-        <button class="back-button" id="back-button" aria-label="Go back" wave>
+        <button class="back-button" id="back-button" aria-label="Go back" wa>
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
             </svg>
@@ -38,24 +38,32 @@
             </p>
             <div class="setting-item">
                 <label for="contact-method" data-translate="contact-method-label">Choose Contact Channel</label>
-                <select id="contact-method" class="setting-item select" style="margin-bottom:1rem;">
+                <section style="margin-bottom:1rem;">
+                <select id="contact-method" class="setting-item select">
                     <option value="gmail" data-translate="contact-method-gmail">Gmail</option>
                     <option value="form" data-translate="contact-method-form">Form</option>
                 </select>
+                </section>
             </div>
+            
             <div class="setting-item" id="contact-form-section" style="display:none;">
                 <label for="contact-form-lang" data-translate="contact-form-lang-label">Choose Language</label>
-                <select id="contact-form-lang" class="setting-item select" style="margin-bottom:1rem;">
+                <section>
+                
+                <select id="contact-form-lang" class="setting-item select m5">
                     <!-- Dynamically filled by JS based on language.min.json -->
                 </select>
                 <button class="buttons tap" style="width:100%;" id="goto-form-btn">Go to Form</button>
+                </section>
             </div>
             <div class="setting-item" id="gmail-section" >
                 <label data-translate="contact-gmail-text">Send your message via Gmail:</label>
+                <section>
                 <button onclick="window.location.href='mailto:fantrovehub@gmail.com'" class="buttons tap" data-translate="contact-gmail-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                     Send via Gmail
                 </button>
+                </section>
              </div>
         
     </main>

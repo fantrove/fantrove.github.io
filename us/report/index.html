@@ -35,16 +35,20 @@
             </p>
             <div class="setting-item">
                 <label for="report-method" data-translate="contact-method-label">Choose Report Channel</label>
-                <select id="report-method" class="setting-item select" style="margin-bottom:1rem;">
+                <section style="margin-bottom:1rem;">
+                <select id="report-method" class="setting-item select">
                     <option value="form" data-translate="contact-method-form">Form</option>
                 </select>
+                </section>
             </div>
             <div class="setting-item" id="report-form-section">
                 <label for="report-form-lang" data-translate="contact-form-lang-label">Choose Language</label>
-                <select id="report-form-lang" class="setting-item select" style="margin-bottom:1rem;">
+                <section style="margin-bottom:1rem;">
+                <select id="report-form-lang" class="setting-item select m5">
                     <!-- Dynamically filled by JS based on language.min.json -->
                 </select>
                 <button class="buttons tap" style="width:100%;" id="goto-report-btn">Go to Form</button>
+                </section>
             </div>
         
     </main>
