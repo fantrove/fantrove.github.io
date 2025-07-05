@@ -5,57 +5,63 @@
 @import url('variables.min.css');
 
 :root {
- /* Colors */
- --color-primary-start: #12D181;
- --color-primary-end: #0ABAB5;
- --color-text-primary: #252525;
- --color-background: #FFFFFF;
- --color-border: rgba(0, 0, 0, 0.1);
- --color-premium: #1B1B1B;
- --color-accent: #0058FF;
- --color-link: #00A0FF;
- 
- /* Gradients */
- --gradient-primary: linear-gradient(90deg, var(--color-primary-start), var(--color-primary-end));
- 
- /* Typography */
- --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
- --font-size-base: 15px;
- --font-weight-normal: 400;
- --font-weight-semi-bold: bold;
- 
- /* Spacing */
- --spacing-xs: 10px;
- --spacing-sm: 30px;
- --spacing-md: 40px;
- --spacing-lg: 60px;
- --spacing-xl: 130px;
- 
- /* Border radius */
- --border-radius-lg: 20px;
- 
- /* Shadows */
- --shadow-bottom: 0 -15px 40px rgba(255, 255, 255, 1), 0 -6px 15px rgba(255, 255, 255, 0.1);
- --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.1);
- 
- /* Z-index */
- --z-index-fixed: 888;
+  /* Colors */
+  --color-primary-start: #12D181;
+  --color-primary-end: #0ABAB5;
+  --color-text-primary: #252525;
+  --color-background: #FFFFFF;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-premium: #1B1B1B;
+  --color-accent: #0058FF;
+  --color-link: #00A0FF;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(90deg, var(--color-primary-start), var(--color-primary-end));
+
+  /* Typography */
+  --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-base: 1.25em; /* 20px - Base font size for larger screens */
+  --font-weight-normal: 400;
+  --font-weight-semi-bold: bold;
+
+  /* Spacing */
+  --spacing-xs: 10px;
+  --spacing-sm: 30px;
+  --spacing-md: 40px;
+  --spacing-lg: 60px;
+  --spacing-xl: 130px;
+
+  /* Border radius */
+  --border-radius-lg: 20px;
+
+  /* Shadows */
+  --shadow-bottom: 0 -15px 40px rgba(255, 255, 255, 1), 0 -6px 15px rgba(255, 255, 255, 0.1);
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.1);
+
+  /* Z-index */
+  --z-index-fixed: 888;
 }
 
 /* ==========================================================================
-   Layout & Container Styles
+   Base Styles
    ========================================================================== */
 
 body {
- height: 100vh;
- color: var(--color-text-primary);
- margin-top: var(--spacing-sm);
+  font-family: var(--font-primary);
+  height: 100vh;
+  color: var(--color-text-primary);
+  margin-top: var(--spacing-sm);
+  font-size: 1em; /* Base font size for body */
 }
 
+/* ==========================================================================
+   Layout Styles
+   ========================================================================== */
+
 main {
- padding: var(--spacing-sm) 20px 50px;
- max-width: 900px;
- margin: 0 auto;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-sm) 20px 50px;
 }
 
 /* ==========================================================================
@@ -63,126 +69,85 @@ main {
    ========================================================================== */
 
 .bottom-box-shadow {
- position: fixed;
- bottom: -120px;
- left: 0;
- width: 100%;
- box-shadow: var(--shadow-bottom);
- background-color: var(--color-background);
- z-index: var(--z-index-fixed);
+  position: fixed;
+  bottom: -120px;
+  left: 0;
+  width: 100%;
+  box-shadow: var(--shadow-bottom);
+  background-color: var(--color-background);
+  z-index: var(--z-index-fixed);
 }
 
 .section {
- margin-bottom: var(--spacing-md);
- padding: var(--spacing-sm);
- background-color: var(--color-background);
- border-radius: var(--border-radius-lg);
- box-shadow: var(--shadow-card);
- line-height: 1.2em !important;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-card);
+  line-height: 1.2em !important;
 }
 
-/* Typography Components */
+/* ==========================================================================
+   Typography Styles
+   ========================================================================== */
+
 .main-title,
 .title {
- font-size: var(--font-size-base);
- font-weight: var(--font-weight-semi-bold);
- background: var(--main-color);
- -webkit-background-clip: text;
- background-clip: text;
- -webkit-text-fill-color: transparent;
- text-fill-color: transparent;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi-bold);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
 }
 
 .content,
 .developer-name {
- font-size: 13px;
- color: var(--color-text-primary);
- font-weight: var(--font-weight-normal);
- margin-top: var(--spacing-xs);
-}
-
-/* Link Styles */
-.section a {
- color: var(--color-link);
- text-decoration: none;
- font-weight: var(--font-weight-semi-bold);
- transition: color 0.2s ease;
- -webkit-tap-highlight-color: transparent;
-}
-
-.section a:hover {
- color: var(--color-accent);
+  font-size: 0.75em; /* 12px */
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+  margin-top: var(--spacing-xs);
 }
 
 /* ==========================================================================
-   Responsive Design
-   Using Mobile-First Approach
+   Link Styles
    ========================================================================== */
 
-/* Base styles are mobile-first (default) */
+.section a {
+  color: var(--color-link);
+  text-decoration: none;
+  font-weight: var(--font-weight-semi-bold);
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.section a:hover {
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   Media Queries - Responsive Design
+   ========================================================================== */
 
 /* Tablet Portrait */
-@media screen and (min-width: 600px) {
- :root {
-  --font-size-base: 16px;
- }
- 
- .section {
-  padding: var(--spacing-md);
- }
+@media screen and (max-width: 767px) {
+  :root {
+    --font-size-base: 1.0em; /* 16px */
+  }
+
+  .section {
+    padding: var(--spacing-md);
+  }
 }
 
-/* Tablet Landscape */
-@media screen and (min-width: 768px) {
- :root {
-  --font-size-base: 18px;
- }
- 
- .section {
-  padding: 50px;
- }
-}
+/* Mobile */
+@media screen and (max-width: 599px) {
+  :root {
+    --font-size-base: 0.875em; /* 14px */
+  }
 
-/* Small Desktop */
-@media screen and (min-width: 1024px) {
- :root {
-  --font-size-base: 20px;
- }
- 
- .section {
-  padding: var(--spacing-lg);
- }
-}
-
-/* Medium Desktop */
-@media screen and (min-width: 1280px) {
- :root {
-  --font-size-base: 22px;
- }
- 
- .section {
-  padding: 70px;
- }
-}
-
-/* Large Desktop */
-@media screen and (min-width: 1440px) {
- :root {
-  --font-size-base: 24px;
- }
- 
- .section {
-  padding: 80px;
- }
-}
-
-/* 4K and Ultra-wide */
-@media screen and (min-width: 1920px) {
- :root {
-  --font-size-base: 26px;
- }
- 
- .section {
-  padding: 90px;
- }
+  .section {
+    padding: var(--spacing-sm);
+  }
 }
