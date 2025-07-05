@@ -15,6 +15,7 @@
 
 body {
   background: var(--bg-primary);
+  font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
 }
 
 /* Base Background Styles */
