@@ -178,11 +178,7 @@ strong, b { color: #13b47f; font-weight: 700; }
   min-width: 120px;
   min-height: 46px;
 }
-.button:active, .btn:active {
-  filter: brightness(0.98);
-  
-  background: linear-gradient(90deg, #e6f7ff 0%, #e8f8f3 100%);
-}
+
 .button-primary, .btn-primary {
   background: linear-gradient(90deg, #11c3ec 0%, #13b47f 100%);
   color: #fff;
