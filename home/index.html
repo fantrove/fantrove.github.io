@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
   <link rel="stylesheet" href="/assets/css/bg.min.css" type="text/css" media="all">
-  <link rel="stylesheet" href="/assets/css/home.min.css">
+  <link rel="stylesheet" href="/assets/csshome.min.css">
   <link rel="stylesheet" href="/assets/css/general.min.css">
   <script defer src="/assets/js/home.min.js"></script>
   <script defer src="/assets/js/copyNotification.min.js"></script>
@@ -33,8 +33,7 @@
     </div>
     <div class="container">
 <!-- HERO -->
-<section class="hero flex flex-row flex-between gap-3 section kl">
-  <div class="flex-1 hero-content">
+<section class="hero">
     <h1 class="h1" data-translate="home-hero-title">Emoji & Special Characters Hub</h1>
     <p class="lead" data-translate="home-hero-desc">
       Your central place to search, copy, and use <strong>emojis</strong> and <strong>special characters</strong> for all your needs!
@@ -48,14 +47,11 @@
         <span class="btn-icon">✦</span>
         Explore Special Characters
       </button>
-    </div>
-  </div>
-  <div>
   </div>
 </section>
 
       <!-- NOTICE -->
-<section class="notice flex">
+<section class="notice">
   <span class="notice-icon">💡</span>
   <span data-translate="home-tip">
     Tip: You can change the website language anytime via the <a href="/setting">Settings</a> page!
@@ -63,66 +59,57 @@
 </section>
 
       <!-- DYNAMIC CONTENT AREA (APP) -->
-      <section id="app" class="section">
+      <div id="app">
         <!-- Home page content is dynamically rendered by JS -->
-      </section>
+      </div>
 
       <!-- FEATURES -->
-      <section class="section">
         <h2 class="h2" data-translate="home-features-title">Why Choose FANTROVE?</h2>
-        <div class="flex flex-row flex-wrap feature-list">
-          <div class="card flex flex-row flex-center">
+        <section class="feature-list">
             <span class="feature-icon">🔍</span>
             <div>
               <h3 class="h3" data-translate="home-feature1-title">Easy Search</h3>
               <div data-translate="home-feature1-desc">Find emojis and special symbols instantly using categories and smart search features.</div>
             </div>
-          </div>
-          <div class="card flex flex-row flex-center">
+          </section>
+          <section class="feature-list">
             <span class="feature-icon">📋</span>
             <div>
               <h3 class="h3" data-translate="home-feature2-title">One-click Copy</h3>
               <div data-translate="home-feature2-desc">Click or tap any emoji or character to copy immediately, with instant feedback notification.</div>
             </div>
-          </div>
-          <div class="card flex flex-row flex-center">
+          </section>
+          <section class="feature-list">
             <span class="feature-icon">✨</span>
             <div>
               <h3 class="h3" data-translate="home-feature3-title">Beautiful Interface</h3>
               <div data-translate="home-feature3-desc">Designed to be easy on the eyes and work perfectly on all your devices.</div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
       <!-- FAQ -->
-      <section class="section">
         <h2 class="h2" data-translate="home-faq-title">Frequently Asked Questions</h2>
-        <div>
-          <div class="card">
+          <section>
             <input type="checkbox" id="faq1" class="faq-toggle" hidden>
-            <label for="faq1" class="faq-question" data-translate="home-faq-q1">How do I use FANTROVE?</label>
+            <label for="faq1" class="faq-question" data-translate="home-faq-q1" wave>How do I use FANTROVE?</label>
             <div class="faq-answer">
               <div data-translate="home-faq-a1">Choose a category or use the search bar, then click or tap on any emoji or special character to copy it to your clipboard!</div>
             </div>
-          </div>
-          <div class="card">
+          </section>
+          <section>
             <input type="checkbox" id="faq2" class="faq-toggle" hidden>
-            <label for="faq2" class="faq-question" data-translate="home-faq-q2">Can I use it on mobile?</label>
+            <label for="faq2" class="faq-question" data-translate="home-faq-q2" wave>Can I use it on mobile?</label>
             <div class="faq-answer">
               <div data-translate="home-faq-a2">Absolutely! FANTROVE works on any platform—mobile, tablet, or desktop.</div>
             </div>
-          </div>
-          <div class="card">
+          </section>
+          <section>
             <input type="checkbox" id="faq3" class="faq-toggle" hidden>
-            <label for="faq3" class="faq-question" data-translate="home-faq-q3">Is all content free?</label>
+            <label for="faq3" class="faq-question" data-translate="home-faq-q3" wave>Is all content free?</label>
             <div class="faq-answer">
               <div data-translate="home-faq-a3">Yes, 100% free. No sign-up required and no hidden costs.</div>
             </div>
-          </div>
-        </div>
-      </section>
-    </div>
+          </section>
   </main>
 
   <!-- FOOTER -->
