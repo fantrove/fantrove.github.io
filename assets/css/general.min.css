@@ -71,6 +71,7 @@ footer {
   z-index: 100;
   overflow: visible;
   isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
 }
 footer, .footer-inner {
   box-sizing: border-box !important;

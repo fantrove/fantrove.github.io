@@ -370,10 +370,6 @@ sectio:hover, sectio:focus-within {
   -webkit-tap-highlight-color: transparent;
 }
 
-.notice a:active {
-  color: rgba(202, 132, 0, 0.5);
-}
-
 /* ---------- FAQ ---------- */
 .faq-list {
   display: flex;

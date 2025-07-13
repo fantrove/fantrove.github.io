@@ -118,7 +118,7 @@ section {
 }
 
 .m5 {
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 /* สไตล์ select และ button */
@@ -128,7 +128,7 @@ section {
   padding: var(--ui-spacing-medium) var(--ui-spacing-large);
   font-size: var(--ui-font-size-small);
   border: none;
-  border-radius: 7px;
+  border-radius: 12px;
   background-color: var(--ui-color-background-main);
   color: var(--ui-color-text-primary);
   transition: all var(--ui-transition-speed-fast);
@@ -156,7 +156,7 @@ section {
 }
 
 .buttons:active, .setting-item.select:active, #language-button:active, .buttons.auto-update-toggle:active {
-  background-color: #E8EEF9 !important;
+  background-color: #D4E3FF !important;
 }
 
 .buttons:hover, .setting-item.select:hover, #language-button:hover, .buttons.auto-update-toggle:hover {
