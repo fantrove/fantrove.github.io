@@ -136,6 +136,9 @@ section {
 }
 section.n {
   padding: 0 !important;
+  background: none;
+  border-radius: 0;
+  border: none;
   
 }
 sectio:hover, sectio:focus-within {
@@ -452,7 +455,7 @@ sectio:hover, sectio:focus-within {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0rem;
   gap: 1.3rem;
 }
 .text-h h1 {
@@ -460,7 +463,6 @@ sectio:hover, sectio:focus-within {
   font-weight: 800;
   margin: 0;
   color: #222b45;
-  letter-spacing: 0.012em;
 }
 .text-h button {
   font-size: 1.08em;
@@ -476,14 +478,17 @@ sectio:hover, sectio:focus-within {
 
 /* ---------- APP CATEGORY SECTION ---------- */
 .category-section {
+  background: #FFFFFF;
+  border-radius: 25px;
 }
+
 .category-section h2 {
   font-size: 1.03em;
   margin: 1.12rem 0 0.8rem 0;
   color: #575e6d;
   font-weight: 700;
-  letter-spacing: 0.017em;
-  padding-left: 4px;
+  padding-left: 15px;
+  padding-top: 10px;
 }
 
 /* ---------- APP SCROLLABLE CONTENT / ITEM CARDS (IMPROVED) ---------- */
@@ -579,7 +584,7 @@ sectio:hover, sectio:focus-within {
   z-index: 2;
   font-weight: 500;
 }
-.item-card:hover, .item-card:focus-visible {
+.item-card:hover {
   border-color: #13b47f;
   background: #F1FFFC;
   z-index: 2;

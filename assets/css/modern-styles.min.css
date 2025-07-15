@@ -148,37 +148,6 @@
   transform: scale(0.9);
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .bottom-nav {
-    background: rgba(23, 23, 23, 0.95);
-    border-top-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .nav-item svg {
-    color: var(--neutral-400);
-  }
-
-  .nav-item .label {
-    color: var(--neutral-400);
-  }
-
-  .nav-item.active-1 {
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .nav-item.active-1 svg,
-  .nav-item.active-2 .label {
-    color: var(--primary-400);
-  }
-
-  @media (hover: hover) {
-    .nav-item:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.03);
-    }
-  }
-}
-
 /* Responsive Adjustments */
 @media (min-width: 768px) {
   .bottom-nav {

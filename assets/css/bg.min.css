@@ -99,27 +99,6 @@ body::before {
   transition: none !important;
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-primary: #121212;
-    --bg-secondary: #1E1E1E;
-    --bg-overlay: rgba(0, 0, 0, 0.8);
-    --bg-gradient-start: #1A1B1E;
-    --bg-gradient-end: #121212;
-  }
-
-  body::before {
-    background-image: 
-      linear-gradient(
-        45deg,
-        transparent 48%,
-        rgba(255, 255, 255, 0.015) 50%,
-        transparent 52%
-      );
-  }
-}
-
 /* Responsive Optimizations */
 @media (max-width: 768px) {
   body::before {
