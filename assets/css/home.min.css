@@ -13,7 +13,6 @@ html {
 body {
   font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
   margin: 0;
-  margin-top: 3rem;
   color: #23272f;
   line-height: 1.85;
   min-height: 100vh;
@@ -233,11 +232,29 @@ sectio:hover, sectio:focus-within {
   align-items: center;
 }
 
+.blur-overlay-top {
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200vw;
+  height: 100px;
+  z-index: 999;
+  pointer-events: none; /* ไม่ไปรบกวนการคลิกหรือ hover */
+  box-shadow: 0 70px 50px #13b47f;
+}
+
+.hio {
+  height: 100%;
+  width: 100%;
+  background: #FFFFFF;
+  padding-top: 0rem;
+}
 /* ---------- HERO ---------- */
 .hero {
   background: none;
-  border-radius: 25px;
-  padding: 2.2rem 2.1rem 1.7rem 2.1rem;
+  border-radius: 0px !important;
+  padding: 2.2rem 0rem 0rem 0rem;
   margin-bottom: 5rem;
   display: flex;
   align-items: center;
@@ -247,6 +264,8 @@ sectio:hover, sectio:focus-within {
   border: none;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 -60px 30px rgba(247, 249, 251, 1);
+  
 }
 .hero-btns {
   display: flex;
