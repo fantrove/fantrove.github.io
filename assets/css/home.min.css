@@ -277,6 +277,7 @@ sectio:hover, sectio:focus-within {
 }
 .hero h1 {
   text-align: center;
+  width: 100%;
 }
 .hero-content {
   flex: 2;
