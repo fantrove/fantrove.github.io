@@ -56,7 +56,7 @@ FanTrove is still evolving, and in the future, we plan to add exciting features 
 ## 📬 Stay Connected  
 Follow us for updates and join the community:  
 🌍 **Facebook Page:** [Ledp Aero Wings on Facebook](https://www.facebook.com/share/1HJRyK9kYr/)  
-💬 **Discord Server:** [Join LedpLand](https://discord.com/invite/Xn6GFvqyYf)  
+💬 **Discord Server:** [Join FanTrove](https://discord.gg/MMxQSZB3y3)  
 
 
 📢 **Stay tuned for upcoming updates!**
