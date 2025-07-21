@@ -79,4 +79,4 @@ Project maintainers are responsible for enforcing this Code of Conduct. Any part
 
 ---
 
-Thank you for contributing to **FanTrove Hub**! Together, we can create a welcoming and productive community.
+Thank you for contributing to **FanTrove**! Together, we can create a welcoming and productive community.
