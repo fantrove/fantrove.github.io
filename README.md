@@ -60,3 +60,29 @@ Follow us for updates and join the community:
 
 
 📢 **Stay tuned for upcoming updates!**
+
+## 📄 License
+
+This project is licensed under the **Apache License 2.0** 📝
+
+The license has been in effect since **July 22, 2025 (Thailand Time)** 🇹🇭
+
+You can check out the full license text here:  
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0) 🔗
+
+---
+
+## ⚠️ License Change Notice
+
+Previously, this project was proprietary software with **All Rights Reserved** 🚫  
+But as of **July 22, 2025**, we've officially re-licensed it under the Apache License 2.0 🎉
+
+This change opens up the project for collaboration, sharing, and wider community use —  
+while still protecting the rights of the original creators 🙌
+
+---
+
+### 🙏 Attribution Reminder
+
+If you modify, distribute, or build upon this software, please give proper credit to  
+**Lédp Aero Wings and Nontakorn Nonsurat** — it means a lot! 💖

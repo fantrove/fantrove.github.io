@@ -1,32 +1,19 @@
-All Rights Reserved
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
 
-Copyright (c) 2024 Lédp Aero Wings and Nontakorn Nonsurat
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-This software is the exclusive property of Lédp Aero Wings and Nontakorn Nonsurat, and all rights to the source code, content, and assets contained in this project are reserved. The software may not be copied, modified, distributed, or used for any purpose without the express written permission of Lédp Aero Wings and Nontakorn Nonsurat.
+Copyright 2024 Lédp Aero Wings and Nontakorn Nonsurat
 
-**Terms and Conditions:**
-1. **No Redistribution or Modification:** You may not distribute, sublicense, or modify the source code or any part of this software.
-2. **No Commercial Use:** You are not permitted to use this software for commercial purposes, including selling, licensing, or transferring the software in any form.
-3. **No Derivative Works:** You may not create derivative works based on this software or any of its components without explicit permission from Lédp Aero Wings and Nontakorn Nonsurat.
-4. **No Reverse Engineering:** You are not allowed to reverse engineer, decompile, or disassemble the software or attempt to derive its source code.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-**Purpose:**
-This software was created for the exclusive use of Lédp Aero Wings and Nontakorn Nonsurat.
+http://www.apache.org/licenses/LICENSE-2.0
 
-**Contact Information:**
-For any inquiries, requests for permission, or to report issues, please contact the software's creator directly at:  
-**Email:** nontakorn2600@gmail.com  
-**Company:** Lédp Aero Wings  
-**Position:** Executive (Developer/Creator)  
-**Personal Contact:** Nontakorn Nonsurat
-
-**Warranty Disclaimer:**
-The software is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
-
-**Permission Grant:**
-No permission is granted to any individual or entity to modify, copy, distribute, or use this software in any manner. All permissions must be obtained directly from Lédp Aero Wings and Nontakorn Nonsurat.
-
-**Termination:**
-If any of the terms outlined in this license are violated, your permission to use this software is automatically revoked, and you must cease all usage of the software immediately.
-
-By using this software, you acknowledge and agree to abide by these terms.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
