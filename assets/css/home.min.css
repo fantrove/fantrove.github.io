@@ -21,48 +21,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ---------- HEADER/LOGO (DO NOT MODIFY) ---------- */
-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 9000;
-    background: linear-gradient(-190deg, rgba(203, 255, 242, 1) 5%,rgba(240, 252, 255, 1), rgba(240, 252, 255, 1), rgba(240, 252, 255, 1) 70%, rgba(203, 255, 242, 1) 100%);
-    border-bottom: 1px solid rgba(19, 180, 127, 0.3);
-    box-shadow: 0 0 15px rgba(58, 60, 79, 0.15);
-    touch-action: none;
-    margin-bottom: 30px;
-    position: sticky;
-    border-radius: 0 0 20px 20px;
-    padding: 0 0 0 0 !important;
-}
-.logo {
-    --logo-padding: 9px;
-    font-family: 'MunroSmall', monospace;
-    font-size: 22.8px;
-    padding: 2.2px 0 10px 0 !important;
-    white-space: nowrap;
-    color: #1e957c;
-    text-shadow: 0 0 3px rgba(0, 255, 171, 0.5);
-    pointer-events: none;
-    margin-left: 10px;
-    align-self: flex-start;
-    display: flex;
-    align-items: center;
-}
-.logo span {
-    pointer-events: auto;
-    user-select: text;
-}
-.logo img {
-    width: auto;
-    height: 28px;
-    margin-left: 5px;
-}
-
 /* ---------- TYPOGRAPHY ---------- */
 h1, .h1 {
   font-size: 1.7rem;
@@ -70,7 +28,7 @@ h1, .h1 {
   color: #13b47f;
   margin: 0 0 1.3rem 0;
   letter-spacing: 0.045em;
-  background: linear-gradient(90deg, #13b47f 30%, #0eb0d5 80%);
+  background: linear-gradient(to right, #13b47f 30%, #0eb0d5 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -165,7 +123,7 @@ sectio:hover, sectio:focus-within {
   border: none;
   outline: none;
   gap: 0.8em;
-  background: linear-gradient(90deg, #E6F7FF 0%, #f1fff8 100%);
+  background: linear-gradient(to right, #E6F7FF 0%, #f1fff8 100%);
   color: #13b47f;
   
   cursor: pointer;
@@ -186,14 +144,14 @@ sectio:hover, sectio:focus-within {
 }
 
 .button-primary, .btn-primary {
-  background: linear-gradient(90deg, #11c3ec 0%, #13b47f 100%);
+  background: linear-gradient(to right, #11c3ec 0%, #13b47f 100%);
   color: #fff;
   border: 1.5px solid #13b47f;
   font-weight: 800;
   box-shadow: 0 4px 24px 0 rgba(19, 180, 127, 0.12), 0 1.5px 8px 0 rgba(13,180,127,0.02);
 }
 .button-primary:active, .btn-primary:active {
-  background: linear-gradient(90deg, #13b47f 0%, #11c3ec 100%);
+  background: linear-gradient(to right, #13b47f 0%, #11c3ec 100%);
 }
 .button-secondary, .btn-secondary {
   position: relative;
@@ -208,7 +166,7 @@ sectio:hover, sectio:focus-within {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(90deg, #E0F7FC 0%, #D2F1FF 100%);
+  background: linear-gradient(to right, #E0F7FC 0%, #D2F1FF 100%);
   opacity: 0;
   transition: opacity 500ms ease;
   z-index: -1;
@@ -323,34 +281,6 @@ sectio:hover, sectio:focus-within {
 }
 
 /* ---------- FEATURE ---------- */
-.feature-list {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
-}
-.feature-item {
-  background: #fff;
-  border-radius: 25px;
-  border: 1.2px solid #e6ecf7;
-  flex: 1 1 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.4rem 1.1rem 1.2rem 1.1rem;
-  gap: 1.1rem;
-  text-align: center;
-  font-size: 1.07em;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.11s, background 0.11s;
-  
-}
-.feature-item:hover, .feature-item:focus-visible {
-  border-color: #13b47f;
-  background: #f7fff7;
-}
 .feature-icon {
   font-size: 2.1em;
   color: #0eb0d5;
@@ -362,19 +292,6 @@ sectio:hover, sectio:focus-within {
   margin-top: 0.12em;
   box-shadow: none;
   font-weight: 700;
-}
-@media (max-width: 800px) {
-  .feature-list {
-    flex-direction: column;
-    gap: 1.3rem;
-  }
-  .feature-item {
-    align-items: flex-start;
-    text-align: left;
-    max-width: 100%;
-    border-radius: 25px;
-    padding: 1.1rem 0.8rem 1.1rem 0.8rem;
-  }
 }
 
 /* ---------- NOTICE ---------- */
@@ -417,21 +334,6 @@ sectio:hover, sectio:focus-within {
 }
 
 /* ---------- FAQ ---------- */
-.faq-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  font-size: 1.01em;
-}
-.faq-item {
-  background: #fff;
-  border-radius: 25px;
-  border: 1.1px solid #e6ecf7;
-  padding: 0 1.12em;
-  margin: 0;
-  position: relative;
-  
-}
 .faq-question {
   font-weight: 700;
   color: #1b3f3f;
@@ -479,21 +381,6 @@ sectio:hover, sectio:focus-within {
 .faq-toggle:checked + .faq-question + .faq-answer {
   max-height: 170px;
   padding: 0.9em 1.1em 1.3em 1.1em;
-}
-
-/* ---------- APP MAIN/CONTENT BOX ---------- */
-.main {
-  position: relative;
-  font-size: 1.05rem;
-  gap: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  
-}
-@media (max-width: 600px) {
-  .main {
-    gap: 0.7rem;
-  }
 }
 
 /* ---------- APP HEADER IN BOX ---------- */
