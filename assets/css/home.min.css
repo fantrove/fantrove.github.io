@@ -367,7 +367,7 @@ sectio:hover, sectio:focus-within {
   position: absolute;
   right: 0.8em;
   top: 50%;
-  transform: translateY(-48%) rotate(0deg);
+  transform: translateY(-50%) rotate(0deg);
   transition: transform 0.25s cubic-bezier(.4, 0, .2, 1);
   will-change: transform;
   backface-visibility: hidden; /* ช่วยให้ GPU render smooth */
@@ -375,7 +375,7 @@ sectio:hover, sectio:focus-within {
 }
 
 .faq-toggle:checked + .faq-question::after {
-  transform: translateY(-48%) rotate(-180deg);
+  transform: translateY(-60%) rotate(-180deg);
 }
 
 .faq-answer {
@@ -396,6 +396,16 @@ sectio:hover, sectio:focus-within {
 .faq-toggle:checked + .faq-question + .faq-answer {
   max-height: 170px;
   padding: 0.9em 1.1em 1.3em 1.1em;
+}
+
+section.o {
+  padding-bottom: 0.1rem !important;
+  transition: padding 0.5s ease;
+}
+
+/* ถ้า input checkbox checked อยู่ใน section.o → ให้ section.o เปลี่ยนได้! */
+section.o:has(.faq-toggle:checked) {
+  padding-bottom: 2.1rem !important;
 }
 
 /* ---------- APP HEADER IN BOX ---------- */
