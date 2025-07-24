@@ -23,9 +23,9 @@ footer *, .footer-inner * {
   .footer-meta, .footer-info, .footer-note, .footer-legal,
   .text-muted, .text-center, .text-small,
   footer *, .footer-inner * {
-    font-size: 15px !important;
+    font-size: 12px !important;
   }
-  .footer-social { font-size: 19px !important; }
+  .footer-social { font-size: 14px !important; }
 }
 @media (max-width: 450px) {
   footer, .footer-inner, .footer-links, .footer-link,
@@ -33,14 +33,14 @@ footer *, .footer-inner * {
   .footer-meta, .footer-info, .footer-note, .footer-legal,
   .text-muted, .text-center, .text-small,
   footer *, .footer-inner * {
-    font-size: 14px !important;
+    font-size: 12px !important;
   }
-  .footer-social { font-size: 17px !important; }
+  .footer-social { font-size: 14px !important; }
 }
 
 /* Utility */
 .text-center { text-align: center !important; }
-.text-small { font-size: 16px !important; }
+.text-small { font-size: 14px !important; }
 .mb-0 { margin-bottom: 0 !important; }
 
 /* Layout & Flexibility (เหมือนเดิม) */
@@ -61,7 +61,6 @@ footer {
   margin-top: 3.2rem;
   margin-bottom: 80px;
   box-shadow: var(--footer-shadow);
-  border-radius: var(--footer-radius);
   width: 100vw;
   min-width: 100vw !important;
   max-width: 100vw !important;
@@ -96,10 +95,10 @@ footer, .footer-inner {
 }
 .footer-links {
   display: flex;
-  gap: 1.1rem;
+  gap: 0.8rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
   width: 100%;
 }
 .footer-link {
