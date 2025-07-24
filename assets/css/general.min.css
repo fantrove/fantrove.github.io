@@ -59,7 +59,7 @@ footer {
   border-top: 1.5px solid var(--footer-border);
   border-bottom: 1.5px solid var(--footer-border);
   margin-top: 3.2rem;
-  margin-bottom: 80px;
+  margin-bottom: 0px;
   box-shadow: var(--footer-shadow);
   width: 100vw;
   min-width: 100vw !important;
@@ -84,7 +84,7 @@ footer, .footer-inner {
 .footer-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2.1rem 1.6rem 1.4rem 1.6rem;
+  padding: 2.1rem 1.6rem 5.2rem 1.6rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,7 +129,7 @@ footer, .footer-inner {
   display: flex;
   align-items: center;
   gap: 0.44rem;
-  margin-top: 0.19em;
+  margin-top: 0em;
   font-weight: 600;
   flex-wrap: wrap;
 }
@@ -171,8 +171,8 @@ footer, .footer-inner {
   text-align: center;
   font-weight: 400;
   letter-spacing: 0.01em;
-  margin-bottom: 0.15em;
-  margin-top: 0.1em;
+  margin-bottom: 0em;
+  margin-top: 0em;
   width: 100%;
 }
 
