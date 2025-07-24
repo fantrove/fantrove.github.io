@@ -385,7 +385,7 @@ sectio:hover, sectio:focus-within {
   background: #f6f7fb;
   font-size: 1em;
   padding: 0 1.1em;
-  transition: max-height 0.18s ease, padding 0.18s ease;
+  transition: max-height 0.4s ease, padding 0.3s ease;
   line-height: 1.82;
   font-weight: 500;
 
@@ -399,8 +399,9 @@ sectio:hover, sectio:focus-within {
 }
 
 section.o {
-  padding-bottom: 0.1rem !important;
+  padding-bottom: 0.4rem !important;
   transition: padding 0.5s ease;
+  will-change: padding;
 }
 
 /* ถ้า input checkbox checked อยู่ใน section.o → ให้ section.o เปลี่ยนได้! */
