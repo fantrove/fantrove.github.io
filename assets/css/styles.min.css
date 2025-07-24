@@ -1,12 +1,12 @@
 /* Root variables - ปรับปรุงค่าตัวแปรให้พรีเมี่ยมและเรียบง่าย */
 :root {
-  --app-theme-indigo: #6051FF;
-  --app-theme-indigo-hover: #7667FF;
-  --app-theme-indigo-light: #10B981;
+  --app-theme-indigo: #10B981;
+  --app-theme-indigo-hover: #54CBAB;
+  --app-theme-indigo-light: #54CBAB;
   --app-theme-indigo-lighter: rgba(96, 81, 255, 0.04);
-  --app-theme-indigo-border: rgba(96, 81, 255, 0.15);
-  --app-theme-indigo-border-strong: rgba(96, 81, 255, 0.8);
-  --app-theme-indigo-border2: rgba(96, 81, 255, 0.3);
+  --app-theme-indigo-border: rgba(84, 203, 171, 0.15);
+  --app-theme-indigo-border-strong: rgba(84, 203, 171, 0.8);
+  --app-theme-indigo-border2: rgba(84, 203, 171, 0.3);
   --app-text-heading: #494E59;
   --app-text-body: #52638A;
   --app-text-light: #6F6F82;
