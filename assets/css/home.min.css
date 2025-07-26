@@ -399,8 +399,8 @@ sectio:hover, sectio:focus-within {
 }
 
 section.o {
-  padding-bottom: 0.4rem !important;
-  transition: padding 0.5s ease;
+  padding-bottom: 0.2rem !important;
+  transition: padding 0.3s ease;
   will-change: padding;
 }
 
