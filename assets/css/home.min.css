@@ -535,7 +535,10 @@ section.o:has(.faq-toggle:checked) {
   line-height: 1.37;
   margin-bottom: 0.09em;
   z-index: 2;
-  white-space: normal;
+  white-space: nowrap;           /* ไม่ขึ้นบรรทัดใหม่ */
+  overflow: hidden;              /* ซ่อนส่วนที่เกิน */
+  text-overflow: ellipsis;       /* แสดง ... เมื่อเกิน */
+  display: block;                /* แน่ใจว่า element เป็น block สำหรับตัดบรรทัด */
 }
 .item-card .desc,
 .item-card .detail,
@@ -562,6 +565,14 @@ section.o:has(.faq-toggle:checked) {
     max-width: 140px;
     padding: 0.8rem 0.3rem 0.6rem 0.3rem;
     border-radius: 25px;
+  }
+  
+  .item-card .name {
+    font-size: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
   }
 }
 
