@@ -1,7 +1,7 @@
 /* Modern Background System v4 */
 :root {
   /* Background Variables */
-  --bg-primary: #F7F9FB;
+  --bg-primary-1: #F7F9FB;
   --bg-secondary: #F2F3F5;
   --bg-overlay: rgba(255, 255, 255, 0.8);
   --bg-gradient-start: #F8F9FA;
@@ -14,7 +14,7 @@
 }
 
 body {
-  background: var(--bg-primary);
+  background: var(--bg-primary-1);
   font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
 }
 
