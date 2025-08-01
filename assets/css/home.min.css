@@ -433,6 +433,13 @@ section.o:has(.faq-toggle:checked) {
   color: #13b47f;
   transition: background 500ms, color 0.10s, border-color 500ms;
   user-select: none;
+  display: flex;
+}
+
+.text-h button svg {
+  height: 18.5px !important;
+  width: auto !important;
+  stroke: #13b47f !important;
 }
 
 .text-h button:hover {

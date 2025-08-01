@@ -164,7 +164,7 @@ section {
 }
 
 .buttons svg {
- height: 18.5px;
+ height: 20px !important;
  width: auto;
  flex-shrink: 0;
  display: block;
@@ -184,7 +184,8 @@ section {
 }
 
 .buttons.buy {
-  color: #FF0081;
+  --buy: #FF0081;
+  color: var(--buy);
   position: relative;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
@@ -198,7 +199,7 @@ section {
 }
 
 .buttons.buy svg {
-  height: 17px !important;
+  stroke: var(--buy);
 }
 
 .b2 {
