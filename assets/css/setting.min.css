@@ -54,9 +54,6 @@
 body {
   padding: 5rem 0.5rem 0rem 0.5rem;
   color: var(--ui-color-text-primary);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 main {
@@ -73,10 +70,6 @@ main {
   border-radius: var(--ui-border-radius-large);
   box-shadow: var(--ui-shadow-medium);
   border: 1px solid var(--ui-color-purple-200);
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: inherit;
 }
 
 /* สไตล์หัวข้อ */
@@ -132,7 +125,6 @@ section {
   background-color: var(--ui-color-background-main);
   color: var(--ui-color-text-primary);
   transition: all var(--ui-transition-speed-fast);
-  font-family: inherit;
   outline: none;
   cursor: pointer;
   appearance: none;
