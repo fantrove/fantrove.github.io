@@ -6,21 +6,21 @@ body {
     min-height: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
-    color: #222d3d;
+    color: #222D3D;
     font-size: 15px;
     -webkit-tap-highlight-color: transparent;
 }
 
 .search-header {
     width: 100%;
-    background: linear-gradient(-190deg, rgba(203, 255, 242, 1) 5%,rgba(240, 252, 255, 1), rgba(240, 252, 255, 1), rgba(240, 252, 255, 1) 70%, rgba(203, 255, 242, 1) 100%);
-    border-bottom: 1px solid #e3e8ee;
-    padding: 20px 0 10px 0 !important;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E3E8EE;
+    padding: 20px 0 15px 0 !important;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -76,7 +76,7 @@ body {
 
 .search-input-icon {
     position: absolute;
-    left: 12px;
+    left: 0px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -85,16 +85,21 @@ body {
     z-index: 2;
 }
 
+.search-input-icon svg {
+    stroke: #A5A5A5 !important;
+    stroke-width: 3;
+}
+
 #searchInput {
     width: 100%;
     max-width: 420px;
     padding: 10px 13px 10px 38px;
     font-size: 1em;
-    border: 1px solid #B0D0C3;
+    border: 1px solid #F3F3F3;
     border-radius: 25px;
-    background: #F9FFFD;
+    background: #FFFFFF;
     outline: none;
-    color: #1e385a;
+    color: #1E385A;
     font-weight: 600;
     letter-spacing: 0.01em;
     transition: border 0.16s, background 0.13s;
@@ -103,8 +108,8 @@ body {
     touch-action: manipulation;
 }
 #searchInput:focus {
-    border: 1.2px solid #13b47f;
-    background: #F1FFFA;
+    border: 1.2px solid #B9FFE6;
+    background: #F5FFFB;
 }
 
 /* FILTER BAR */
@@ -230,7 +235,7 @@ body {
         margin-right: 8px;
     }
     #searchInput {
-        font-size: .98em;
+        font-size: 0.98em;
         padding: 9px 14px 9px 36px;
     }
     .search-main-layout {

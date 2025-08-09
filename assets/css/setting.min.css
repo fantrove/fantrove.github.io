@@ -155,9 +155,7 @@ section {
  gap: 15px;
 }
 
-.buttons:active, .setting-item.select:active, #language-button:active, .buttons.auto-update-toggle:active {
-  background-color: #D4E3FF !important;
-}
+
 
 .buttons:hover, .setting-item.select:hover, #language-button:hover, .buttons.auto-update-toggle:hover {
   background-color: #EFF2F8;
