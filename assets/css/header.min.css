@@ -1,8 +1,8 @@
 @import url(variables.min.css);
 @import url('nav.min.css');
 @font-face {
-  font-family: 'MunroSmall';
-  src: url('/assets/fonts/MunroSmall.ttf') format('truetype');
+  font-family: 'FoglihtenNo07calt';
+  src: url('/assets/fonts/FoglihtenNo07calt.ttf') format('truetype');
 }
 
 
@@ -52,7 +52,7 @@ header {
 .logo {
     --logo-padding: 9px;
     
-    font-family: 'MunroSmall', monospace;
+    font-family: 'FoglihtenNo07calt', monospace;
     font-size: 23px;
     padding: 10px 0 10px 0;
     white-space: nowrap;

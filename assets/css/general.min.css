@@ -130,9 +130,6 @@ footer, .footer-inner {
   justify-content: center;
   background: none;
   border-radius: 50%;
-  width: 2em;
-  height: 2em;
-  color: var(--footer-link);
   transition: color 0.12s;
   text-decoration: none;
   border: none;
@@ -141,10 +138,17 @@ footer, .footer-inner {
   margin-left: 0.15em;
   box-shadow: none;
   font-size: 18px !important;
+  padding: 5px;
+  
 }
-.footer-social:hover,
+.footer-social svg {
+  stroke: var(--footer-link);
+  width: 2em;
+  height: 2em;
+}
+.footer-social svg:hover,
 .footer-social:focus-visible {
-  color: var(--footer-link-hover);
+  stroke: var(--footer-link-hover);
   outline: none;
 }
 
