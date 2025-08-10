@@ -469,7 +469,25 @@ section.o:has(.faq-toggle:checked) {
   color: #222b45;
   line-height: 2;
 }
+/* ... (โค้ดเดิม) ... */
+
+/* ---------- APP HEADER IN BOX ---------- */
+.text-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0rem;
+  gap: 1.3rem;
+}
+.text-h h1 {
+  font-size: 1.12em;
+  font-weight: 800;
+  margin: 0;
+  color: #222b45;
+  line-height: 2;
+}
 .text-h button {
+  /* ปุ่ม base */
   font-size: 0.9em;
   font-weight: 700;
   padding: 0.6em 1.15em;
@@ -480,18 +498,94 @@ section.o:has(.faq-toggle:checked) {
   transition: background 500ms, color 0.10s, border-color 500ms;
   user-select: none;
   display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.text-h button svg {
-  height: 18.5px !important;
-  width: auto !important;
-  stroke: #13b47f !important;
+/* ====== ANIMATION (ARROW & TRAIL & OVERLAY) FOR .text-h button ====== */
+.text-h button .btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: opacity 0.19s;
 }
 
-.text-h button:hover {
-  background: #DBFFF5;
-  border-color: #81AFA1;
+.text-h button .full-overlay {
+  pointer-events: none;
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  width: 0%;
+  z-index: 3;
+  background: linear-gradient(90deg, #13b47f 60%, #11c3ec 100%);
+  border-radius: inherit;
+  transition: width 0.68s cubic-bezier(.65,.05,.19,.99);
 }
+
+.text-h button.animating .full-overlay {
+  width: 100%;
+}
+.text-h button.animating .btn-content {
+  opacity: 0;
+  transition: opacity 0.17s 0s;
+}
+
+.text-h button .arrow-trail-group {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+}
+
+.text-h button .arrow-trail {
+  position: absolute;
+  left: 0; top: 50%;
+  height: 9px; width: 0;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.16) 0%, rgba(19,180,127,0.13) 60%, rgba(19,180,127,0.01) 100%);
+  border-radius: 6px;
+  filter: blur(7px);
+  opacity: 0.7;
+  transition: none;
+  z-index: 4;
+  display: block;
+  will-change: width, opacity;
+}
+
+.text-h button .btn-arrow {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 28px; height: 28px;
+  transform: translateY(-50%) translateX(-40px); /* ซ่อนออกนอกซ้าย */
+  opacity: 0;
+  z-index: 7;
+  transition: none;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(19,180,127,0.45));
+  will-change: transform, opacity;
+}
+.text-h button.animating .btn-arrow {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .text-h button { font-size: 0.8em !important; padding: 0.85em 1.2em; border-radius: 25px; }
+  .text-h button .btn-arrow { width: 22px; height: 22px;}
+  .text-h button .arrow-trail { height: 6px; }
+}
+
+/* ... (โค้ดเดิม) ... */
 
 /* ---------- APP CATEGORY SECTION ---------- */
 .category-section {
