@@ -58,36 +58,44 @@ main { margin-top: 30px;}
 
 /* BUTTON CONTENT */
 .button-content {
-  position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
+  width: 60px !important;
+  padding: 14px 20px !important;      /* เว้นขอบข้างใน */
+  margin: 8px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 8px 0;
-  padding: 14px 20px;
-  background-color: var(--app-surface-primary);
-  color: var(--app-theme-indigo);
   border-radius: 18px;
+  font-size: 17px;      /* เท่ากันทุก breakpoint */
+  background: var(--app-surface-primary, #fff);
+  color: var(--app-theme-indigo, #10B981);
+  border: 1px solid var(--app-theme-indigo-border, #54CBAB);
   cursor: pointer;
-  font-size: 15px;
   text-align: center;
-  -webkit-tap-highlight-color: transparent;
   transition:
-    border-color var(--app-motion-natural),
-    box-shadow var(--app-motion-natural),
+    border-color 0.18s,
+    box-shadow 0.18s,
     transform 200ms cubic-bezier(0.4,0,0.2,1),
     color 0.18s;
-  border: 1px solid var(--app-theme-indigo-border);
+  -webkit-tap-highlight-color: transparent;
 }
+
+.button-content:hover {
+  border-color: var(--app-theme-indigo-border-strong, #54CBAB);
+  transform: translateY(-1px) scale(1.008);
+}
+
 .button-content > * {
   position: relative;
   z-index: 1;
 }
 
-.button-content:hover::before { opacity: 1; }
-.button-content:hover {
-  border-color: var(--app-theme-indigo-border-strong);
-  transform: translateY(-1px) scale(1.008);
+/* Responsive: ไม่เปลี่ยนขนาดปุ่มในมือถือ */
+@media screen and (max-width: 600px) {
+  .button-content {
+    
+
+  }
 }
 
 /* CARD */
@@ -227,7 +235,6 @@ main { margin-top: 30px;}
 /* Responsive adjustments */
 @media screen and (max-width: 600px) {
   .card-content-container { justify-content: center; gap: 12px; }
-  .button-content { width: 100%; }
   .card { margin: 8px 4px;}
   .card-content { padding-left: 10px; padding-top: 4px; }
 }
