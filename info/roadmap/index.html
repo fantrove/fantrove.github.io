@@ -159,17 +159,24 @@
   <script defer src="/assets/js/footer-template.js"></script>
   <script defer src="/assets/js/version.min.js"></script>
 
-  <!-- Inline Script สำหรับโหลดเวอร์ชัน -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      fetch("/assets/json/version.min.json")
-        .then((response) => response.json())
-        .then((data) => {
-          const currentVersion = data.version;
-          document.getElementById("version-number").textContent = currentVersion;
-        })
-        .catch((error) => console.error("Error loading version:", error));
-    });
-  </script>
+<!-- Inline Script สำหรับโหลดเวอร์ชันแบบทำงานทันที ไม่ต้องรอ DOMContentLoaded -->
+<script>
+  (function() {
+    function paintVersion(version) {
+      function doPaint() {
+        const el = document.getElementById("version-number");
+        if (el) el.textContent = version;
+        else setTimeout(doPaint, 0); // ลองใหม่จนกว่าจะมี DOM
+      }
+      if (document.readyState === "loading") setTimeout(doPaint, 0);
+      else doPaint();
+    }
+    // เริ่มดึงข้อมูลทันทีที่ script ถูก parse
+    fetch("/assets/json/version.min.json")
+      .then(r => r.json())
+      .then(data => paintVersion(data.version))
+      .catch(e => console.error("Error loading version:", e));
+  })();
+</script>
 </body>
 </html>
