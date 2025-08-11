@@ -1,98 +1,165 @@
 <!DOCTYPE html>
-<html lang="">
-
+<html lang="th">
 <head>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PJ397CLS');</script>
-<!-- End Google Tag Manager -->
-    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="16a70d79-a7a7-4b66-89da-afb49e453c67" data-blockingmode="auto" type="text/javascript"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>What's New in FanTrove Hub</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Meta Tags -->
-    <meta name="theme-color" content="#13b47f"> <!-- สีของแถบส่วนหัว (สำหรับเบราว์เซอร์ทั่วไป) -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="default"> <!-- สีของแถบส่วนหัวสำหรับ Safari บน iOS -->
+  <title>What's New in FanTrove Hub</title>
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/bg.min.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/assets/css/new.min.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/assets/css/top-navigation-bar.min.css" type="text/css" media="all">
-    <!-- เพิ่มในส่วน <head> ของไฟล์ HTML หลัก -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+  <!-- Theme color for browsers -->
+  <meta name="theme-color" content="#13b47f" />
+  <!-- Status bar color for iOS Safari -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-<!-- Fallback เป็น ICO -->
-<link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico">
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];
+      w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),
+          dl=l!='dataLayer'?'&l='+l:'';
+      j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PJ397CLS');
+  </script>
+  <!-- End Google Tag Manager -->
 
-<script data-cookieconsent="ignore">    window.dataLayer = window.dataLayer || [];    function gtag() {        dataLayer.push(arguments);    }    gtag("consent", "default", {        ad_personalization: "denied",        ad_storage: "denied",        ad_user_data: "denied",        analytics_storage: "denied",        functionality_storage: "denied",        personalization_storage: "denied",        security_storage: "granted",        wait_for_update: 500,    });    gtag("set", "ads_data_redaction", true);    gtag("set", "url_passthrough", false);</script>
+  <!-- Cookiebot -->
+  <script
+    id="Cookiebot"
+    src="https://consent.cookiebot.com/uc.js"
+    data-cbid="16a70d79-a7a7-4b66-89da-afb49e453c67"
+    data-blockingmode="auto"
+    type="text/javascript"
+  ></script>
 
-    <!-- Google Ads Script -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8233915433564101" crossorigin="anonymous"></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-R4DGR81NZ6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Preload critical CSS + fallback -->
+  <link
+    rel="preload"
+    href="/assets/css/bg.min.css"
+    as="style"
+    onload="this.rel='stylesheet'"
+  />
+  <noscript><link rel="stylesheet" href="/assets/css/bg.min.css" /></noscript>
 
-  gtag('config', 'G-R4DGR81NZ6');
-</script>
-<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="16a70d79-a7a7-4b66-89da-afb49e453c67" type="text/javascript" async></script>
+  <link
+    rel="preload"
+    href="/assets/css/new.min.css"
+    as="style"
+    onload="this.rel='stylesheet'"
+  />
+  <noscript><link rel="stylesheet" href="/assets/css/new.min.css" /></noscript>
 
+  <!-- Other CSS -->
+  <link rel="stylesheet" href="/assets/css/top-navigation-bar.min.css" media="all" />
+
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico" />
+
+  <!-- Consent & Analytics setup -->
+  <script data-cookieconsent="ignore">
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("consent", "default", {
+      ad_personalization: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      analytics_storage: "denied",
+      functionality_storage: "denied",
+      personalization_storage: "denied",
+      security_storage: "granted",
+      wait_for_update: 500,
+    });
+    gtag("set", "ads_data_redaction", true);
+    gtag("set", "url_passthrough", false);
+  </script>
+
+  <!-- Google Ads -->
+  <script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8233915433564101"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4DGR81NZ6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "G-R4DGR81NZ6");
+  </script>
 </head>
 
 <body style="opacity:0">
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJ397CLS"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe
+      src="https://www.googletagmanager.com/ns.html?id=GTM-PJ397CLS"
+      height="0"
+      width="0"
+      style="display:none;visibility:hidden"
+    ></iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
-    <div id="introContainer" class="intro-container">
-     <!-- Template content จะถูกใส่ที่นี่ -->
+  <div id="introContainer" class="intro-container">
+    <!-- Template content จะถูกใส่ที่นี่ -->
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <button class="back-button" id="back-button" aria-label="Go back">
+      <svg
+        class="w-6 h-6 text-gray-800 dark:text-white"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
+      </svg>
+    </button>
+
+    <span class="page-title">
+      <span data-translate="page-What's-New">What's New</span><br />
+      <span class="date">11 ก.พ. 2025</span>
+    </span>
+  </nav>
+
+  <!-- Main Content -->
+  <h1>
+    <span data-translate="new_version_text">What's new in version</span>
+    <span id="title"></span>
+  </h1>
+
+  <div class="container">
+    <div class="content">
+      <ul>
+        <li data-translate="Not">Not specified</li>
+      </ul>
     </div>
+  </div>
 
-    <!-- Navigation Bar -->
-    <nav>
-        <button class="back-button" id="back-button" aria-label="Go back" >
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
-            </svg>
-        </button>
+  <!-- โหลด language.min.js แบบปกติ ไม่ defer -->
+  <script src="/assets/js/language.min.js"></script>
 
-        <span class="page-title">
-            <span data-translate="page-What's-New">What's New</span><br>
-            <span class="date">11 ก.พ. 2025</span>
-        </span>
-    </nav>
-
-    <!-- Main Content -->
-    <h1>
-        <span data-translate="new_version_text">What's new in version</span>
-        <span id="title"></span>
-    </h1>
-
-    <div class="container">
-        <div class="content">
-            <ul>
-                <li data-translate="Not">Not specified</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="/assets/js/new.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/assets/js/back-button.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/assets/js/language.min.js" type="text/javascript" charset="utf-8"></script>
-    <script defer src="/assets/js/footer-template.js"></script>
-    <script src="/assets/js/version.min.js" type="text/javascript"  charset="utf-8"></script>
-    
-    
-    
+  <!-- โหลด js อื่นๆ แบบ defer -->
+  <script defer src="/assets/js/new.min.js"></script>
+  <script defer src="/assets/js/back-button.min.js"></script>
+  <script defer src="/assets/js/footer-template.js"></script>
+  <script defer src="/assets/js/version.min.js"></script>
 </body>
-
 </html>
