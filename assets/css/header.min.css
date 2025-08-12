@@ -121,7 +121,15 @@ nav ul li button {
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition:
+        background 0.44s cubic-bezier(.7, 0, .7, 1),
+        color 0.38s cubic-bezier(.7, 0, .7, 1),
+        font-weight 0.5s cubic-bezier(.7, 0, .7, 1),
+        letter-spacing 0.35s cubic-bezier(.7, 0, .7, 1),
+        padding 0.38s cubic-bezier(.7, 0, .7, 1),
+        border 0.32s cubic-bezier(.7, 0, .7, 1),
+        box-shadow 0.38s cubic-bezier(.7, 0, .7, 1),
+        transform 0.36s cubic-bezier(.7, 0, .7, 1);
     position: relative;
     overflow: hidden;
     white-space: nowrap;
@@ -129,13 +137,14 @@ nav ul li button {
     user-select: none;
 }
 
+/* Hover effect */
 nav ul li button::before {
     content: '';
     position: absolute;
     inset: 0;
     background: var(--nav-hover-bg);
     opacity: 0;
-    transition: opacity var(--transition-fast);
+    transition: opacity 0.33s cubic-bezier(.7, 0, .7, 1);
 }
 
 nav ul li button:hover {
@@ -153,8 +162,21 @@ nav ul li button.active {
     font-weight: bold;
     background: var(--nav-active-bg);
     border: 0.5px solid #10B981;
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.09);
+    letter-spacing: 0.04em;
+    /* For smooth font-weight and letter-spacing, keep transition above */
+    transition:
+        background 0.44s cubic-bezier(.7, 0, .7, 1),
+        color 0.38s cubic-bezier(.7, 0, .7, 1),
+        font-weight 0.5s cubic-bezier(.7, 0, .7, 1),
+        letter-spacing 0.35s cubic-bezier(.7, 0, .7, 1),
+        padding 0.38s cubic-bezier(.7, 0, .7, 1),
+        border 0.32s cubic-bezier(.7, 0, .7, 1),
+        box-shadow 0.38s cubic-bezier(.7, 0, .7, 1),
+        transform 0.36s cubic-bezier(.7, 0, .7, 1);
 }
 
+/* Active underline */
 nav ul li button.active::after {
     content: '';
     position: absolute;
@@ -166,7 +188,11 @@ nav ul li button.active::after {
     border-radius: 2px;
     transform: translateX(-50%) scale(0.8);
     opacity: 0.8;
-    transition: all var(--transition-fast);
+    transition:
+        opacity 0.33s cubic-bezier(.7, 0, .7, 1),
+        width 0.35s cubic-bezier(.7, 0, .7, 1),
+        background 0.38s cubic-bezier(.7, 0, .7, 1),
+        transform 0.34s cubic-bezier(.7, 0, .7, 1);
 }
 
 nav ul li button.active:hover::after {
