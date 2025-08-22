@@ -230,29 +230,38 @@ nav ul li button.active:hover::after {
     to { opacity: 1; transform: translateY(0); }
 }
 
+:root {
+    --loading-bg: #fff;
+    --spinner-primary: #4285f4;
+    --spinner-secondary: #eee;
+}
+
 .content-loading-spinner {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,1);
+    background: var(--loading-bg);
     z-index: 1000;
     width: 100%;
     height: 100%;
     opacity: 1;
-    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: auto;
-    will-change: opacity;
+    visibility: visible;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+    contain: strict;
 }
 
 .content-loading-fade-in {
-    opacity: 1 !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .content-loading-fade-out {
-    opacity: 0 !important;
+    opacity: 0;
+    visibility: hidden;
     pointer-events: none;
 }
 
@@ -260,7 +269,7 @@ nav ul li button.active:hover::after {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .spinner-svg svg {
@@ -270,21 +279,16 @@ nav ul li button.active:hover::after {
 }
 
 .spinner-svg-bg {
-    stroke: #eee;
+    stroke: var(--spinner-secondary);
+    stroke-width: 6;
 }
 
 .spinner-svg-fg {
-    stroke: #4285f4;
-    stroke-dasharray: 90 125;
-    stroke-dashoffset: 0;
+    stroke: var(--spinner-primary);
+    stroke-width: 6;
+    stroke-linecap: round;
+    fill: none;
     transform-origin: 50% 50%;
-    animation: spinner-svg-rotate 1s linear infinite;
-    will-change: transform;
-}
-
-@keyframes spinner-svg-rotate {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
 }
 
 .loading-message {
