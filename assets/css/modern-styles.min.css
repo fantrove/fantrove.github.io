@@ -34,6 +34,10 @@
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --page-max-width: 1280px;
   --header-height: 60px;
+
+  /* Left rail sizes (overrideable by JS) */
+  --left-rail-width: 88px;
+  --left-rail-width-collapsed: 72px;
   
   /* Border Radius - Consistent System */
   --radius-xs: 4px;
@@ -65,7 +69,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Bottom Navigation - Refined & Efficient */
+/* Bottom Navigation - Refined & Efficient (mobile default) */
 .bottom-nav {
   position: fixed;
   border-radius: 20px 20px 0 0;
@@ -150,21 +154,82 @@
   transform: scale(0.9);
 }
 
-/* Responsive Adjustments */
+/* Tablet and up (>=768px) -> left-side vertical navigation (tablet + desktop) */
 @media (min-width: 768px) {
+  /* Layout: make the nav part of the page flow by wrapping content into .site-main via JS.
+     When mounted, body will have class "has-left-rail" and .site-main will contain all page content.
+     This ensures the left rail is not overlaying content but actually inserted into layout. */
+
+  body.has-left-rail {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 100vh;
+  }
+
   .bottom-nav {
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    margin-bottom: env(safe-area-inset-bottom);
+    /* left rail styles */
+    position: relative; /* in-flow inside body when mounted */
+    top: 0;
+    left: 0;
+    width: var(--left-rail-width);
+    height: 100vh; /* full viewport height */
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    margin: 0;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: max(env(safe-area-inset-top), 12px) 8px max(env(safe-area-inset-bottom), 12px) 8px;
+    border-top: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 18px rgba(58,60,79,0.06);
+    z-index: auto;
+    flex: 0 0 var(--left-rail-width);
   }
 
-  .nav-item {
-    min-width: 80px;
+  /* Ensure nav-items stack vertically */
+  .bottom-nav .nav-item {
+    width: 100%;
+    gap: 6px;
+    padding: 10px 6px;
+    justify-content: center;
   }
 
-  .nav-item .label {
+  .bottom-nav .nav-item svg {
+    height: 20px !important;
+    margin-bottom: 4px;
+  }
+
+  .bottom-nav .nav-item .label {
     font-size: 12px;
+    white-space: normal;
+    text-align: center;
+    display: block;
+    line-height: 1;
+  }
+
+  /* The main content container (created by JS) */
+  .site-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Optional collapsed rail */
+  .bottom-nav.collapsed {
+    width: var(--left-rail-width-collapsed);
+    flex: 0 0 var(--left-rail-width-collapsed);
+  }
+  .bottom-nav.collapsed .label {
+    display: none;
+  }
+  .bottom-nav.collapsed:hover {
+    width: var(--left-rail-width);
+  }
+  .bottom-nav.collapsed:hover .label {
+    display: block;
   }
 }
 
