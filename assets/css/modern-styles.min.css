@@ -184,9 +184,10 @@
     padding: max(env(safe-area-inset-top), 12px) 8px max(env(safe-area-inset-bottom), 12px) 8px;
     border-top: 0;
     border-right: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 6px 18px rgba(58,60,79,0.06);
+    box-shadow: none;
     z-index: auto;
     flex: 0 0 var(--left-rail-width);
+    border-radius: 0;
   }
 
   /* Ensure nav-items stack vertically */
