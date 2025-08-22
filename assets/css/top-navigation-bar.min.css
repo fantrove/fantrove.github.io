@@ -1,11 +1,16 @@
 @import url('variables.min.css');
 
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 /* Style สำหรับ Navigation Bar */
 nav {
   display: grid; /* เปลี่ยนเป็น grid แทน flex */
   grid-template-columns: 50px 1fr 50px; /* แบ่งเป็น 3 ส่วน: ปุ่มซ้าย, เนื้อหา, พื้นที่ขวา */
   align-items: center;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;

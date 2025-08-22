@@ -52,12 +52,11 @@
 
 /* พื้นฐานของเว็บไซต์ */
 body {
-  padding: 5rem 0.5rem 0rem 0.5rem;
   color: var(--ui-color-text-primary);
 }
 
 main {
- padding-bottom: 20px;
+padding: 5rem 0.5rem 1.8rem 0.5rem;
 }
 
 /* ส่วนการตั้งค่า */
