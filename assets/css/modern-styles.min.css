@@ -76,12 +76,12 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: calc(var(--nav-height) + var(--safe-area-bottom));
+  height: auto;
   background: rgba(255, 255, 255, 1);
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  padding: 0 max(env(safe-area-inset-left), 0px) calc(var(--safe-area-bottom)) max(env(safe-area-inset-right), 0px);
+  padding: 10px max(env(safe-area-inset-left), 0px) calc(var(--safe-area-bottom) + 5px) max(env(safe-area-inset-right), 0px);
   z-index: 16000;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform var(--transition-normal);
@@ -104,23 +104,22 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   border-radius: var(--radius-md);
-  gap: 2px;
+  gap: 15px;
   user-select: none;
-  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .nav-item svg {
   width: auto;
-  height: 18px !important;
-  margin-bottom: 4px;
+  height: 19px !important;
+  margin-bottom: 0px;
+  display: block;
   transition: transform var(--transition-fast);
   stroke: var(--neutral-500) !important;
-  stroke-width: 1.3 !important;
+  stroke-width: 1.4 !important;
 }
 
 .nav-item .label {
-  font-size: 11.3px;
-  font-weight: 400;
+  font-size: 12px;
   color: var(--neutral-500);
   transition: color var(--transition-fast);
   white-space: nowrap;
@@ -136,18 +135,33 @@
  transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
-.nav-item.active-1 .label {
- color: var(--primary-600);
- font-weight: 600;
- letter-spacing: 0.02em;
- transition: color var(--transition-fast);
+/* wrapper รอบ SVG */
+.svg-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center; /* แนวตั้งกึ่งกลาง */
+  justify-content: center; /* แนวนอนกึ่งกลาง */
+  width: 100%; /* ปรับขนาด wrapper ให้พอดีกับไอเท็ม */
+  height: 100%;
 }
 
-/* Hover & Press Effects */
-@media (hover: hover) {
-  .nav-item:hover:not(.active-1) {
-    background: var(--neutral-100);
-  }
+/* พื้นหลัง capsule เฉพาะ active */
+.nav-item.active-1 .svg-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;  /* ปรับขนาด capsule ให้พอดี */
+  height: 32px;
+  background: rgba(103, 255, 205, 0.1);
+  border-radius: 50px;
+  z-index: -1; /* อยู่หลัง SVG */
+}
+
+.nav-item.active-1 .label {
+ letter-spacing: 0.02em;
+ transition: color var(--transition-fast);
 }
 
 .nav-item:active {
@@ -188,19 +202,20 @@
     z-index: auto;
     flex: 0 0 var(--left-rail-width);
     border-radius: 0;
+    z-index: 1000;
   }
 
   /* Ensure nav-items stack vertically */
   .bottom-nav .nav-item {
     width: 100%;
-    gap: 6px;
+    
     padding: 10px 6px;
     justify-content: center;
   }
 
   .bottom-nav .nav-item svg {
     height: 20px !important;
-    margin-bottom: 4px;
+    
   }
 
   .bottom-nav .nav-item .label {
@@ -231,12 +246,5 @@
   }
   .bottom-nav.collapsed:hover .label {
     display: block;
-  }
-}
-
-/* Hide navigation when keyboard is visible on mobile */
-@media (max-height: 450px) {
-  .bottom-nav {
-    transform: translateY(100%);
   }
 }

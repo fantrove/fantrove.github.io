@@ -89,7 +89,7 @@ strong, b {
 /* ---------- CARD ---------- */
 section {
   background: #fff;
-  border-radius: 25px;
+  border-radius: 30px;
   border: 1.2px solid #E1F4F1;
   padding: 2rem 2.1rem;
   margin-bottom: 5rem;
@@ -178,7 +178,7 @@ sectio:hover, sectio:focus-within {
   top: 0; left: 0; right: 0; bottom: 0;
   background: linear-gradient(to right, #E0F7FC 0%, #D2F1FF 100%);
   opacity: 0;
-  transition: opacity 500ms ease;
+  transition: opacity 200ms ease;
   z-index: -1;
 }
 
@@ -261,6 +261,12 @@ sectio:hover, sectio:focus-within {
   flex-wrap: wrap;
   width: 100%;
   margin-top: 0.5rem;
+}
+.hero-btns button {
+  transition: transform 100ms;
+}
+.hero-btns button:active {
+  transform: scale(0.98);
 }
 .hero h1 {
   text-align: center;
@@ -469,33 +475,15 @@ section.o:has(.faq-toggle:checked) {
   color: #222b45;
   line-height: 2;
 }
-/* ... (โค้ดเดิม) ... */
-
-/* ---------- APP HEADER IN BOX ---------- */
-.text-h {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0rem;
-  gap: 1.3rem;
-}
-.text-h h1 {
-  font-size: 1.12em;
-  font-weight: 800;
-  margin: 0;
-  color: #222b45;
-  line-height: 2;
-}
 .text-h button {
   /* ปุ่ม base */
   font-size: 0.9em;
-  font-weight: 700;
   padding: 0.6em 1.15em;
   border-radius: 25px;
   background: #FFFFFF;
   border: 1.2px solid #D3D3D3;
   color: #13b47f;
-  transition: background 500ms, color 0.10s, border-color 500ms;
+  transition: background 500ms, color 0.10s, border-color 500ms, transform 100ms;
   user-select: none;
   display: flex;
   align-items: center;
@@ -503,7 +491,9 @@ section.o:has(.faq-toggle:checked) {
   overflow: hidden;
   cursor: pointer;
 }
-
+.text-h button:active {
+  transform: scale(0.95);
+}
 /* ====== ANIMATION (ARROW & TRAIL & OVERLAY) FOR .text-h button ====== */
 .text-h button .btn-content {
   position: relative;
@@ -512,7 +502,6 @@ section.o:has(.faq-toggle:checked) {
   align-items: center;
   justify-content: center;
   width: 100%;
-  font-weight: 500;
   letter-spacing: 0.05em;
   transition: opacity 0.19s;
 }
@@ -590,7 +579,7 @@ section.o:has(.faq-toggle:checked) {
 /* ---------- APP CATEGORY SECTION ---------- */
 .category-section {
   background: #FFFFFF;
-  border-radius: 25px;
+  border-radius: 30px;
   margin-bottom: 2rem;
 }
 
@@ -645,9 +634,9 @@ section.o:has(.faq-toggle:checked) {
 }
 .item-card {
   background: #fff;
-  border-radius: 25px;
-  width: 148px;
-  padding: 1.25rem 0.82rem 1.05rem 0.82rem;
+  border-radius: 30px;
+  width: 140px;
+  padding: 1.25rem 0.72rem 1.05rem 0.72rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -666,14 +655,14 @@ section.o:has(.faq-toggle:checked) {
   
 }
 .item-card .emoji {
-  font-size: 1.61rem;
+  font-size: 1.55rem;
   margin-bottom: 0.16rem;
   transition: filter 0.10s;
   z-index: 2;
   user-select: none;
 }
 .item-card .name {
-  font-size: 0.8em;
+  font-size: 0.9em;
   color: #0eb0d5;
   font-weight: 800;
   letter-spacing: 0.013em;
@@ -710,16 +699,8 @@ section.o:has(.faq-toggle:checked) {
     width: 108px;
     min-width: 108px;
     max-width: 140px;
-    padding: 0.8rem 0.3rem 0.6rem 0.3rem;
-    border-radius: 25px;
-  }
-  
-  .item-card .name {
-    font-size: 1em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
+    padding: 1rem 0.7rem 1rem 0.7rem !important;
+    border-radius: 30px;
   }
 }
 
@@ -732,7 +713,7 @@ section.o:has(.faq-toggle:checked) {
   .h2, h2 { font-size: 1rem; }
   .h3, h3 { font-size: 1rem; }
   .lead { font-size: 0.9em; }
-  section { font-size: 0.9rem; padding: 1.05rem 1.15rem; border-radius: 25px; }
+  section { font-size: 0.9rem; padding: 1.05rem 1.15rem; border-radius: 30px; }
   .button, .btn { font-size: 0.9em; padding: 1.1em 0.96em; border-radius: 25px; }
   .button-secondary { border-width: 1px; }
   .feature-item { font-size: 0.93em; padding: 0.92rem 0.55rem 0.92rem 0.55rem; border-radius: 25px; }
@@ -740,12 +721,12 @@ section.o:has(.faq-toggle:checked) {
   .faq-item { font-size: 0.92em; padding: 0 0.6em; border-radius: 25px; }
   .faq-question { font-size: 0.93em; padding: 0.8em 1.1em 0.8em 0; }
   .main { font-size: 0.96em;}
-  .text-h h1 { font-size: 1em; }
-  .text-h button { font-size: 0.8em !important; padding: 0.85em 1.2em; border-radius: 25px; }
-  .category-section h2 { font-size: 0.99em; margin: 0.6rem 0 0.6rem 0; }
-  .item-card { font-size: 0.91em; border-radius: 25px; }
-  .item-card .name { font-size: 1em; }
-  .item-card .desc, .item-card .detail, .item-card .content { font-size: 0.7em; }
+  .text-h h1 { font-size: 1.1em; }
+  .text-h button { font-size: 0.9em !important; padding: 0.85em 1.2em; border-radius: 25px; }
+  .category-section h2 { font-size: 1.03em; margin: 0.6rem 0 0.6rem 0; }
+  .item-card { font-size: 0.91em; border-radius: 30px; }
+  .item-card .name { font-size: 1.01em; }
+  .item-card .desc, .item-card .detail, .item-card .content { font-size: 1.1em; }
   .img-d1 { padding: 0 10px 0 10px; }
 }
 
