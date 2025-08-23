@@ -7,7 +7,7 @@
   --primary-300: #7DD5FF;
   --primary-400: #38B6FF;
   --primary-500: #0095FF;
-  --primary-600: #10B981;
+  --primary-600: #009966;
   --primary-700: #005CB3;
   --primary-800: #004280;
   --primary-900: #002952;
@@ -141,31 +141,46 @@
   display: flex;
   align-items: center; /* แนวตั้งกึ่งกลาง */
   justify-content: center; /* แนวนอนกึ่งกลาง */
-  width: 100%; /* ปรับขนาด wrapper ให้พอดีกับไอเท็ม */
-  height: 100%;
+  width: 70px;
+  height: 32px;
+  border-radius: 50px;
 }
-
-/* พื้นหลัง capsule เฉพาะ active */
+.nav-item:active .svg-wrapper {
+  filter: brightness(0.9);
+  background: rgba(255, 255, 255, 1);
+}
+/* ยกเลิกเอฟเฟกต์ active ถ้ามี .active-1 */
+.nav-item.active-1:active .svg-wrapper {
+  filter: brightness(0.4);
+  background: transparent;
+}
 .nav-item.active-1 .svg-wrapper::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70px;  /* ปรับขนาด capsule ให้พอดี */
+  width: 0;
   height: 32px;
-  background: rgba(103, 255, 205, 0.1);
+  background: rgba(43, 255, 185, 0.29) !important;
   border-radius: 50px;
-  z-index: -1; /* อยู่หลัง SVG */
+  z-index: -1;
+  transform: translate(-50%, -50%) scale(0.4);
+  opacity: 0;
+  transition: 
+    width 1.2s cubic-bezier(.7,-.56,.3,1.55),
+    transform 1.2s cubic-bezier(.7,-.56,.3,1.55),
+    opacity 0.5s ease-in-out;
+}
+
+.nav-item.active-1 .svg-wrapper.animate::before {
+  width: 70px;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .nav-item.active-1 .label {
  letter-spacing: 0.02em;
  transition: color var(--transition-fast);
-}
-
-.nav-item:active {
-  transform: scale(0.9);
 }
 
 /* Tablet and up (>=768px) -> left-side vertical navigation (tablet + desktop) */
