@@ -455,6 +455,10 @@ section.o {
   will-change: padding;
 }
 
+section.o:hover .faq-question {
+  color: #13b47f;
+}
+
 /* ถ้า input checkbox checked อยู่ใน section.o → ให้ section.o เปลี่ยนได้! */
 section.o:has(.faq-toggle:checked) {
   padding-bottom: 2.1rem !important;

@@ -148,6 +148,18 @@
   <script defer src="/assets/js/modern-navigation.min.js"></script>
   <script defer src="/assets/js/back-to-top.min.js"></script>
   <script defer src="/assets/js/footer-template.js"></script>
+  
+<script>
+  document.querySelectorAll('section.o').forEach(section => {
+    section.addEventListener('click', function(e) {
+      // กันไม่ให้ trigger ซ้ำเมื่อกดที่ input หรือ label โดยตรง
+      if (e.target.closest('input') || e.target.closest('label')) return;
+      
+      const checkbox = this.querySelector('.faq-toggle');
+      checkbox.checked = !checkbox.checked;
+    });
+  });
+</script>
 
 </body>
 </html>
