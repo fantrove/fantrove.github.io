@@ -146,8 +146,6 @@ section {
  gap: 15px;
 }
 
-
-
 .buttons:hover, .setting-item.select:hover, #language-button:hover, .buttons.auto-update-toggle:hover {
   background-color: #EFF2F8;
 }
@@ -213,7 +211,7 @@ section {
   background: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 300ms ease;
-  z-index: 9998;
+  z-index: 90000;
   display: none;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -236,11 +234,11 @@ section {
   transform: translate(-50%, -50%) scale(1);
   background: white;
   padding: 25px;
-  border-radius: 25px;
+  border-radius: 30px;
   box-shadow: 0 0px 15px rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transition: opacity 300ms ease;
-  z-index: 9999;
+  transition: opacity 1000ms ease;
+  z-index: 99990;
   display: none;
   overflow-y: auto;
 }
