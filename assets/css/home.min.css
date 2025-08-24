@@ -624,7 +624,7 @@ section.o:has(.faq-toggle:checked) {
 .carousel-track {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 1.5rem;
   overflow-x: auto;
   overflow-y: visible;
   scroll-behavior: auto;
@@ -701,22 +701,22 @@ section.o:has(.faq-toggle:checked) {
 @media (max-width: 900px) {
   .item-card {
     width: 108px;
-    min-width: 108px;
+    min-width: 125px;
     max-width: 140px;
-    padding: 1rem 0.7rem 1rem 0.7rem !important;
+    padding: 1.2rem 1rem 1.2rem 1rem !important;
     border-radius: 30px;
   }
 }
 
 /* ---------- MOBILE FONT ADJUSTMENTS ---------- */
 @media (max-width: 600px) {
-  html { font-size: 15px; }
-  body { font-size: 0.97rem; }
+  html { font-size: 16px; }
+  body { font-size: 1rem; }
   .section { margin: 1.1rem 0; }
   .h1, h1 { font-size: 1.15rem; }
-  .h2, h2 { font-size: 1rem; }
-  .h3, h3 { font-size: 1rem; }
-  .lead { font-size: 0.9em; }
+  .h2, h2 { font-size: 1.1rem; }
+  .h3, h3 { font-size: 1.05rem; }
+  .lead { font-size: 1em; }
   section { font-size: 0.9rem; padding: 1.05rem 1.15rem; border-radius: 30px; }
   .button, .btn { font-size: 0.9em; padding: 1.1em 0.96em; border-radius: 25px; }
   .button-secondary { border-width: 1px; }
