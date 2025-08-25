@@ -104,13 +104,35 @@ h5 {
 }
 
 section {
-  border-radius: 30px !important;
+  border-radius: 30px;
   overflow: hidden !important;
-  
 }
 
 .m5 {
   margin-bottom: 3px;
+}
+
+section.con {
+  border-radius: 0 !important;
+  padding: 20px;
+}
+
+section.con p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+section.con span {
+  font-weight: bold !important;
+  color: #13b47f !important;
+}
+
+section.con h1 {
+  font-size: 17px;
+}
+
+.pad {
+  padding: 20px;
 }
 
 /* สไตล์ select และ button */

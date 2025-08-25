@@ -33,11 +33,15 @@ nav {
   padding: 6px;
   z-index: 1010;
   -webkit-tap-highlight-color: transparent;
-  border-radius: 5px;
+  border-radius: 10px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.back-button:active {
+  background: rgba(0, 0, 0, 0.07);
 }
 
 .back-button:active svg {
@@ -46,16 +50,16 @@ nav {
 
 /* ปุ่มย้อนกลับ - SVG icon */
 .back-button svg {
-  width: 26px;
+  width: auto;
   height: 26px;
   color: #1e957c;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ชื่อหน้า (Page Title) - ปรับปรุงใหม่ */
 .page-title {
   grid-column: 2; /* วางในคอลัมน์กลาง */
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   color: #1e957c;
   text-align: center; /* จัดข้อความกึ่งกลาง */
