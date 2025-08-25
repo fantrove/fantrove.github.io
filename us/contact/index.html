@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title data-translate="contact-other-title">General Contact</title>
+    <title data-translate="contact-other-title"></title>
 
     <!-- Preload & Fallback for critical CSS -->
     <link rel="preload" href="/assets/css/setting.min.css" as="style" onload="this.rel='stylesheet'">
@@ -27,41 +27,37 @@
                 <path d="m15 19-7-7 7-7" />
             </svg>
         </button>
-        <span class="page-title" data-translate="page-contact">General Contact</span>
+        <span class="page-title" data-translate="page-contact"></span>
     </nav>
 
     <main>
-        <h1 data-translate="contact-other-title" style="margin-bottom:1.5rem;">General Contact</h1>
+        <h1 data-translate="contact-other-title" style="margin-bottom:1.5rem;"></h1>
 
         <p class="text-content" data-translate="contact-other-desc" style="margin-bottom:1.5rem;">
-            You can use this page to contact the FanTrove Hub developer for general inquiries, suggestions, collaboration, or other topics that are not bug reports or abuse reports.<br/><br/>
-            Available contact channels:<br/>
-            • Gmail: fantrovehub@gmail.com<br/>
-            • Form: Submit your message directly from the website.<br/>
         </p>
 
         <div class="setting-item">
-            <label for="contact-method" data-translate="contact-method-label">Choose Contact Channel</label>
+            <label for="contact-method" data-translate="contact-method-label"></label>
             <section style="margin-bottom:1rem;">
                 <select id="contact-method" class="setting-item select">
-                    <option value="gmail" data-translate="contact-method-gmail">Gmail</option>
-                    <option value="form" data-translate="contact-method-form">Form</option>
+                    <option value="gmail" data-translate="contact-method-gmail"></option>
+                    <option value="form" data-translate="contact-method-form"></option>
                 </select>
             </section>
         </div>
 
         <div class="setting-item" id="contact-form-section" style="display:none;">
-            <label for="contact-form-lang" data-translate="contact-form-lang-label">Choose Language</label>
+            <label for="contact-form-lang" data-translate="contact-form-lang-label"></label>
             <section>
                 <select id="contact-form-lang" class="setting-item select m5">
                     <!-- Dynamic options populated by JS -->
                 </select>
-                <button class="buttons tap" style="width:100%;" id="goto-form-btn">Go to Form</button>
+                <button class="buttons tap" style="width:100%;" id="goto-form-btn"></button>
             </section>
         </div>
 
         <div class="setting-item" id="gmail-section">
-            <label data-translate="contact-gmail-text">Send your message via Gmail:</label>
+            <label data-translate="contact-gmail-text"></label>
             <section>
                 <button onclick="window.location.href='mailto:fantrovehub@gmail.com'" class="buttons tap" data-translate="contact-gmail-btn">
                     <!--
@@ -84,7 +80,7 @@
                       <path d="M10 14l11 -11" />
                       <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
                     </svg>
-                    Send via Gmail
+                    
                 </button>
             </section>
         </div>
