@@ -50,7 +50,6 @@ body {
   font-family: var(--font-primary);
   height: 100vh;
   color: var(--color-text-primary);
-  margin-top: var(--spacing-sm);
   font-size: 1em; /* Base font size for body */
 }
 
@@ -61,6 +60,7 @@ body {
 main {
   max-width: 900px;
   margin: 0 auto;
+  margin-top: var(--spacing-lg);
   padding: var(--spacing-sm) 20px 50px;
 }
 

@@ -10,17 +10,17 @@ nav {
   display: grid; /* เปลี่ยนเป็น grid แทน flex */
   grid-template-columns: 50px 1fr 50px; /* แบ่งเป็น 3 ส่วน: ปุ่มซ้าย, เนื้อหา, พื้นที่ขวา */
   align-items: center;
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 50px;
   padding: 0;
-  background: rgba(231, 255, 251, 1);
-  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+  background: rgba(253, 254, 255, 1);
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.08);
   z-index: 100;
   touch-action: none;
-  border-radius: 0 0 25px 25px;
+  border-radius: 0 0 0px 0px; /* border-radius: 0 0 25px 25px; */
 }
 
 /* จัดการการวางตำแหน่งของปุ่มย้อนกลับ */
@@ -52,16 +52,16 @@ nav {
 .back-button svg {
   width: auto;
   height: 26px;
-  color: #1e957c;
+  color: #1DA589;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ชื่อหน้า (Page Title) - ปรับปรุงใหม่ */
 .page-title {
   grid-column: 2; /* วางในคอลัมน์กลาง */
-  font-size: 16px;
+  font-size: 16px !important;
   font-weight: bold;
-  color: #1e957c;
+  color: #1DA589;
   text-align: center; /* จัดข้อความกึ่งกลาง */
   font-family: inherit;
   padding: 0 10px;
@@ -75,52 +75,4 @@ nav {
 .date {
   font-size: 10px;
   font-weight: 500;
-}
-
-/* แท็บเล็ตแนวตั้ง */
-@media (min-width: 600px) {
-  body { font-size: 15px; }
-  .page-title { font-size: 16px; }
-  .back-button svg { width: 32px; height: 32px; }
-  nav { grid-template-columns: 60px 1fr 60px; }
-}
-
-/* แท็บเล็ตแนวนอน */
-@media (min-width: 768px) {
-  body { font-size: 16px; }
-  .page-title { font-size: 18px; }
-  .back-button svg { width: 34px; height: 34px; }
-  nav { grid-template-columns: 70px 1fr 70px; }
-}
-
-/* เดสก์ท็อปเล็ก */
-@media (min-width: 1024px) {
-  body { font-size: 18px; }
-  .page-title { font-size: 20px; }
-  .back-button svg { width: 36px; height: 36px; }
-  nav { grid-template-columns: 80px 1fr 80px; }
-}
-
-/* เดสก์ท็อปกลาง */
-@media (min-width: 1280px) {
-  body { font-size: 19px; }
-  .page-title { font-size: 22px; }
-  .back-button svg { width: 38px; height: 38px; }
-  nav { grid-template-columns: 90px 1fr 90px; }
-}
-
-/* เดสก์ท็อปใหญ่ */
-@media (min-width: 1440px) {
-  body { font-size: 20px; }
-  .page-title { font-size: 24px; }
-  .back-button svg { width: 40px; height: 40px; }
-  nav { grid-template-columns: 100px 1fr 100px; }
-}
-
-/* หน้าจอ 4K+ */
-@media (min-width: 1920px) {
-  body { font-size: 22px; }
-  .page-title { font-size: 26px; }
-  .back-button svg { width: 42px; height: 42px; }
-  nav { grid-template-columns: 120px 1fr 120px; }
 }
