@@ -5,6 +5,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FANTROVE - Emoji & Symbols Hub</title>
 
+<!-- Inline high-assurance language bootstrap
+     Put this as early as possible inside <head> (ideally as the very first <script> or immediately after any critical <meta> tags).
+     Purpose: set html@lang, xml:lang, dir, body@lang, meta Content-Language/name=language, cookie/localStorage early
+-->
+<script>
+(function(){
+  try {
+    // 1) Quick candidate: URL ?lang= > localStorage.selectedLang > navigator
+    var lang = null;
+    try {
+      var params = (typeof location !== 'undefined') ? new URLSearchParams(location.search) : null;
+      if (params) lang = params.get('lang');
+    } catch(e) {}
+    try { if (!lang && window && window.localStorage) lang = localStorage.getItem('selectedLang'); } catch(e){}
+    try {
+      if (!lang && navigator) {
+        var nav = navigator.languages && navigator.languages.length ? navigator.languages[0] : (navigator.language || navigator.userLanguage || 'en');
+        lang = (nav || 'en').split('-')[0];
+      }
+    } catch(e) { lang = lang || 'en'; }
+    if (!lang) lang = 'en';
+
+    // 2) map common codes -> fuller locale when helpful; prefer exact config if available (page script can override later)
+    var map = { en:'en-US', th:'th-TH', es:'es-ES', fr:'fr-FR', de:'de-DE', ja:'ja-JP', ko:'ko-KR', zh:'zh-CN', ar:'ar-SA', ru:'ru-RU', pt:'pt-BR' };
+    var locale = (map[lang] || lang);
+
+    // 3) normalize casing (ll-RR)
+    try {
+      var parts = String(locale).replace('_','-').split('-');
+      if (parts.length === 1) locale = parts[0].toLowerCase();
+      else { parts[0] = parts[0].toLowerCase(); parts[1] = parts[1].toUpperCase(); locale = parts.join('-'); }
+    } catch(e) {}
+
+    // 4) choose direction (simple primary-subtag check)
+    var primary = (locale || 'en').split('-')[0];
+    var rtl = ['ar','he','fa','ur','ps','syr','dv'];
+    var dir = rtl.indexOf(primary) !== -1 ? 'rtl' : 'ltr';
+
+    // 5) apply attributes ASAP
+    try { document.documentElement.setAttribute('lang', locale); } catch(e){}
+    try { document.documentElement.setAttribute('xml:lang', locale); } catch(e){}
+    try { document.documentElement.setAttribute('dir', dir); } catch(e){}
+    try { document.documentElement.setAttribute('data-lang-enforced','inline'); } catch(e){}
+    try { if (document.body) document.body.setAttribute('lang', locale); } catch(e){}
+
+    // 6) lightweight meta placeholders (marked so later script can update/replace)
+    try {
+      var head = document.head || document.getElementsByTagName('head')[0];
+      if (head) {
+        var metaCL = head.querySelector('meta[http-equiv="Content-Language"][data-langmgr="inline"]');
+        if (!metaCL) {
+          metaCL = document.createElement('meta');
+          metaCL.setAttribute('http-equiv','Content-Language');
+          metaCL.setAttribute('data-langmgr','inline');
+          head.appendChild(metaCL);
+        }
+        metaCL.setAttribute('content', locale);
+
+        var metaLang = head.querySelector('meta[name="language"][data-langmgr="inline"]');
+        if (!metaLang) {
+          metaLang = document.createElement('meta');
+          metaLang.setAttribute('name','language');
+          metaLang.setAttribute('data-langmgr','inline');
+          head.appendChild(metaLang);
+        }
+        metaLang.setAttribute('content', locale);
+
+        // optional: add a small rel=alternate hreflang for current page (manager script can replace with full set)
+        var linkAlt = head.querySelector('link[rel="alternate"][data-langmgr="inline"]');
+        if (!linkAlt) {
+          linkAlt = document.createElement('link');
+          linkAlt.setAttribute('rel','alternate');
+          linkAlt.setAttribute('data-langmgr','inline');
+          head.appendChild(linkAlt);
+        }
+        try {
+          var u = new URL(window.location.href);
+          if (lang === 'en') u.searchParams.delete('lang'); else u.searchParams.set('lang', lang);
+          linkAlt.setAttribute('hreflang', locale.split('-')[0]);
+          linkAlt.setAttribute('href', u.toString());
+        } catch(e){}
+      }
+    } catch(e){}
+
+    // 7) persist quick choice for server/client handoff (best-effort)
+    try { localStorage.setItem('selectedLang', lang); } catch(e){}
+    try { document.cookie = 'site_lang=' + encodeURIComponent(lang) + '; path=/; SameSite=Lax'; } catch(e){}
+
+    // 8) small opt-in beacon (non-blocking) — server support optional
+    try {
+      if (navigator && navigator.sendBeacon) {
+        try {
+          var beaconUrl = '/.lang-beacon';
+          var payload = JSON.stringify({ lang: lang, locale: locale, ts: Date.now(), path: location.pathname });
+          navigator.sendBeacon(beaconUrl, payload);
+        } catch(e){}
+      }
+    } catch(e){}
+
+    // 9) mark HTML for CSS/JS hooks (class like lang-en-US)
+    try {
+      var cls = 'lang-' + locale.replace(/[^a-zA-Z0-9_-]/g,'');
+      if (!document.documentElement.classList.contains(cls)) document.documentElement.classList.add(cls);
+    } catch(e){}
+
+    // 10) allow page script to re-run more thoroughly after languagesConfig loads (expose small hint)
+    try { window.__langmgr_inline_bootstrap = { lang: lang, locale: locale, dir: dir, time: Date.now() }; } catch(e){}
+  } catch (err) {
+    // fail silent — nothing critical should break the page
+    try { window.__langmgr_inline_error = String(err); } catch(e){}
+  }
+})();
+</script>
+
   <!-- Theme color for browsers -->
   <meta name="theme-color" content="#13b47f" />
   <!-- Status bar color for iOS Safari -->

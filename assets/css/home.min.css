@@ -389,7 +389,6 @@ section.mn {
   font-weight: 600;
   -webkit-tap-highlight-color: transparent;
   transition: color 100ms;
-  text-decoration: underline;
 }
 
 .notice a:hover {
