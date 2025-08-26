@@ -125,3 +125,29 @@ main {
 .section a:hover {
   color: var(--color-accent);
 }
+
+/* ==========================================================================
+   Media Queries - Responsive Design
+   ========================================================================== */
+
+/* Tablet Portrait */
+@media screen and (max-width: 767px) {
+  :root {
+    --font-size-base: 1.0em; /* 16px */
+  }
+
+  .section {
+    padding: var(--spacing-md);
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 599px) {
+  :root {
+    --font-size-base: 0.em; /* 14px */
+  }
+
+  .section {
+    padding: var(--spacing-sm);
+  }
+}
