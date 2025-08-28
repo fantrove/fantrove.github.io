@@ -52,16 +52,20 @@ nav {
 .back-button svg {
   width: auto;
   height: 26px;
-  color: #1DA589;
+  color: #13b47f;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ชื่อหน้า (Page Title) - ปรับปรุงใหม่ */
 .page-title {
   grid-column: 2; /* วางในคอลัมน์กลาง */
-  font-size: 16px !important;
+  font-size: 1.06rem !important;
   font-weight: bold;
-  color: #1DA589;
+  color: #13b47f;
+  background: linear-gradient(90deg, #13b47f 20%, #0eb0d5 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center; /* จัดข้อความกึ่งกลาง */
   font-family: inherit;
   padding: 0 10px;
@@ -73,6 +77,6 @@ nav {
 }
 
 .date {
-  font-size: 10px;
+  font-size: 0.8rem;
   font-weight: 500;
 }

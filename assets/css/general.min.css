@@ -90,7 +90,7 @@ footer, .footer-inner {
 }
 .footer-link {
   color: var(--footer-link);
-  text-decoration: underline;
+  text-decoration: none;
   font-weight: 500;
   background: none;
   padding: 0;
@@ -102,14 +102,19 @@ footer, .footer-inner {
   box-shadow: none;
   cursor: pointer;
   transition: color 0.12s;
+  border-bottom: 1px solid rgba(14, 176, 213, 0.07);
+  will-change: color, transform;
 }
-.footer-link:hover,
-.footer-link:focus-visible {
+.footer-link:hover {
   color: var(--footer-link-hover);
-  outline: none;
-  text-decoration: underline;
+  border-color: rgba(19, 180, 127, 0.14);
 }
-
+/* Focus states for keyboard users (links & interactive elements) */
+.footer-link:focus, .footer-social:hover {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(19,180,127,0.16);
+  border-radius: 10px;
+}
 .footer-extra {
   display: flex;
   align-items: center;
@@ -128,7 +133,7 @@ footer, .footer-inner {
   justify-content: center;
   background: none;
   border-radius: 50%;
-  transition: color 0.12s;
+  transition: all 0.12s;
   text-decoration: none;
   border: none;
   font-weight: 500;
