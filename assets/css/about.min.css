@@ -16,8 +16,8 @@
   --brand-accent: #11c3ec;
   --text: #0f2629;
   --muted: #6d8590;
-  --bg-start: #fbfefc;
-  --bg-end: #ffffff;
+  --bg-start: #FBFEFC;
+  --bg-end: #FFFFFF;
   --card-bg: rgba(255,255,255,0.94);
   --card-border: rgba(14,176,213,0.06);
   --glass-blur: 10px;
@@ -29,8 +29,8 @@
   --h2-size: clamp(1.02rem, 1.06rem + 0.4vw, 1.16rem);
   --h1-size: clamp(1.30rem, 1.4rem + 0.9vw, 1.8rem);
 
-  --radius-lg: 28px;
-  --radius-md: 12px;
+  --radius-lg: 30px;
+  --radius-md: 30px;
   --container-max: 1110px;
 
   --shadow-soft: 0 10px 28px rgba(6,20,24,0.06);
@@ -45,8 +45,8 @@
   --focus-outline-size: 4px;
 
   --content-gap: 1.05rem;
-  --section-padding: 1.9rem;
-  --section-padding-mobile: 1.05rem;
+  --section-padding: 2.3rem;
+  --section-padding-mobile: 2rem;
 
   --font-stack: 'Noto Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
@@ -81,6 +81,7 @@ body{
 main{
   max-width: var(--container-max);
   margin: 1.8rem auto 3.2rem;
+  margin-top: 5rem;
   padding: 0 1.6rem;
   box-sizing: border-box;
 }
@@ -90,7 +91,7 @@ main{
   background: var(--card-bg);
   border-radius: var(--radius-lg);
   padding: var(--section-padding);
-  margin: 1.2rem 0;
+  margin-bottom: 5rem;
   border: 1px solid var(--card-border);
   box-shadow: var(--shadow-soft);
   transition: transform var(--trans-med) var(--trans-ease), box-shadow var(--trans-med) var(--trans-ease), border-color var(--trans-fast) var(--trans-ease);
@@ -193,46 +194,23 @@ strong{
 
 /* ========== Responsive adjustments ========== */
 @media (max-width: 900px){
-  main{ padding: 0 1rem; margin-top: 1.0rem; }
-  .section{ padding: 1.3rem; border-radius: 22px; margin: 0.9rem 0; }
+  main{ padding: 0 1rem; margin-top: 2rem; }
+  .section{ padding: 1.3rem; border-radius: var(--radius-lg); margin-bottom: 5rem; }
   h2.title{ font-size: calc(var(--h2-size) - 0.03rem); padding-left: 14px; }
   p.content{ font-size: calc(var(--lead-size) - 0.03rem); line-height: 1.66; }
 }
 
 /* Mobile */
 @media (max-width: 600px){
-  main{ margin: 0.8rem auto; padding: 0 0.9rem; }
-  .section{ padding: var(--section-padding-mobile); border-radius: 18px; margin: 0.7rem 0; }
-  h2.title{ font-size: 1rem; padding-left: 12px; margin-bottom: 0.6rem; }
+  main{ margin: 2rem auto; padding: 0 0.9rem; }
+  .section{ padding: var(--section-padding-mobile); border-radius: var(--radius-md); margin-bottom: 5rem; }
+  h2.title{ font-size: 1rem; padding-left: 12px; }
   p.content{ font-size: 0.96rem; line-height: 1.6; }
   p.developer-name{ font-size: 0.98rem; }
   #introContainer.intro-container{ height: 60px; filter: blur(6px); }
 }
 
-/* ========== Dark mode improvements ========== */
-@media (prefers-color-scheme: dark){
-  body{
-    background: linear-gradient(180deg,#071217 0%, #071419 100%);
-    color: #cfeff0;
-  }
-  .section{
-    background: linear-gradient(180deg, rgba(6,10,12,0.36), rgba(6,10,12,0.22));
-    border: 1px solid rgba(255,255,255,0.03);
-    box-shadow: 0 14px 36px rgba(0,0,0,0.6);
-    color: #dff8f1;
-  }
-  h2.title::before{ box-shadow: 0 6px 16px rgba(9,40,32,0.18); }
-  p.content{ color: #cfeff0; }
-  p.developer-name strong{ color: #9af0d0; }
-  p.content a{ color: #7fd6f0; border-bottom-color: rgba(127,214,240,0.06); }
-}
 
-/* ========== Print ========== */
-@media print{
-  body{ background: #fff; color: #000; }
-  main{ margin: 0; padding: 0; }
-  .section{ box-shadow:none; border: 1px solid #e9eef2; page-break-inside: avoid; }
-}
 
 /* ========== Small utility for visually-hidden content (if scripts add it) ========== */
 .visually-hidden{

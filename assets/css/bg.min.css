@@ -4,8 +4,8 @@
   --bg-primary-1: #F7F9FB;
   --bg-secondary: #F2F3F5;
   --bg-overlay: rgba(255, 255, 255, 0.8);
-  --bg-gradient-start: #F8F9FA;
-  --bg-gradient-end: #E9ECEF;
+  --bg-start: #FFFFFF;
+  --bg-end: #FFFFFF;
   
   /* Animation Timings */
   --fade-in-duration: 800ms;
@@ -14,18 +14,13 @@
 }
 
 body {
-  background: var(--bg-primary-1);
+  
   font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
 }
 
 /* Base Background Styles */
-bod {
-  background: var(--bg-primary);
-  background-attachment: fixed;
-  background-size: cover;
-  position: relative;
-  min-height: 100vh;
-  isolation: isolate;
+body {
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
 }
 
 /* Modern Gradient Mesh - Subtle and Light */

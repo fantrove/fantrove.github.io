@@ -90,7 +90,8 @@ strong, b {
 section {
   background: #fff;
   border-radius: 30px;
-  border: 1.2px solid #E1F4F1;
+  border: 1.2px solid rgba(14,176,213,0.06);
+  box-shadow: 0 10px 28px rgba(6,20,24,0.06);
   padding: 2rem 2.1rem;
   margin-bottom: 5rem;
   display: flex;
@@ -106,7 +107,10 @@ section.n {
   background: none;
   border-radius: 0;
   border: none;
-  
+  box-shadow: none;
+}
+section.nob {
+  box-shadow: none;
 }
 sectio:hover, sectio:focus-within {
   border-color: #13b47f;
@@ -146,7 +150,7 @@ section.mn {
   gap: 0.8em;
   background: linear-gradient(to right, #E6F7FF 0%, #f1fff8 100%);
   color: #13b47f;
-  
+  box-shadow: 0 10px 28px rgba(6,20,24,0.06);
   cursor: pointer;
   letter-spacing: 0.013em;
   line-height: 1.17;
@@ -344,15 +348,17 @@ section.mn {
 
 /* ---------- FEATURE ---------- */
 .feature-icon {
-  font-size: 2.1em;
-  color: #0eb0d5;
-  margin-bottom: 0.23rem;
-  flex-shrink: 0;
-  background: #EAF7FF;
+  display: inline-grid;
+  place-items: center;
+  font-size: 1.8rem;
+  color: var(--brand-2);
+  margin-bottom: 0.35rem;
+  background: linear-gradient(180deg, #EAF7FF, #FFFFFF);
   border-radius: 50%;
-  padding: 0.33em 0.48em;
+  padding: 0.45em;
   margin-top: 0.12em;
-  box-shadow: none;
+  box-shadow: 0 6px 18px rgba(14, 176, 213, 0.06);
+  flex-shrink: 0;
   font-weight: 700;
 }
 
@@ -596,6 +602,8 @@ section.o:has(.faq-toggle:checked) {
   background: #FFFFFF;
   border-radius: 30px;
   margin-bottom: 2rem;
+  border: 1.2px solid rgba(14,176,213,0.06);
+  box-shadow: 0 10px 28px rgba(6,20,24,0.06);
 }
 
 .category-section h2 {
