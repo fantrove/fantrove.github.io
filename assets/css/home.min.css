@@ -28,7 +28,7 @@ h1, .h1 {
   color: #13b47f;
   margin: 0 0 1.3rem 0;
   letter-spacing: 0.045em;
-  background: linear-gradient(to right, #13b47f 30%, #0eb0d5 80%);
+  background: linear-gradient(90deg, #13B496 20%, #0eb0d5 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -297,7 +297,7 @@ section.mn {
   line-height: 2.5;
   letter-spacing: 0.7px;
 
-  background: linear-gradient(to right, #13b47f 30%, #0eb0d5 80%);
+  background: linear-gradient(to right, #13B496 20%, #0eb0d5 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
@@ -513,7 +513,7 @@ section.o:has(.faq-toggle:checked) {
   cursor: pointer;
 }
 .text-h button:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 /* ====== ANIMATION (ARROW & TRAIL & OVERLAY) FOR .text-h button ====== */
 .text-h button .btn-content {
@@ -533,7 +533,7 @@ section.o:has(.faq-toggle:checked) {
   left: 0; top: 0; height: 100%;
   width: 0%;
   z-index: 3;
-  background: linear-gradient(90deg, #13b47f 60%, #11c3ec 100%);
+  background: linear-gradient(90deg, #13b47f 20%, #11c3ec 80%);
   border-radius: inherit;
   transition: width 0.68s cubic-bezier(.65,.05,.19,.99);
 }
@@ -713,7 +713,7 @@ section.o:has(.faq-toggle:checked) {
 }
 .item-card:hover {
   border-color: #13b47f;
-  background: #F1FFFC;
+  background: #F6FFFD;
   z-index: 2;
 }
 
