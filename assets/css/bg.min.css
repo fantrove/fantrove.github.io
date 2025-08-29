@@ -20,7 +20,7 @@ body {
 
 /* Base Background Styles */
 body {
-  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+  background: #FFFFFF;
 }
 
 /* Modern Gradient Mesh - Subtle and Light */
