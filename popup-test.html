@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>PopupUI v2 — Template Test</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; padding: 2.5rem; background:#f6f7fb; color:#0b1220; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
+    button { padding:8px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.06); background:#fff; cursor:pointer; }
+    .brand { background: linear-gradient(90deg,#7c3aed,#06b6d4); color:#fff; border:none; padding:8px 12px; border-radius:8px; }
+    .slot-content { padding:8px; background:#eefdf6; border-radius:8px; border:1px dashed #cfeadf; }
+  </style>
+</head>
+<body>
+  <h1>PopupUI v2 — Template & Slot demo</h1>
+  <p>ตัวอย่างการลงทะเบียน template แบบในหน้า (template selector), แบบโค้ด (html), และแบบ remote (fetch)</p>
+
+  <div class="row">
+    <button id="open-template-btn">Open template-registered popup</button>
+    <button id="open-programmatic">Open programmatic with slots</button>
+    <button id="open-remote">Open remote template (cached)</button>
+
+    <!-- Declarative trigger (using data-popup-template and data-popup-data) -->
+    <button class="popup-trigger" data-popup-template="hello-tpl" data-popup-data='{"name":"เจฟฟี่"}'>Declarative: Hello template</button>
+  </div>
+
+  <hr/>
+
+  <!-- A <template> element to register from selector -->
+  <template id="tpl-hello">
+    <div>
+      <h2>สวัสดี {{name}}</h2>
+      <p>นี่คือ template ที่ลงทะเบียนจาก &lt;template id="tpl-hello"&gt;</p>
+      <div data-popup-slot="extra"></div>
+      <div style="margin-top:12px;text-align:right;">
+        <button class="brand" id="ok-btn">ตกลง</button>
+      </div>
+    </div>
+  </template>
+
+  <script src="assets/js/popup.js"></script>
+  <script>
+    // register templates
+    PopupUI.registerTemplate('hello-tpl', { selector: '#tpl-hello' }, { raw: false });
+
+    // register an inline HTML template
+    PopupUI.registerTemplate('card', { html: `
+      <div>
+        <h3>{{title}}</h3>
+        <p>{{body}}</p>
+        <div data-popup-slot="cta"></div>
+      </div>
+    `}, { raw: false });
+
+    // remote template example (assumes /assets/tests/remote-tpl.html exists)
+    PopupUI.registerTemplate('remote-signup', { fetch: '/assets/tests/remote-signup.html', version: 'v1', ttl: 3600 }, { raw: true });
+
+    // programmatic open using registered template + slot content
+    document.getElementById('open-programmatic').addEventListener('click', () => {
+      PopupUI.open({
+        template: 'card',
+        data: { title: 'โปรโมชันพิเศษ', body: 'รับส่วนลด 50% วันนี้เท่านั้น' },
+        slots: { cta: '<button class="brand">สมัครเลย</button>' },
+        width: '520px'
+      });
+    });
+
+    // open template-registered popup programmatically, injecting slot content element
+    document.getElementById('open-template-btn').addEventListener('click', () => {
+      const slotEl = document.createElement('div');
+      slotEl.className = 'slot-content';
+      slotEl.innerHTML = '<strong>ข้อมูลเพิ่มเติม:</strong> ข้อความตัวอย่างใน slot';
+      PopupUI.open({
+        template: 'hello-tpl',
+        data: { name: 'ผู้ทดสอบ' },
+        slots: { extra: slotEl },
+        width: '520px',
+        afterOpen() {
+          // attach events inside popup if necessary (delegation also works)
+          const ok = document.getElementById('ok-btn');
+          if (ok) ok.addEventListener('click', () => PopupUI.close());
+        }
+      });
+    });
+
+    // open remote (cached) template
+    document.getElementById('open-remote').addEventListener('click', () => {
+      PopupUI.open({
+        template: 'remote-signup',
+        data: { promo: 'XMAS25' },
+        width: '480px'
+      });
+    });
+
+    // ensure PopupUI initialized (it auto-inits)
+    if (window.PopupUI && typeof window.PopupUI.init === 'function') window.PopupUI.init();
+  </script>
+</body>
+</html>
