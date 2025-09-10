@@ -1,4 +1,7 @@
 // contentManager.js
+// ปรับปรุง: เอาการสังเกต viewport per-item (view observer) ออกไป — ยังคงเก็บ sentinel สำหรับการโหลดชุดถัดไปไว้ตามเดิม
+// ปรับปรุงเพิ่มเติม: เอา CSS transition ที่ถูกฉีดเข้ามาใน JS ออกสำหรับ .button-content (และเอา inline transition ของ card ออก)
+// เหตุผล: การฉีด transition ด้วย !important ทำให้ CSS ที่ผู้ใช้กำหนดบน .button-content (hover/active) ถูกบล็อก
 // ใช้งานร่วมกับ dataManager และ contentLoadingManager ผ่าน window._headerV2_*
 export const contentManager = {
     _renderSession: 0,
@@ -6,7 +9,6 @@ export const contentManager = {
     _virtualNodes: [],
     _items: [],
     _renderedSet: new Set(),
-    _viewObserver: null,
     _sentinelObserver: null,
     _cleanupRender: null,
     _scheduleId: null,
@@ -163,10 +165,6 @@ export const contentManager = {
 
         try { window._headerV2_contentLoadingManager.hide(); } catch {}
 
-        if (this._viewObserver) {
-            try { this._viewObserver.disconnect(); } catch {}
-            this._viewObserver = null;
-        }
         if (this._sentinelObserver) {
             try { this._sentinelObserver.disconnect(); } catch {}
             this._sentinelObserver = null;
@@ -223,25 +221,18 @@ export const contentManager = {
         if (!document.getElementById('gpu-accel-style')) {
             const style = document.createElement('style');
             style.id = 'gpu-accel-style';
+            // NOTE: เอา transition ออกเพื่อไม่ให้ไปบังคับ transition ของ .button-content ที่ผู้ใช้กำหนดเอง
+            // เก็บ will-change เอาไว้เพื่อช่วยเร่งการเปลี่ยนแปลง opacity แต่ไม่ใส่ transition แบบ !important
             style.textContent = `
-                .fade-in, .fade-out, .card, .button-content { will-change: opacity; }
-                .fade-in { opacity: 0; transition: opacity 44ms cubic-bezier(.7,0,.7,1) !important; }
-                .fade-out { opacity: 0; transition: opacity 28ms cubic-bezier(.7,0,.7,1) !important; }
+                .fade-in, .fade-out, .card { will-change: opacity; }
+                .fade-in { opacity: 0; }
+                .fade-out { opacity: 0; }
             `;
             document.head.appendChild(style);
         }
 
-        if ('IntersectionObserver' in window && !this._viewObserver) {
-            this._viewObserver = new IntersectionObserver((entries) => {
-                for (const entry of entries) {
-                    if (signal.aborted) break;
-                    if (entry.isIntersecting) {
-                        const node = entry.target;
-                        try { this._recordEvent('view', node.id); } catch {}
-                    }
-                }
-            }, { root: null, rootMargin: '200px', threshold: 0.25 });
-        }
+        // หักการทำงานของ per-item viewport observation (viewObserver) เพื่อประหยัดทรัพยากร
+        // การบันทึก "view" จะถูกยกเลิก (ยังคงบันทึก clicks อยู่ตามเดิม)
 
         const idList = items.map((it, idx) => it.id || `__idx_${idx}`);
         let priorityScores = {};
@@ -308,14 +299,13 @@ export const contentManager = {
             if (frag.childNodes.length > 0) {
                 container.appendChild(frag);
                 const appended = Array.from(container.children).slice(-created);
-                appended.forEach(el => {
-                    try { if (this._viewObserver) this._viewObserver.observe(el); } catch {}
-                });
+                // ไม่ต้อง observe แต่ยังคงใช้ sentinel เพื่อโหลดชุดต่อไป
                 requestAnimationFrame(() => {
                     for (const node of appended) node.style.opacity = 1;
                 });
             }
 
+            // ถ้าต้องการจำกัดจำนวน DOM เพื่อไม่ให้หนักเกินไป ให้เก็บ MAX_IN_DOM ต่ำ ๆ
             const MAX_IN_DOM = 28;
             while (this._virtualNodes.length > MAX_IN_DOM) {
                 const old = this._virtualNodes.shift();
@@ -378,6 +368,7 @@ export const contentManager = {
             this._sentinelObserver = new IntersectionObserver(onSentinelIntersect, { root: null, rootMargin: '400px', threshold: 0.1 });
             try { this._sentinelObserver.observe(sentinel); } catch {}
         } else {
+            // Fallback: ใช้การตรวจสอบตำแหน่ง sentinel แบบ throttle บน scroll
             this._throttledScrollCheck = this._throttledScrollCheck || (() => {
                 if (this._isRenderingNextBatch || signal.aborted || this._isUnmounted || session !== this._renderSession) return;
                 const rect = sentinel.getBoundingClientRect();
@@ -405,7 +396,6 @@ export const contentManager = {
             try { if (this._abortController) this._abortController.abort(); } catch {}
             this._isUnmounted = true;
             if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
-            if (this._viewObserver) { try { this._viewObserver.disconnect(); } catch {} this._viewObserver = null; }
             if (this._throttledScrollCheck) { try { window.removeEventListener('scroll', this._throttledScrollCheck); } catch {} this._throttledScrollCheck = null; }
             for (const node of this._virtualNodes) {
                 if (node && node.parentNode) this._animateOutAndRemove(node, 28);
@@ -554,7 +544,8 @@ export const contentManager = {
         let type = config.type || null;
         try {
             if (apiCode) {
-                const db = await window._headerV2_dataManager.loadApiDatabase();
+                const db = await window._headerV2_data_manager?.loadApiDatabase?.()
+                    || await window._headerV2_dataManager.loadApiDatabase();
                 function findApiNode(obj, code) {
                     if (Array.isArray(obj)) {
                         for (const item of obj) {
@@ -607,6 +598,7 @@ export const contentManager = {
             }
         });
 
+        // ไม่กำหนด transition ใน JS ให้กับปุ่ม เพื่อให้ CSS ของผู้ใช้ (.button-content) ทำงานได้ตามต้องการ
         button.classList.add('fade-in');
         button.style.opacity = 0;
         requestAnimationFrame(() => { button.style.opacity = 1; });
@@ -667,7 +659,7 @@ export const contentManager = {
         }
         card.classList.add('fade-in');
         card.style.opacity = 0;
-        card.style.transition = `opacity 44ms cubic-bezier(.7,0,.7,1)`;
+        // เอา inline transition ของ card ออก เพื่อให้ผู้ใช้สามารถกำหนด transition ผ่าน CSS เองได้
         requestAnimationFrame(() => { card.style.opacity = 1; });
         return card;
     },
