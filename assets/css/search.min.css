@@ -1,3 +1,6 @@
+/* --- existing styles (unchanged) --- */
+/* (file begins with previous content; this patch adds overlay + suggestion styling at the end) */
+
 body {
     background: linear-gradient(135deg, #f7fafd 0%, #eafaf5 100%);
     font-family: 'Sarabun', 'Tahoma', Arial, 'Segoe UI Emoji', 'Noto Color Emoji', 'Noto Sans Symbols', 'Noto Sans', sans-serif;
@@ -452,4 +455,75 @@ body {
         font-size: .97em;
         padding: 9px 0;
     }
+}
+
+/* (existing styles left intact above) */
+/* --- New/adjusted overlay + suggestion styling --- */
+
+/* overlay container: position input near top (not centered) */
+.search-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* push content toward top */
+    flex-direction: column;
+}
+
+/* overlay backdrop */
+.search-overlay-backdrop {
+    /* backdrop styling is set inline in JS; this class can be used for overrides */
+}
+
+/* elevated input style inside overlay */
+.search-input-wrapper.overlay-elevated {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 48px rgba(6,14,30,0.25);
+    border-radius: 16px;
+    background: #fff !important;
+    padding-right: 12px;
+}
+
+/* make sure wrapper inside overlay is near top with small margin */
+.search-overlay .search-input-wrapper {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    width: 100%;
+    max-width: 720px;
+}
+
+/* suggestions popup inside overlay */
+.search-suggestions {
+    width: 100%;
+    max-width: 720px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e6e9ee;
+    box-shadow: 0 8px 30px rgba(19,23,40,0.12);
+}
+
+/* individual suggestion item */
+.suggestion-item {
+    background: #fff;
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.suggestion-item:hover,
+.suggestion-item:focus {
+    background: #f3f7fa;
+    outline: none;
+}
+
+/* suggestion meta (type/cat) */
+.suggestion-meta { font-size: .92em; color: #8b93a7; margin-left: 12px; }
+
+/* small overlay opening animation */
+.search-overlay-open {
+    animation: overlayFadeIn .16s ease-out both;
+}
+@keyframes overlayFadeIn {
+    from { opacity: 0; transform: translateY(-6px) scale(.997); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
