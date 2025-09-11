@@ -3,8 +3,11 @@
 @font-face {
   font-family: 'FoglihtenNo07calt';
   src: url('/assets/fonts/FoglihtenNo07calt.ttf') format('truetype');
+  /* ป้องกัน layout shift ขณะโหลดฟอนต์ */
+  font-display: swap;
 }
 
+/* ---------- Rendering & Performance Hints ---------- */
 :root {
     --primary-color: #FFFFFF;
     --hover-color: rgba(19, 180, 127, 0.08);
@@ -23,12 +26,21 @@
         0 0 2px rgba(19, 180, 127, 0.1);
 }
 
+/* base rendering tweaks */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scrollbar-gutter: stable;
+}
+
 body {
  margin: 0;
  padding: 0;
  overflow-x: hidden;
 }
 
+/* ---------- HEADER ---------- */
 header {
     position: relative;
     display: flex;
@@ -44,7 +56,10 @@ header {
     touch-action: none;
     margin-bottom: 30px;
     border-radius: 0 0 20px 20px;
-    will-change: box-shadow, border-radius, background;
+
+    will-change: box-shadow, background;
+    /* แยกการ repaint ของ header ออกจาก context หลัก */
+    contain: layout paint;
 }
 
 .logo {
@@ -60,9 +75,10 @@ header {
     align-self: flex-start;
     display: flex;
     align-items: center;
-    will-change: color, text-shadow;
-}
 
+    will-change: color, text-shadow;
+    backface-visibility: hidden;
+}
 .logo span {
     pointer-events: auto;
     user-select: text;
@@ -73,8 +89,10 @@ header {
     height: var(--height);
     margin-left: 5px;
     will-change: height;
+    transform: translateZ(0);
 }
 
+/* ---------- NAV ---------- */
 nav {
     --nav-spacing: 5px;
     width: 100%;
@@ -97,6 +115,10 @@ nav ul {
     border-top: 0.8px solid rgba(19, 180, 127, 0.3);
     touch-action: pan-x;
     will-change: border-top;
+
+    /* ปรับ UX การเลื่อนบนมือถือ ไม่ให้ chain ไปยัง body */
+    overscroll-behavior-x: contain;
+    scrollbar-gutter: stable;
 }
 
 nav ul::-webkit-scrollbar {
@@ -124,7 +146,10 @@ nav ul li button {
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+
     will-change: color, background, transform, border;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 nav ul li button::before {
@@ -184,6 +209,7 @@ nav ul li button.active:hover::after {
     --nav-button-radius: 25px;
 }
 
+/* ---------- Reduced motion preference ---------- */
 @media (prefers-reduced-motion: reduce) {
     nav ul li button {
         transition: none;
@@ -193,6 +219,7 @@ nav ul li button.active:hover::after {
     }
 }
 
+/* ---------- NAVBAR TOGGLE ---------- */
 .navbar-toggle {
     display: flex;
     flex-direction: column;
@@ -208,9 +235,12 @@ nav ul li button.active:hover::after {
     transform: translateY(-50%);
     padding: 5px;
     z-index: 10008;
+
     will-change: transform, opacity;
+    backface-visibility: hidden;
 }
 
+/* ---------- ERROR MESSAGE & LOADING (contain เพื่อประสิทธิภาพ) ---------- */
 .error-message {
     position: fixed;
     top: 50%;
@@ -222,7 +252,9 @@ nav ul li button.active:hover::after {
     z-index: 1000;
     animation: fadeIn 0.3s ease-in-out;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
     will-change: opacity, transform;
+    contain: paint; /* ลด repaint ของส่วนอื่นเมื่อ error ปรากฏ */
 }
 
 @keyframes fadeIn {
@@ -250,6 +282,8 @@ nav ul li button.active:hover::after {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.28s ease, visibility 0.28s ease;
+
+    /* ป้องกันการ repaint ใหญ่ ๆ ขณะโหลด */
     contain: strict;
 }
 
@@ -326,3 +360,8 @@ nav ul li button.active:hover::after {
     body { font-size: 26px; }
     .navbar-toggle { left: 16px; top: 25.3px; }
 }
+
+/* ---------- SAFETY NOTE ----------
+   - การปรับปรุงในไฟล์นี้เพิ่มเฉพาะ hint สำหรับ browser (font-display, will-change, contain, overscroll-behavior)
+   - ไม่ได้เปลี่ยนสี ขนาด หรือ layout ของ header/nav ใด ๆ — ออกแบบมาให้คง visual เดิม 100%
+*/

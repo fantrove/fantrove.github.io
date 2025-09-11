@@ -3,17 +3,17 @@
 // โมดูลนี้ใช้ window._headerV2_* ที่ถูกผูกใน init เพื่ออ้างอิงซึ่งกันและกัน
 export const scrollManager = {
     state: { lastScrollY: 0, ticking: false, subNavOffsetTop: 0, subNavHeight: 0, isSubNavFixed: false },
-    constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 0, Z_INDEX: { SUB_NAV: 999 } },
+    constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 160, Z_INDEX: { SUB_NAV: 999 } },
 
     createStickyStyles() {
         if (document.getElementById('sticky-styles')) return;
         const styleSheet = document.createElement('style');
         styleSheet.id = 'sticky-styles';
         styleSheet.textContent = `
-        #sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms; }
-        #sub-nav.fixed { box-shadow: 0 0 15px rgba(58, 60, 79, 0.08); background: rgba(240, 252, 255, 1); border-bottom: 1px solid rgba(19, 180, 127, 0.18); }
-        #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
-        #sub-nav.fixed .hj {border-color: rgba(0, 0, 0, 0); background: transparent;}
+#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease, box-shadow ${this.constants.ANIMATION_DURATION}ms ease; }
+#sub-nav.fixed { box-shadow: 0 0 15px rgba(58, 60, 79, 0.08); background: rgba(240, 252, 255, 1); border-bottom: 1px solid rgba(19, 180, 127, 0.18); }
+#sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
+#sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
         `;
         document.head.appendChild(styleSheet);
     },
@@ -88,14 +88,14 @@ export const scrollManager = {
             const mutationObserver = new MutationObserver(() => {
                 setTimeout(() => {
                     const s = document.getElementById('sub-nav');
-                    if (s && !this.state.subNavOffsetTop) {
+                    if (s) {
                         this.state.subNavOffsetTop = s.offsetTop;
                         this.state.subNavHeight = s.offsetHeight;
                         this.handleSubNav();
                     }
                 }, 80);
             });
-            mutationObserver.observe(parent, { childList: true });
+            mutationObserver.observe(parent, { childList: true, subtree: true });
         } catch {}
     },
 
@@ -197,7 +197,7 @@ export const performanceOptimizer = {
     }
 };
 
-// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager และ window._headerV2_elements
+// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager แล[...]
 export const subNavManager = {
     ensureSubNavContainer() {
         let subNav = document.getElementById('sub-nav');
@@ -212,18 +212,43 @@ export const subNavManager = {
                 document.body.insertBefore(subNav, document.body.firstChild);
             }
         }
+
         let hj = subNav.querySelector('.hj');
         if (!hj) {
             hj = document.createElement('div');
             hj.className = 'hj';
             subNav.appendChild(hj);
         }
+
+        // If there's an existing element with id=sub-buttons-container elsewhere,
+        // move it into our hj so we don't end up with duplicate ids and out-of-sync containers.
+        const existingGlobal = document.querySelector('#sub-buttons-container');
+        if (existingGlobal && !hj.contains(existingGlobal)) {
+            try {
+                // move the existing element into hj
+                hj.appendChild(existingGlobal);
+            } catch (e) {
+                // if append fails for some reason, remove duplicates later
+            }
+        }
+
+        // Ensure a sub-buttons container exists inside hj
         let subButtonsContainer = hj.querySelector('#sub-buttons-container');
         if (!subButtonsContainer) {
-            subButtonsContainer = document.createElement('div');
+            // If there are multiple elements with same id, remove ones outside subNav
+            const all = document.querySelectorAll('#sub-buttons-container');
+            if (all && all.length > 1) {
+                for (const el of all) {
+                    if (!subNav.contains(el)) {
+                        try { el.parentNode && el.parentNode.removeChild(el); } catch {}
+                    }
+                }
+            }
+            subButtonsContainer = hj.querySelector('#sub-buttons-container') || document.createElement('div');
             subButtonsContainer.id = 'sub-buttons-container';
-            hj.appendChild(subButtonsContainer);
+            if (!hj.contains(subButtonsContainer)) hj.appendChild(subButtonsContainer);
         }
+
         window._headerV2_elements.subNav = subNav;
         window._headerV2_elements.subNavInner = hj;
         window._headerV2_elements.subButtonsContainer = subButtonsContainer;
@@ -234,6 +259,8 @@ export const subNavManager = {
         const subNav = document.getElementById('sub-nav');
         if (subNav) {
             subNav.style.display = 'none';
+            const container = subNav.querySelector('#sub-buttons-container');
+            if (container) container.innerHTML = '';
             if (window._headerV2_elements.subButtonsContainer)
                 window._headerV2_elements.subButtonsContainer.innerHTML = '';
         }
@@ -794,23 +821,26 @@ export const navigationManager = {
                 }
             }
 
-            const subButtonsContainer = window._headerV2_elements.subButtonsContainer;
             const hasSubButtons = mainButton.subButtons?.length > 0;
             const isPopState = !!options.isPopState;
-            const needsRenderSubButtons = hasSubButtons && ((!isPopState) || (isPopState && subButtonsContainer.childNodes.length === 0));
+            // Ensure container reference exists
+            const subButtonsContainer = window._headerV2_elements.subButtonsContainer || (hasSubButtons ? window._headerV2_subNavManager.ensureSubNavContainer() : null);
+            const needsRenderSubButtons = hasSubButtons && ((!isPopState) || (isPopState && (!subButtonsContainer || subButtonsContainer.childNodes.length === 0)));
 
             if (hasSubButtons) {
                 if (needsRenderSubButtons) {
-                    subButtonsContainer.innerHTML = "";
+                    const container = window._headerV2_subNavManager.ensureSubNavContainer();
+                    container.innerHTML = "";
                     try {
                         await window._headerV2_buttonManager.renderSubButtons(mainButton.subButtons, main, lang);
                     } catch (e) {
                         window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดปุ่มย่อย', 'error');
                     }
                 }
-                subButtonsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                const container = window._headerV2_elements.subButtonsContainer || window._headerV2_subNavManager.ensureSubNavContainer();
+                container.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
                 if (subButton) {
-                    const subNavBtn = subButtonsContainer.querySelector(`button[data-url="${main}-${subButton.url || subButton.jsonFile}"]`);
+                    const subNavBtn = container.querySelector(`button[data-url="${main}-${subButton.url || subButton.jsonFile}"]`);
                     if (subNavBtn) subNavBtn.classList.add('active');
                     window._headerV2_buttonManager.state.currentSubButton = subNavBtn;
                 }
@@ -818,14 +848,14 @@ export const navigationManager = {
                 if (subButton && subButton.jsonFile) {
                     try {
                         const subData = await window._headerV2_dataManager.fetchWithRetry(subButton.jsonFile);
-                        await window._headerV2_contentManager.renderContent(subData);
+                        await window._headerV2_content_manager?.renderContent ? await window._headerV2_content_manager.renderContent(subData) : await window._headerV2_contentManager.renderContent(subData);
                     } catch (e) {
                         window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาย่อย', 'error');
                     }
                 }
             } else {
-                subButtonsContainer.innerHTML = "";
-                subButtonsContainer.classList.remove('fade-in', 'fade-out');
+                // No sub-buttons -> hide sub-nav and load main content
+                window._headerV2_subNavManager.hideSubNav();
                 window._headerV2_buttonManager.state.currentSubButton = null;
                 await window._headerV2_contentManager.clearContent();
                 if (mainButton?.jsonFile) {

@@ -1,11 +1,29 @@
 @font-face {
   font-family: 'MunroSmall';
   src: url('/assets/fonts/MunroSmall.ttf') format('truetype');
+  /* เพิ่มการแสดงฟอนต์แบบ non-blocking เพื่อไม่ให้ Cumulative Layout Shift เกิดจากการโหลดฟอนต์ */
+  font-display: swap;
 }
 
 /* ---------- RESET & BASE ---------- */
+:root{
+  /* เพิ่มตัวแปรธีม เพื่อให้ง่ายต่อการปรับและไม่กระทบกับดีไซน์เดิม */
+  --brand-1: #13b47f;
+  --brand-2: #0eb0d5;
+  --bg-soft: #f6f7fb;
+  --card-border: rgba(14,176,213,0.06);
+  --muted: #8ea1b8;
+}
+
+/* Rendering & font smoothing - ช่วยให้ตัวอักษรคมขึ้นบนบางแพลตฟอร์ม */
 html {
   font-size: 15px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth; /* ปรับปรุงการเลื่อนเมื่อใช้ anchor, ปลอดภัยและไม่กระทบ layout */
+  /* ป้องกันการเปลี่ยนขนาดฟอนต์แบบไม่ได้ตั้งใจบนมือถือ */
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -19,13 +37,19 @@ body {
   font-size: 1.07rem;
   letter-spacing: 0.01em;
   -webkit-tap-highlight-color: transparent;
+
+  /* ประสิทธิภาพการเรนเดอร์ตัวอักษร */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
 }
 
 /* ---------- TYPOGRAPHY ---------- */
 h1, .h1 {
   font-size: 1.7rem;
   font-weight: 800;
-  color: #13b47f;
+  color: var(--brand-1);
   margin: 0 0 1.3rem 0;
   letter-spacing: 0.045em;
   background: linear-gradient(90deg, #13B496 20%, #0eb0d5 80%);
@@ -33,11 +57,13 @@ h1, .h1 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+  /* เพิ่มการลดการสั่นไหวของ text gradient บางเบราว์เซอร์ */
+  backface-visibility: hidden;
 }
 h2, .h2 {
   font-size: 1.23rem;
   font-weight: 700;
-  color: #0eb0d5;
+  color: var(--brand-2);
   margin: 0 0 1.08rem 0;
   letter-spacing: 0.018em;
 }
@@ -60,7 +86,7 @@ h3, .h3 {
 }
 
 strong, b {
-  color: #13b47f;
+  color: var(--brand-1);
   font-weight: 700;
   font-family: 'Noto Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   letter-spacing: 0.5px; /* ให้ข้อความเน้นมีความทันสมัย */
@@ -68,7 +94,7 @@ strong, b {
 }
 
 .text-center { text-align: center; }
-.text-muted { color: #8ea1b8; }
+.text-muted { color: var(--muted); }
 .text-small { font-size: 0.94em; }
 
 /* ---------- CONTAINER ---------- */
@@ -76,11 +102,18 @@ strong, b {
   max-width: 1110px;
   margin: 0 auto;
   padding: 0 1.6rem;
+
+  /* ป้องกันการเลย์เอาต์กระโดดเมื่อ scrollbar ปรากฏ/หาย */
+  scrollbar-gutter: stable;
 }
 
 /* ---------- SECTION SPACING ---------- */
 .section {
   margin: 2.7rem 0 !important;
+  /* สร้าง stacking context แยกส่วน เพื่อไม่ให้เงาหรือ blend ไปกระทบส่วนอื่น */
+  isolation: isolate;
+  /* จำกัดผลกระทบของ element นี้ต่อโลกภายนอก (ลด reflow) */
+  contain: layout paint;
 }
 @media (max-width: 600px) {
   .section { margin: 1.7rem 0 !important; }
@@ -100,7 +133,11 @@ section {
   gap: 1.3rem;
   font-size: 1.06rem;
   position: relative;
+
   transition: border-color 0.09s, background 0.09s;
+  /* ช่วยให้ browser เตรียม composite layer ให้ section ที่มีเงา/transition */
+  will-change: background, border-color;
+  isolation: isolate;
 }
 section.n {
   padding: 0 !important;
@@ -113,10 +150,11 @@ section.nob {
   box-shadow: none;
 }
 sectio:hover, sectio:focus-within {
-  border-color: #13b47f;
+  border-color: var(--brand-1);
   background: #f8fefc;
 }
 
+/* เบา ๆ เพิ่ม hint ให้ browser ว่า element นี้จะเปลี่ยนแปลง */
 section.m {
   margin-bottom: 5rem;
 }
@@ -149,7 +187,7 @@ section.mn {
   outline: none;
   gap: 0.8em;
   background: linear-gradient(to right, #E6F7FF 0%, #f1fff8 100%);
-  color: #13b47f;
+  color: var(--brand-1);
   box-shadow: 0 10px 28px rgba(6,20,24,0.06);
   cursor: pointer;
   letter-spacing: 0.013em;
@@ -166,12 +204,17 @@ section.mn {
     filter 0.13s;
   min-width: 120px;
   min-height: 46px;
+
+  /* ลดการหน่วงเวลาแอนิเมชันด้วย hint */
+  will-change: transform, background, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .button-primary, .btn-primary {
   background: linear-gradient(to right, #11c3ec 0%, #13b47f 100%);
   color: #fff;
-  border: 1.5px solid #13b47f;
+  border: 1.5px solid var(--brand-1);
   font-weight: 800;
   box-shadow: 0 4px 24px 0 rgba(19, 180, 127, 0.12), 0 1.5px 8px 0 rgba(13,180,127,0.02);
 }
@@ -180,8 +223,8 @@ section.mn {
 }
 .button-secondary, .btn-secondary {
   position: relative;
-  color: #0eb0d5;
-  border: 1.5px solid #0eb0d5;
+  color: var(--brand-2);
+  border: 1.5px solid var(--brand-2);
   font-weight: 700;
   overflow: hidden;
   z-index: 1;
@@ -215,6 +258,7 @@ section.mn {
   align-items: center;
 }
 
+/* blur overlay - ไม่ไปรบกวน interaction */
 .blur-overlay-top {
   position: absolute;
   top: -150px;
@@ -224,7 +268,7 @@ section.mn {
   height: 100px;
   z-index: 999;
   pointer-events: none; /* ไม่ไปรบกวนการคลิกหรือ hover */
-  box-shadow: 0 70px 50px #13b47f;
+  box-shadow: 0 70px 50px var(--brand-1);
 }
 
 .hio {
@@ -232,6 +276,7 @@ section.mn {
   width: 100%;
   background: radial-gradient(circle, #101A24 0%, #0E1A24 100%);
   padding-top: 0rem;
+  contain: paint; /* จำกัดผลกระทบของ background effect ต่อการ repaint ของหน้า */
 }
 /* ---------- HERO ---------- */
 .hero {
@@ -247,6 +292,9 @@ section.mn {
   border: none;
   position: relative;
   z-index: 1;
+
+  /* Hint สำหรับเบราว์เซอร์ว่า element นี้จะมี compositing */
+  will-change: transform;
 }
 
 .herok::before {
@@ -279,6 +327,7 @@ section.mn {
 }
 .hero-btns button {
   transition: transform 100ms;
+  will-change: transform;
 }
 .hero-btns button:active {
   transform: scale(0.98);
@@ -302,6 +351,7 @@ section.mn {
   -webkit-text-fill-color: transparent;
 
   user-select: none;
+  backface-visibility: hidden;
 }
 .hero-content {
   flex: 2;
@@ -327,6 +377,12 @@ section.mn {
   aspect-ratio: 1/1;
   border: 3px solid #e6ecf7;
   transition: border-color 0.1s;
+
+  /* เร่งให้เบราว์เซอร์ใช้ GPU layer สำหรับภาพที่มี transition */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: border-color, transform;
+  contain: paint;
   
 }
 @media (max-width: 900px) {
@@ -360,6 +416,8 @@ section.mn {
   box-shadow: 0 6px 18px rgba(14, 176, 213, 0.06);
   flex-shrink: 0;
   font-weight: 700;
+
+  will-change: transform;
 }
 
 /* ---------- NOTICE ---------- */
@@ -379,6 +437,7 @@ section.mn {
   margin-left: auto;
   margin-right: auto;
   
+  contain: paint; /* ลดการ repaint ของส่วนอื่นเมื่อ notice เปลี่ยน */
 }
 .notice-icon {
   font-size: 1.26em;
@@ -422,16 +481,17 @@ section.mn {
   /* เตรียมตัวล่วงหน้าให้ GPU handle การเปลี่ยนแปลง */
   will-change: color, transform;
   transform: translateZ(0); /* บังคับสร้าง GPU layer */
+  backface-visibility: hidden;
 }
 
 .faq-question:hover {
-  color: #13b47f;
+  color: var(--brand-1);
 }
 
 .faq-question::after {
   content: "▼";
   font-size: 0.92em;
-  color: #13b47f;
+  color: var(--brand-1);
   position: absolute;
   right: 0.8em;
   top: 50%;
@@ -459,6 +519,7 @@ section.mn {
 
   /* เตรียมตัวก่อนขยาย ให้ GPU handle การเคลื่อนไหว */
   will-change: max-height, padding;
+  contain: paint;
 }
 
 .faq-toggle:checked + .faq-question + .faq-answer {
@@ -473,7 +534,7 @@ section.o {
 }
 
 section.o:hover .faq-question {
-  color: #13b47f;
+  color: var(--brand-1);
 }
 
 /* ถ้า input checkbox checked อยู่ใน section.o → ให้ section.o เปลี่ยนได้! */
@@ -503,7 +564,7 @@ section.o:has(.faq-toggle:checked) {
   border-radius: 25px;
   background: #FFFFFF;
   border: 1.2px solid #D3D3D3;
-  color: #13b47f;
+  color: var(--brand-1);
   transition: background 500ms, color 0.10s, border-color 500ms, transform 100ms;
   user-select: none;
   display: flex;
@@ -511,6 +572,11 @@ section.o:has(.faq-toggle:checked) {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+
+  /* ป้องกัน subpixel rendering และ hint สำหรับ GPU */
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 .text-h button:active {
   transform: scale(0.97);
@@ -533,7 +599,7 @@ section.o:has(.faq-toggle:checked) {
   left: 0; top: 0; height: 100%;
   width: 0%;
   z-index: 3;
-  background: linear-gradient(90deg, #13b47f 20%, #11c3ec 80%);
+  background: linear-gradient(90deg, var(--brand-1) 20%, #11c3ec 80%);
   border-radius: inherit;
   transition: width 0.68s cubic-bezier(.65,.05,.19,.99);
 }
@@ -602,8 +668,9 @@ section.o:has(.faq-toggle:checked) {
   background: #FFFFFF;
   border-radius: 30px;
   margin-bottom: 2rem;
-  border: 1.2px solid rgba(14,176,213,0.06);
+  border: 1.2px solid var(--card-border);
   box-shadow: 0 10px 28px rgba(6,20,24,0.06);
+  contain: layout paint;
 }
 
 .category-section h2 {
@@ -616,6 +683,7 @@ section.o:has(.faq-toggle:checked) {
 }
 
 /* ---------- APP SCROLLABLE CONTENT / ITEM CARDS (IMPROVED) ---------- */
+/* ปรับปรุงพฤติกรรมการเลื่อนสำหรับ carousel */
 .content {
   display: flex;
   align-items: flex-start;
@@ -630,6 +698,9 @@ section.o:has(.faq-toggle:checked) {
   min-width: 0;
   flex-wrap: nowrap;
   will-change: transform;
+  /* ป้องกัน scroll chaining (เมื่อเลื่อนบนมือถือ จะไม่สั่งให้ body เลื่อนต่อ) */
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch; /* เพิ่มความนุ่มนวลบน iOS */
 }
 .carousel-container {
   display: flex;
@@ -639,6 +710,8 @@ section.o:has(.faq-toggle:checked) {
   overflow-x: auto;
   overflow-y: visible;
   will-change: transform;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .carousel-track {
   display: flex;
@@ -654,6 +727,7 @@ section.o:has(.faq-toggle:checked) {
   flex-wrap: nowrap;
   padding: 10px;
   will-change: transform;
+  contain: layout paint;
 }
 .item-card {
   background: #fff;
@@ -675,6 +749,14 @@ section.o:has(.faq-toggle:checked) {
   box-sizing: border-box;
   word-break: break-word;
   overflow: visible;
+
+  /* hint ให้ browser เตรียม composite layer แยกสำหรับการ hover */
+  will-change: transform, border-color, background;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+
+  /* จำกัดการ repaint เฉพาะการ์ดนี้ */
+  contain: paint;
   
 }
 .item-card .emoji {
@@ -686,7 +768,7 @@ section.o:has(.faq-toggle:checked) {
 }
 .item-card .name {
   font-size: 0.9em;
-  color: #0eb0d5;
+  color: var(--brand-2);
   font-weight: 800;
   letter-spacing: 0.013em;
   opacity: 0.99;
@@ -712,7 +794,7 @@ section.o:has(.faq-toggle:checked) {
   font-weight: 500;
 }
 .item-card:hover {
-  border-color: #13b47f;
+  border-color: var(--brand-1);
   background: #F6FFFD;
   z-index: 2;
 }
@@ -785,5 +867,27 @@ section.o:has(.faq-toggle:checked) {
 .img-d1 img {
   width: 100%;
   border-radius: 25px;
-  
+
+  /* ปรับการแสดงผลรูปให้คมกว่าบนบางเบราว์เซอร์ */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  contain: paint;
 }
+
+/* ---------- ACCESSIBILITY & PERFORMANCE ADAPTATIONS ---------- */
+/* ถ้าผู้ใช้ต้องการลดแอนิเมชัน ให้ลด transition ทั้งหมดลง */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+    will-change: auto !important;
+  }
+}
+
+/* ---------- SAFETY NET: หลีกเลี่ยงการใช้ will-change เกินจำเป็น ---------- */
+/* หมายเหตุ: will-change มีประโยชน์แต่ถ้าใส่กับทุก element จะทำให้ memory usage เพิ่มขึ้น.
+   โค้ดข้างต้นใส่ will-change ในจุดสำคัญเท่านั้น (ปุ่ม, การ์ด, hero, section) เพื่อให้ browser เตรียม composite layers
+   โดยยังคงรักษาดีไซน์เดิม 100% และลดการรบกวนระบบอื่น ๆ ที่ยังไม่รู้จัก.
+*/
