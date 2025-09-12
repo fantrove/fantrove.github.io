@@ -167,6 +167,7 @@ body {
   /* fixed height on desktop to prevent expansion */
   height: 160px;
   overflow: hidden;
+  top: 160px;
 }
 
 /* force two child groups to each occupy 50% of panel height */
@@ -524,12 +525,13 @@ body {
   color: #13b47f;
   padding: 16px 0;
   text-align: center;
-  margin-top: 28px;
+  margin-top: 130px;
   font-size: 1em;
   font-weight: 500;
   letter-spacing: 0.01em;
   border-top: 1px solid #e3e8ee;
   position: sticky;
+  z-index: -1;
 }
 
 /* Responsive adjustments for panel collapse points */
