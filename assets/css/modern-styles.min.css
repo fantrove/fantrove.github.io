@@ -196,12 +196,15 @@
     min-height: 100vh;
   }
 
+  /* Make the left-rail fixed so it doesn't scroll with the page,
+     while the main content (.site-main) is offset to "feel" the rail's presence.
+     This ensures the rail is locked in place and other elements still layout around it. */
   .bottom-nav {
-    /* left rail styles */
-    position: relative; /* in-flow inside body when mounted */
+    /* fixed left rail */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 0;
+    width: var(--left-rail-width);
     height: 100vh; /* full viewport height */
     border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
     margin: 0;
@@ -214,10 +217,38 @@
     border-top: 0;
     border-right: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: none;
-    z-index: auto;
-    flex: 0 0 var(--left-rail-width);
-    border-radius: 0;
     z-index: 1000;
+    flex: 0 0 auto;
+    transition: width var(--transition-normal), left var(--transition-normal);
+    overflow: visible;
+  }
+
+  /* Ensure main content is offset so it doesn't go under the fixed rail.
+     Using margin-left keeps the rail 'locked' while DOM elements still 'know' it's there. */
+  .site-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* If the rail is collapsed, reduce both the rail width and the main offset.
+     This selector assumes .bottom-nav and .site-main are siblings (common mounting pattern).
+     If your JS places .site-main before .bottom-nav, adjust JS or use a wrapper class on body
+     (e.g., body.has-left-rail.collapsed) and style .site-main from body instead. */
+  .bottom-nav.collapsed {
+    width: var(--left-rail-width-collapsed);
+    flex: 0 0 auto;
+  }
+  .bottom-nav.collapsed ~ .site-main,
+  body.has-left-rail .site-main.collapsed {
+    margin-left: var(--left-rail-width-collapsed);
+  }
+
+  .bottom-nav.collapsed:hover {
+    width: var(--left-rail-width);
+  }
+  .bottom-nav.collapsed:hover .label {
+    display: block;
   }
 
   /* Ensure nav-items stack vertically */
@@ -239,25 +270,8 @@
     line-height: 1;
   }
 
-  /* The main content container (created by JS) */
-  .site-main {
-    flex: 1 1 auto;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-
-  /* Optional collapsed rail */
-  .bottom-nav.collapsed {
-    width: var(--left-rail-width-collapsed);
-    flex: 0 0 var(--left-rail-width-collapsed);
-  }
-  .bottom-nav.collapsed .label {
-    display: none;
-  }
-  .bottom-nav.collapsed:hover {
-    width: var(--left-rail-width);
-  }
-  .bottom-nav.collapsed:hover .label {
-    display: block;
+  /* Optional: keep a small visual separation when fixed */
+  .bottom-nav {
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.01), var(--shadow-sm);
   }
 }
