@@ -181,17 +181,16 @@ section.mn {
   font-family: inherit;
   font-weight: 700;
   padding: 1.28em 2.1em;
-  font-size: 1.07rem;
+  font-size: 1.17rem;
   border-radius: 100px;
   border: none;
   outline: none;
   gap: 0.8em;
   background: linear-gradient(to right, #E6F7FF 0%, #f1fff8 100%);
   color: var(--brand-1);
-  box-shadow: 0 10px 28px rgba(6,20,24,0.06);
+  box-shadow: 0 10px 15px rgba(6,20,24,0.1);
   cursor: pointer;
   letter-spacing: 0.013em;
-  line-height: 1.17;
   user-select: none;
   border: 1.5px solid #d8efe7;
   font-variant-numeric: tabular-nums;
@@ -202,8 +201,6 @@ section.mn {
     border-color 0.13s,
     box-shadow 0.18s,
     filter 0.13s;
-  min-width: 120px;
-  min-height: 46px;
 
   /* ลดการหน่วงเวลาแอนิเมชันด้วย hint */
   will-change: transform, background, opacity;
@@ -457,7 +454,7 @@ section.mn {
 }
 
 .notice a:hover {
-  color: #CE9D40;
+  color: #EBB95B;
 }
 
 /* ---------- FAQ ---------- */
@@ -467,7 +464,7 @@ section.mn {
   cursor: pointer;
   position: relative;
   padding: 1.2em 2em 1.2em 0;
-  transition: color 300ms ease;
+  transition: color 0.3s ease;
   display: block;
   font-size: 1.03em;
   border: none;
@@ -477,11 +474,6 @@ section.mn {
   outline: none;
   letter-spacing: 0.012em;
   z-index: 2;
-
-  /* เตรียมตัวล่วงหน้าให้ GPU handle การเปลี่ยนแปลง */
-  will-change: color, transform;
-  transform: translateZ(0); /* บังคับสร้าง GPU layer */
-  backface-visibility: hidden;
 }
 
 .faq-question:hover {
@@ -497,13 +489,10 @@ section.mn {
   top: 50%;
   transform: translateY(-50%) rotate(0deg);
   transition: transform 0.25s cubic-bezier(.4, 0, .2, 1);
-  will-change: transform;
-  backface-visibility: hidden; /* ช่วยให้ GPU render smooth */
-  transform-style: preserve-3d;
 }
 
-.faq-toggle:checked + .faq-question::after {
-  transform: translateY(-60%) rotate(-180deg);
+.faq-toggle:checked+.faq-question::after {
+  transform: translateY(-50%) rotate(-180deg);
 }
 
 .faq-answer {
@@ -516,13 +505,9 @@ section.mn {
   transition: max-height 0.4s ease, padding 0.3s ease;
   line-height: 1.82;
   font-weight: 500;
-
-  /* เตรียมตัวก่อนขยาย ให้ GPU handle การเคลื่อนไหว */
-  will-change: max-height, padding;
-  contain: paint;
 }
 
-.faq-toggle:checked + .faq-question + .faq-answer {
+.faq-toggle:checked+.faq-question+.faq-answer {
   max-height: 170px;
   padding: 0.9em 1.1em 1.3em 1.1em;
 }
@@ -530,7 +515,6 @@ section.mn {
 section.o {
   padding-bottom: 0.2rem !important;
   transition: padding 0.3s ease;
-  will-change: padding;
 }
 
 section.o:hover .faq-question {
@@ -560,12 +544,14 @@ section.o:has(.faq-toggle:checked) {
 .text-h button {
   /* ปุ่ม base */
   font-size: 0.9em;
+  font-weight: bold;
   padding: 0.6em 1.15em;
   border-radius: 25px;
   background: #FFFFFF;
   border: 1.2px solid #D3D3D3;
+  box-shadow: 0 0 5px rgba(211, 211, 211, 0.6);
   color: var(--brand-1);
-  transition: background 500ms, color 0.10s, border-color 500ms, transform 100ms;
+  transition: background 500ms, color 0.10s, border-color 500ms, box-shadow 500ms, transform 100ms;
   user-select: none;
   display: flex;
   align-items: center;
@@ -577,6 +563,11 @@ section.o:has(.faq-toggle:checked) {
   backface-visibility: hidden;
   transform: translateZ(0);
   will-change: transform;
+}
+.text-h button:hover {
+  background: #D8FFF3;
+  border-color: #A7E0CE;
+  box-shadow: 0 0 10px #A7E0CE;
 }
 .text-h button:active {
   transform: scale(0.97);
@@ -819,7 +810,7 @@ section.o:has(.faq-toggle:checked) {
   .h3, h3 { font-size: 1.05rem; }
   .lead { font-size: 1em; }
   section { font-size: 0.9rem; padding: 1.05rem 1.15rem; border-radius: 30px; }
-  .button, .btn { font-size: 0.9em; padding: 1.1em 0.96em; border-radius: 25px; }
+  .button, .btn { font-size: 1em; padding: 1.1em 0.96em; border-radius: 25px; }
   .button-secondary { border-width: 1px; }
   .feature-item { font-size: 0.93em; padding: 0.92rem 0.55rem 0.92rem 0.55rem; border-radius: 25px; }
   .notice { font-size: 0.9em; padding: 2.3rem 1.5rem; border-radius: 30px; }
