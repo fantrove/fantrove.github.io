@@ -162,6 +162,14 @@
   letter-spacing: 0.01em;
 }
 
+.svg-wrapper:hover+.label {
+  color: var(--primary-600);
+}
+
+.nav-item .label:hover {
+  color: var(--primary-600);
+}
+
 .nav-item.active-1 {
  transition: all var(--transition-fast);
 }
