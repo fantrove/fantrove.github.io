@@ -2,6 +2,19 @@
 // Advanced, optimized & production ready
 // Usage: Just include this JS. Footer will inject itself everywhere automatically.
 
+/* --- [BEGIN: Wave Effect Loader] --- */
+(function() {
+ // ตรวจสอบว่ามี wave-effect.min.js อยู่แล้วหรือยัง ถ้ายังไม่มีให้เพิ่มเข้าไป
+ var waveScriptSrc = "https://marcufer.github.io/Marcumat.js/wave-effect.min.js";
+ if (!document.querySelector('script[src="' + waveScriptSrc + '"]')) {
+  var script = document.createElement('script');
+  script.src = waveScriptSrc;
+  script.async = true;
+  document.head.appendChild(script);
+ }
+})();
+/* --- [END: Wave Effect Loader] --- */
+
 // --- CONFIGURABLES ---
 const FOOTER_CSS_PATH = "/assets/css/general.min.css";
 const FOOTER_TEMPLATE_PATH = "/assets/template-html/footer-template.html";
