@@ -118,6 +118,42 @@
   stroke-width: 1.4 !important;
 }
 
+/* --- SVG Wrapper Ripple & Centering Fix --- */
+.svg-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;    /* Vertical centering */
+  justify-content: center;/* Horizontal centering */
+  width: 70px;
+  height: 32px;
+  border-radius: 50px;
+  overflow: visible;
+}
+/* Center svg absolutely in svg-wrapper (fix vertical/horizontal centering always) */
+.svg-wrapper > svg {
+  display: block;
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  height: 20px !important;
+  width: auto;
+}
+
+/* Make sure ripple and before are always centered and under the svg */
+.svg-wrapper::before,
+.svg-wrapper .ripple {
+  position: absolute !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .nav-item .label {
   font-size: 13px;
   color: var(--neutral-500);
@@ -134,26 +170,6 @@
  stroke: var(--primary-600) !important;
  transition: transform var(--transition-fast), color var(--transition-fast);
 }
-
-/* wrapper รอบ SVG */
-.svg-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center; /* แนวตั้งกึ่งกลาง */
-  justify-content: center; /* แนวนอนกึ่งกลาง */
-  width: 70px;
-  height: 32px;
-  border-radius: 50px;
-}
-.nav-item:active .svg-wrapper {
-  filter: brightness(0.9);
-  background: rgba(255, 255, 255, 1);
-}
-/* ยกเลิกเอฟเฟกต์ active ถ้ามี .active-1 */
-.nav-item.active-1:active .svg-wrapper {
-  filter: brightness(0.5);
-  background: transparent;
-}
 .nav-item.active-1 .svg-wrapper::before {
   content: '';
   position: absolute;
@@ -163,7 +179,7 @@
   height: 32px;
   background: rgba(32, 255, 182, 0.2) !important;
   border-radius: 50px;
-  z-index: -1;
+  z-index: 0;
   transform: translate(-50%, -50%) scale(0.4);
   opacity: 0;
   transition: 
@@ -171,13 +187,11 @@
     transform 1.2s cubic-bezier(.7,-.56,.3,1.55),
     opacity 0.5s ease-in-out;
 }
-
 .nav-item.active-1 .svg-wrapper.animate::before {
   width: 70px;
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
-
 .nav-item.active-1 .label {
  letter-spacing: 0.02em;
  transition: color var(--transition-fast);
@@ -185,27 +199,18 @@
 
 /* Tablet and up (>=768px) -> left-side vertical navigation (tablet + desktop) */
 @media (min-width: 768px) {
-  /* Layout: make the nav part of the page flow by wrapping content into .site-main via JS.
-     When mounted, body will have class "has-left-rail" and .site-main will contain all page content.
-     This ensures the left rail is not overlaying content but actually inserted into layout. */
-
   body.has-left-rail {
     display: flex;
     flex-direction: row;
     align-items: stretch;
     min-height: 100vh;
   }
-
-  /* Make the left-rail fixed so it doesn't scroll with the page,
-     while the main content (.site-main) is offset to "feel" the rail's presence.
-     This ensures the rail is locked in place and other elements still layout around it. */
   .bottom-nav {
-    /* fixed left rail */
     position: fixed;
     top: 0;
     left: 0;
     width: var(--left-rail-width);
-    height: 100vh; /* full viewport height */
+    height: 100vh;
     border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
     margin: 0;
     transform: none;
@@ -222,19 +227,11 @@
     transition: width var(--transition-normal), left var(--transition-normal);
     overflow: visible;
   }
-
-  /* Ensure main content is offset so it doesn't go under the fixed rail.
-     Using margin-left keeps the rail 'locked' while DOM elements still 'know' it's there. */
   .site-main {
     flex: 1 1 auto;
     min-width: 0;
     box-sizing: border-box;
   }
-
-  /* If the rail is collapsed, reduce both the rail width and the main offset.
-     This selector assumes .bottom-nav and .site-main are siblings (common mounting pattern).
-     If your JS places .site-main before .bottom-nav, adjust JS or use a wrapper class on body
-     (e.g., body.has-left-rail.collapsed) and style .site-main from body instead. */
   .bottom-nav.collapsed {
     width: var(--left-rail-width-collapsed);
     flex: 0 0 auto;
@@ -243,25 +240,20 @@
   body.has-left-rail .site-main.collapsed {
     margin-left: var(--left-rail-width-collapsed);
   }
-
   .bottom-nav.collapsed:hover {
     width: var(--left-rail-width);
   }
   .bottom-nav.collapsed:hover .label {
     display: block;
   }
-
-  /* Ensure nav-items stack vertically */
   .bottom-nav .nav-item {
     width: 100%;
     padding: 10px 0px;
     justify-content: center;
   }
-
   .bottom-nav .nav-item svg {
     height: 20px !important;
   }
-
   .bottom-nav .nav-item .label {
     font-size: 12px;
     white-space: normal;
@@ -269,8 +261,6 @@
     display: block;
     line-height: 1;
   }
-
-  /* Optional: keep a small visual separation when fixed */
   .bottom-nav {
     box-shadow: 0 0 0 1px rgba(0,0,0,0.01), var(--shadow-sm);
   }
