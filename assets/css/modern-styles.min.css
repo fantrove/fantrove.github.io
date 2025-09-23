@@ -127,7 +127,7 @@
   width: 70px;
   height: 32px;
   border-radius: 50px;
-  overflow: visible;
+  overflow: hidden;
 }
 /* Center svg absolutely in svg-wrapper (fix vertical/horizontal centering always) */
 .svg-wrapper > svg {
