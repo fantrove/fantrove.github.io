@@ -454,7 +454,8 @@ section.mn {
 }
 
 .notice a:hover {
-  color: #EBB95B;
+  --c-c: #EBB95B;
+  
 }
 
 /* ---------- FAQ ---------- */
