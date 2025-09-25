@@ -11,22 +11,23 @@ body {
  max-width: 600px;
  background: #FFFFFF;
  color: #131313;
- border-radius: 25px;
+ border-radius: 30px;
+ border: 1px solid rgba(19, 180, 127, 0.16);
 }
 
-h1 {
-    color: #4D5057;
-    font-size: 14px;
-    margin: 90px 0 5px 20px;
-    display: flex;
-    align-items: center;  /* จัดให้อยู่กลางทั้งในแนวนอนและแนวตั้ง */
+h1 {  
+    color: #33BE90;  
+    font-size: 14px;  
+    margin: 90px 0 5px 20px;  
+    display: flex;  
+    align-items: center;  /* จัดให้อยู่กลางทั้งในแนวนอนและแนวตั้ง */  
 }
 
 h1 span {
     display: inline-block;  /* ให้องค์ประกอบภายในอยู่ในแถวเดียวกัน */
     vertical-align: middle; /* ทำให้ทั้งสองข้อความอยู่ในระดับเดียวกัน */
     line-height: 1;          /* ช่วยให้ข้อความไม่ยืดสูงเกินไป */
-    margin: 0 0 0 4px;
+    margin: 0 0 3px 18px;
 }
 
 ul {
