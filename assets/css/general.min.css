@@ -35,7 +35,7 @@ footer *, .footer-inner * {
 footer {
   --footer-bg: #fff;
   --footer-border: #E6ECF7;
-  --footer-shadow: 0 0 5px #e6ecf7;
+  --footer-shadow: 0 0 0 0.1px #e6ecf7;
   --footer-radius: 24px;
   --footer-link: #13b47f;
   --footer-link-hover: #0eb0d5;
@@ -47,7 +47,7 @@ footer {
   border-top: 1.5px solid var(--footer-border);
   border-bottom: 1.5px solid var(--footer-border);
   margin-top: 2rem;
-  margin-bottom: 0px;
+  margin-bottom: 7rem;
   box-shadow: var(--footer-shadow);
   /* Use 100% of the containing block (not viewport) so it flows with layout */
   width: 100%;
@@ -72,7 +72,7 @@ footer, .footer-inner {
 .footer-inner {
   max-width: 900px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 5.2rem 1rem;
+  padding: 1.5rem 1rem 1.5rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
