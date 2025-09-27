@@ -124,7 +124,7 @@ section {
   background: #fff;
   border-radius: 30px;
   border: 1.2px solid rgba(14,176,213,0.06);
-  box-shadow: 0 10px 28px rgba(6,20,24,0.06);
+  /*box-shadow: 0 10px 28px rgba(6,20,24,0.06);*/
   padding: 2rem 2.1rem;
   margin-bottom: 5rem;
   display: flex;
@@ -570,9 +570,9 @@ section.o:has(.faq-toggle:checked) {
   border-color: #A7E0CE;
   box-shadow: 0 0 10px #A7E0CE;
 }
-.text-h button:active {
+/*.text-h button:active {
   transform: scale(0.97);
-}
+}*/
 /* ====== ANIMATION (ARROW & TRAIL & OVERLAY) FOR .text-h button ====== */
 .text-h button .btn-content {
   position: relative;
@@ -658,10 +658,10 @@ section.o:has(.faq-toggle:checked) {
 /* ---------- APP CATEGORY SECTION ---------- */
 .category-section {
   background: #FFFFFF;
-  border-radius: 30px;
+  /*border-radius: 30px;*/
   margin-bottom: 2rem;
-  border: 1.2px solid var(--card-border);
-  box-shadow: 0 10px 28px rgba(6,20,24,0.06);
+  /*border: 1.2px solid var(--card-border);*/
+  /*box-shadow: 0 10px 28px rgba(6,20,24,0.06);*/
   contain: layout paint;
 }
 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>FanTrove Verse - Explore</title>
+
+  <!-- Theme color for browsers -->
+  <meta name="theme-color" content="#13b47f" />
+  <!-- Status bar color for iOS Safari -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Preload + fallback for critical CSS -->
+  <link rel="preload" href="/assets/css/header.min.css" as="style" onload="this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/assets/css/header.min.css" /></noscript>
+
+  <link rel="preload" href="/assets/css/styles.min.css" as="style" onload="this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/assets/css/styles.min.css" /></noscript>
+
+  <!-- Other CSS (normal load) -->
+  <link rel="stylesheet" href="/assets/css/bg.min.css" media="all" />
+
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/assets/images/fantrove-hub360.ico" />
+
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];
+      w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),
+          dl=l!='dataLayer'?'&l='+l:'';
+      j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PJ397CLS');
+  </script>
+  <!-- End Google Tag Manager -->
+
+  <!-- Cookiebot -->
+  <script
+    id="Cookiebot"
+    src="https://consent.cookiebot.com/uc.js"
+    data-cbid="16a70d79-a7a7-4b66-89da-afb49e453c67"
+    data-blockingmode="auto"
+    type="text/javascript"
+  ></script>
+
+  <!-- Google Ads and Analytics Scripts -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8233915433564101" crossorigin="anonymous"></script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4DGR81NZ6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-R4DGR81NZ6');
+
+    // Consent configuration
+    gtag("consent", "default", {
+      ad_personalization: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      analytics_storage: "denied",
+      functionality_storage: "denied",
+      personalization_storage: "denied",
+      security_storage: "granted",
+      wait_for_update: 500,
+    });
+    gtag("set", "ads_data_redaction", true);
+    gtag("set", "url_passthrough", false);
+  </script>
+</head>
+
+<body style="opacity:0">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJ397CLS" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div id="introContainer" class="intro-container">
+    <!-- Template content จะถูกใส่ที่นี่ -->
+  </div>
+
+  <!-- Header Section -->
+  <header>
+    <div class="logo">Fantrove Verse</div>
+    <nav>
+      <ul id="nav-list">
+        <!-- Navigation List will be populated dynamically -->
+      </ul>
+    </nav>
+  </header>
+
+      <!-- Sub-Buttons Container -->
+      <div id="sub-buttons-container"></div>
+
+
+  <!-- Main Content Section -->
+  <main>
+    <div id="content-loading"></div>
+  </main>
+
+  <!-- โหลดไฟล์ระบบภาษา (language.min.js) ก่อน เพื่อให้คำแปลพร้อมตั้งแต่ต้น -->
+  <script src="/assets/js/language.min.js"></script>
+
+  <!-- โหลดไฟล์ JavaScript อื่นๆ แบบ defer ให้โหลดพร้อม DOM แต่รันหลัง DOM โหลดเสร็จ -->
+  <script defer src="/assets/js/version.min.js"></script>
+  <script defer src="/assets/js/header.min.js"></script>
+  <script defer src="/assets/js/modern-navigation.min.js"></script>
+  <script defer src="/assets/js/back-to-top.min.js"></script>
+  <script defer src="/assets/js/copyNotification.min.js"></script>
+  <script defer src="/assets/js/footer-template.js"></script>
+</body>
+</html>

@@ -8,7 +8,7 @@ const dataManager = {
         RETRY_DELAY: 300,
         MAX_RETRIES: 1,
         CACHE_DURATION: 2 * 60 * 60 * 1000,
-        API_DATABASE_PATH: '/assets/json/api-database.min.json',
+        API_DATABASE_PATH: '/assets/db/db.min.json',
         BUTTONS_CONFIG_PATH: '/assets/json/buttons.min.json'
     },
     cache: new Map(),
