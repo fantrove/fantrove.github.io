@@ -55,7 +55,7 @@ header {
     box-shadow: 0 0 15px rgba(58, 60, 79, 0.15);
     touch-action: none;
     margin-bottom: 30px;
-    border-radius: 0 0 20px 20px;
+    border-radius: 0 0 0px 0px;
 
     will-change: box-shadow, background;
     /* แยกการ repaint ของ header ออกจาก context หลัก */

@@ -113,6 +113,11 @@
 
     <!-- Navigation Bar -->
     <nav>
+    <button class="back-button" id="back-button" aria-label="Go back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 19-7-7 7-7" />
+      </svg>
+    </button>
       <span class="page-title" data-translate="page-setting"></span>
     </nav>
 
@@ -121,13 +126,19 @@
       <!-- Template content จะถูกใส่ที่นี่ -->
     </div>
 
+    <h1 class="h" data-translate="page-setting"></h1>
     <section>
       <div id="language-selector-container">
-        <button id="language-button" class="m5 tap" type="button">
+        <div class="m5">
+        <div class="w">
+        <button id="language-button" class="tap" type="button">
           <!-- JS เติม <span class="lang-btn-txt" data-lang="xx">...</span> อัตโนมัติ -->
         </button>
+        </div>
+        </div>
       </div>
 
+      <div class="w">
       <button
         type="button"
         class="buttons auto-update-toggle"
@@ -173,6 +184,7 @@
           <span class="slider"></span>
         </span>
       </button>
+      </div>
     </section>
 
     <style>
@@ -182,6 +194,7 @@
         gap: 15px;
         text-align: left;
         padding-right: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0);
       }
 
       .icon {
@@ -274,12 +287,13 @@
       }
     </style>
     
-    <h1 class="h" data-translate="about-text">About</h1>
+    <h1 class="h" data-translate="about-text"></h1>
 
     <section>
       <!-- ปุ่ม: About -->
+      <div class="m5">
       <div class="w">
-      <button class="buttons m5" onclick="window.location.href='/info/about'">
+      <button class="buttons" onclick="window.location.href='/info/about'">
         <span class="lang-btn-flex" style="display:inline-flex;align-items:center;gap:15px;">
           <span class="lang-btn-svg" style="display:inline-flex;align-items:center;justify-content:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -292,10 +306,12 @@
         </span>
       </button>
       </div>
+      </div>
       
       <!-- ปุ่ม: What's New -->
+      <div class="m5">
       <div class="w">
-      <button class="buttons m5" onclick="window.location.href='/info/whats_new'">
+      <button class="buttons" onclick="window.location.href='/info/whats_new'">
         <span class="lang-btn-flex" style="display:inline-flex;align-items:center;gap:15px;">
           <span class="lang-btn-svg" style="display:inline-flex;align-items:center;justify-content:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -314,10 +330,12 @@
         </span>
       </button>
       </div>
+      </div>
       
       <!-- ปุ่ม: Roadmap -->
+      <div class="m5">
       <div class="w">
-      <button class="buttons m5" onclick="window.location.href='/info/roadmap'">
+      <button class="buttons" onclick="window.location.href='/info/roadmap'">
         <span class="lang-btn-flex" style="display:inline-flex;align-items:center;gap:15px;">
           <span class="lang-btn-svg" style="display:inline-flex;align-items:center;justify-content:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -333,10 +351,12 @@
         </span>
       </button>
       </div>
+      </div>
       
       <!-- ปุ่ม: Contact -->
+      <div class="m5">
       <div class="w">
-      <button class="buttons m5" onclick="window.location.href='/us'">
+      <button class="buttons" onclick="window.location.href='/us'">
         <span class="lang-btn-flex" style="display:inline-flex;align-items:center;gap:15px;">
           <span class="lang-btn-svg" style="display:inline-flex;align-items:center;justify-content:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -349,10 +369,11 @@
         </span>
       </button>
       </div>
+      </div>
       
       <!-- ปุ่ม: Support -->
       <div class="w">
-      <button class="buttons buy tap" onclick="window.location.href='/support'">
+      <button class="buttons buy tap" onclick="window.location.href='https://ko-fi.com/nontakorn_nonsurat'">
         <span class="lang-btn-flex" style="display:inline-flex;align-items:center;gap:15px;">
           <span class="lang-btn-svg" style="display:inline-flex;align-items:center;justify-content:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -375,7 +396,7 @@
   <!-- โหลดไฟล์อื่นๆ แบบ defer -->
   <script defer src="/assets/js/footer-template.js"></script>
   <script defer src="/assets/js/Intelligent-system.min.js"></script>
-  <script defer src="/assets/js/modern-navigation.min.js"></script>
+  <script defer src="/assets/js/back-button.min.js"></script>
   <script defer src="/assets/js/version.min.js"></script>
 </body>
 </html>

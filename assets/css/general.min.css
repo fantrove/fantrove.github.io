@@ -18,7 +18,7 @@ footer *, .footer-inner * {
   .footer-meta, .footer-info, .footer-note, .footer-legal,
   .text-muted, .text-center, .text-small,
   footer *, .footer-inner * {
-    font-size: 13px !important;
+    font-size: 15px !important;
   }
 }
 @media (max-width: 450px) {
@@ -27,7 +27,7 @@ footer *, .footer-inner * {
   .footer-meta, .footer-info, .footer-note, .footer-legal,
   .text-muted, .text-center, .text-small,
   footer *, .footer-inner * {
-    font-size: 12px !important;
+    font-size: 14px !important;
   }
 }
 
@@ -214,15 +214,4 @@ body.has-left-rail footer {
      This fallback prevents any footer using viewport widths from overlapping the left rail. */
   max-width: calc(100% - var(--left-rail-width, 88px));
   margin-left: 0;
-}
-
-/* Small screens adjustments preserved */
-@media (max-width: 600px) {
-  footer, .footer-inner, .footer-links, .footer-link,
-  .footer-extra, .footer-social, .footer-copyright,
-  .footer-meta, .footer-info, .footer-note, .footer-legal,
-  .text-muted, .text-center, .text-small,
-  footer *, .footer-inner * {
-    font-size: 13px !important;
-  }
 }
