@@ -1,6 +1,6 @@
 // contentManager.js
-// ปรับปรุง: เอาการสังเกต viewport per-item (view observer) ออกไป — ยังคงเก็บ sentinel สำหรับการโหลดชุดถัดไปไว้ตามเดิม
-// ปรับปรุงเพิ่มเติม: เอา CSS transition ที่ถูกฉีดเข้ามาใน JS ออกสำหรับ .button-content (และเอา inline transition ของ card ออก)
+// ปรับปรุง: เอาการสังเกต viewport per-item (view observer) ออกไป — ยังคงเก็บ sentinel สำหรับการโหลดชุดต่อไป
+// ปรับปรุงเพิ่มเติม: เอา CSS transition ที่ถูกฉีดเข้ามาใน JS ออกสำหรับ .button-content (และเอา !important transition ออกจาก .card ด้วย)
 // เหตุผล: การฉีด transition ด้วย !important ทำให้ CSS ที่ผู้ใช้กำหนดบน .button-content (hover/active) ถูกบล็อก
 // ใช้งานร่วมกับ dataManager และ contentLoadingManager ผ่าน window._headerV2_*
 export const contentManager = {
@@ -279,6 +279,10 @@ export const contentManager = {
                 try {
                     if (item.group?.categoryId) {
                         await this.renderGroupItems(inner, item.group);
+                    } else if (item.group?.type === "card" && Array.isArray(item.group.items)) {
+                        await this.renderGroupItems(inner, item.group);
+                    } else if (item.group?.type === "button" && Array.isArray(item.group.items)) {
+                        await this.renderGroupItems(inner, item.group);
                     } else if (item.categoryId) {
                         await this.renderGroupItems(inner, { categoryId: item.categoryId, type: item.type || "button" });
                     } else {
@@ -407,27 +411,62 @@ export const contentManager = {
 
     createContainer(item) {
         const container = document.createElement('div');
-        container.className =
-            item.group?.type === 'button' || item.type === 'button'
-                ? 'button-content-container'
-                : 'card-content-container';
+        if (
+            item.group?.type === 'button' ||
+            item.type === 'button' ||
+            (item.group?.categoryId && !item.group?.type)
+        ) {
+            container.className = 'button-content-container';
+        } else {
+            container.className = 'card-content-container';
+        }
         if (item.group?.containerClass) container.classList.add(item.group.containerClass);
         return container;
     },
 
     async renderGroupItems(container, group) {
-        if (!group.categoryId) throw new Error("Group ต้องระบุ categoryId");
-        const { id, name, data, header } = await window._headerV2_dataManager.fetchCategoryGroup(group.categoryId);
-        const fragment = document.createDocumentFragment();
-        const headerElement = this.createGroupHeader(header);
-        fragment.appendChild(headerElement);
+        // ปรับปรุง: รองรับ group.type === "card" และ group.items array (เช่นใน packages.min.json)
+        if (!group.categoryId && !group.items) throw new Error("Group ต้องระบุ categoryId หรือ items");
 
-        if (group.type !== "button") throw new Error("ขณะนี้รองรับเฉพาะ type: 'button' ใน group");
-        for (const item of data) {
-            const btn = await this.createButton(item);
-            if (btn) fragment.appendChild(btn);
+        // กรณี categoryId จาก db
+        if (group.categoryId) {
+            const { id, name, data, header } = await window._headerV2_dataManager.fetchCategoryGroup(group.categoryId);
+            if (header) {
+                const headerElement = this.createGroupHeader(header);
+                container.appendChild(headerElement);
+            }
+            if (group.type === "card") {
+                for (const item of data) {
+                    const card = await this.createCard(item);
+                    if (card) container.appendChild(card);
+                }
+            } else if (group.type === "button") {
+                for (const item of data) {
+                    const btn = await this.createButton(item);
+                    if (btn) container.appendChild(btn);
+                }
+            } else {
+                throw new Error("รองรับเฉพาะ type: 'button' หรือ 'card' ใน group");
+            }
         }
-        container.appendChild(fragment);
+        // กรณี group.items (เช่นใน json content)
+        else if (Array.isArray(group.items)) {
+            if (group.header) {
+                const headerElement = this.createGroupHeader(group.header);
+                container.appendChild(headerElement);
+            }
+            if (group.type === "card") {
+                for (const item of group.items) {
+                    const card = await this.createCard(item);
+                    if (card) container.appendChild(card);
+                }
+            } else if (group.type === "button") {
+                for (const item of group.items) {
+                    const btn = await this.createButton(item);
+                    if (btn) container.appendChild(btn);
+                }
+            }
+        }
     },
 
     createGroupHeader(headerConfig) {
@@ -598,7 +637,6 @@ export const contentManager = {
             }
         });
 
-        // ไม่กำหนด transition ใน JS ให้กับปุ่ม เพื่อให้ CSS ของผู้ใช้ (.button-content) ทำงานได้ตามต้องการ
         button.classList.add('fade-in');
         button.style.opacity = 0;
         requestAnimationFrame(() => { button.style.opacity = 1; });
@@ -659,7 +697,6 @@ export const contentManager = {
         }
         card.classList.add('fade-in');
         card.style.opacity = 0;
-        // เอา inline transition ของ card ออก เพื่อให้ผู้ใช้สามารถกำหนด transition ผ่าน CSS เองได้
         requestAnimationFrame(() => { card.style.opacity = 1; });
         return card;
     },
@@ -694,3 +731,5 @@ export const contentManager = {
         }
     }
 };
+
+export default contentManager;
