@@ -51,8 +51,6 @@ header {
     left: 0;
     z-index: 9000;
     background: linear-gradient(-190deg, rgba(203, 255, 242, 1) 5%,rgba(240, 252, 255, 1), rgba(240, 252, 255, 1), rgba(240, 252, 255, 1) 70%, rgba(203, 255, 242, 1) 100%);
-    border-bottom: 1px solid rgba(19, 180, 127, 0.3);
-    box-shadow: 0 0 15px rgba(58, 60, 79, 0.15);
     touch-action: none;
     margin-bottom: 30px;
     border-radius: 0 0 0px 0px;
@@ -65,8 +63,8 @@ header {
 .logo {
     --logo-padding: 9px;
     font-family: 'FoglihtenNo07calt', monospace;
-    font-size: 23px;
-    padding: 10px 0 10px 0;
+    font-size: 24px;
+    padding: 20px 0 0 0;
     white-space: nowrap;
     color: #1e957c;
     text-shadow: 0 0 3px rgba(0, 255, 171, 0.5);
@@ -107,12 +105,12 @@ nav ul {
     display: flex;
     list-style-type: none;
     margin: 0;
-    padding: var(--nav-spacing) var(--nav-spacing);
+    padding: var(--nav-spacing) var(--nav-spacing) 0 var(--nav-spacing);
     justify-content: flex-start;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
-    border-top: 0.8px solid rgba(19, 180, 127, 0.3);
+    border-bottom: 0.8px solid rgba(19, 180, 127, 0.3);
     touch-action: pan-x;
     will-change: border-top;
 
@@ -135,10 +133,9 @@ nav ul li button {
     justify-content: center;
     padding: 9px 16px;
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 0.9em;
     background: transparent;
     border: none;
-    border-radius: 25px;
     cursor: pointer;
     transition: all var(--transition-fast);
     position: relative;
@@ -152,19 +149,8 @@ nav ul li button {
     transform: translateZ(0);
 }
 
-nav ul li button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--nav-hover-bg);
-    opacity: 0;
-    transition: opacity var(--transition-fast);
-    will-change: opacity;
-}
-
 nav ul li button:hover {
-    color: var(--text-primary);
-    transform: translateY(-1px);
+    background: rgba(0, 0, 0, 0.05);
     will-change: color, transform;
 }
 
@@ -175,29 +161,20 @@ nav ul li button:hover::before {
 nav ul li button.active {
     color: var(--text-primary);
     font-weight: bold;
-    background: var(--nav-active-bg);
-    border: 0.5px solid #10B981;
-    will-change: color, background, border;
 }
 
 nav ul li button.active::after {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: 4px;
+    bottom: 0px;
     width: 60%;
-    height: 2px;
+    height: 2.5px;
     background: currentColor;
-    border-radius: 2px;
-    transform: translateX(-50%) scale(0.8);
-    opacity: 0.8;
+    border-radius: 5px 5px 0 0;
+    transform: translateX(-50%);
     transition: all var(--transition-fast);
     will-change: opacity, transform;
-}
-
-nav ul li button.active:hover::after {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
 }
 
 :root {

@@ -1,33 +1,40 @@
 /* --- LOCK FOOTER FONT SIZE ABSOLUTE UNIVERSAL (MINIMAL STYLE) --- */
 footer, .footer-inner, .footer-links, .footer-link,
-.footer-extra, .footer-social, .footer-copyright,
-.footer-meta, .footer-info, .footer-note, .footer-legal,
+.footer-extra, .footer-social, .footer-meta, .footer-info, .footer-note, .footer-legal,
 .text-muted, .text-center, .text-small,
 footer *, .footer-inner * {
   font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif !important;
-  font-size: 16px !important;
+  font-size: 14px !important;
   line-height: 1.65 !important;
   letter-spacing: 0.01em !important;
   box-sizing: border-box;
+}
+.footer-copyright {
+  font-size: 15px !important;
 }
 
 /* Responsive */
 @media (max-width: 600px) {
   footer, .footer-inner, .footer-links, .footer-link,
-  .footer-extra, .footer-social, .footer-copyright,
-  .footer-meta, .footer-info, .footer-note, .footer-legal,
+  .footer-extra, .footer-social, .footer-meta, .footer-info, .footer-note, .footer-legal,
   .text-muted, .text-center, .text-small,
   footer *, .footer-inner * {
     font-size: 15px !important;
   }
+  .footer-copyright {
+    font-size: 16px !important;
+  }
 }
 @media (max-width: 450px) {
   footer, .footer-inner, .footer-links, .footer-link,
-  .footer-extra, .footer-social, .footer-copyright,
+  .footer-extra, .footer-social,
   .footer-meta, .footer-info, .footer-note, .footer-legal,
   .text-muted, .text-center, .text-small,
   footer *, .footer-inner * {
     font-size: 14px !important;
+  }
+  .footer-copyright {
+    font-size: 15px !important;
   }
 }
 
@@ -35,18 +42,17 @@ footer *, .footer-inner * {
 footer {
   --footer-bg: #fff;
   --footer-border: #E6ECF7;
-  --footer-shadow: 0 0 0 0.1px #e6ecf7;
+  --footer-shadow: 0 0 0 0px #e6ecf7;
   --footer-radius: 24px;
   --footer-link: #13b47f;
   --footer-link-hover: #0eb0d5;
   --footer-social-bg: #f4faf7;
   --footer-social-hover: #e0f6ef;
   --footer-muted: #8ea1b8;
-
+  border: 0.5px solid var(--footer-border);
+  border-bottom: 0px solid var(--footer-border);
   background: var(--footer-bg);
-  border-top: 1.5px solid var(--footer-border);
-  border-bottom: 1.5px solid var(--footer-border);
-  margin-top: 2rem;
+  margin-top: 7rem;
   margin-bottom: 7rem;
   box-shadow: var(--footer-shadow);
   /* Use 100% of the containing block (not viewport) so it flows with layout */
@@ -68,6 +74,7 @@ footer, .footer-inner {
   position: relative;
   left: 0;
   transform: none;
+  border-radius: 30px;
 }
 .footer-inner {
   max-width: 900px;
@@ -91,7 +98,7 @@ footer, .footer-inner {
 .footer-link {
   color: var(--footer-link);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   background: none;
   padding: 0;
   border-radius: 0;
@@ -170,21 +177,6 @@ footer, .footer-inner {
   width: 100%;
 }
 
-/* Sticky Footer (option, minimal) */
-/* When layout has left rail, ensure sticky footer does not overlap it */
-.footer-sticky {
-  position: fixed !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  margin-bottom: 0 !important;
-  z-index: 1100;
-  box-shadow: 0 -2px 14px #e6ecf7;
-  background: var(--footer-bg);
-}
 
 /* If page uses left-rail layout, adjust sticky footer position/width to not overlap the rail */
 body.has-left-rail .footer-sticky {

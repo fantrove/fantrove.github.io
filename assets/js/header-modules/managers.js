@@ -3,7 +3,7 @@
 // โมดูลนี้ใช้ window._headerV2_* ที่ถูกผูกใน init เพื่ออ้างอิงซึ่งกันและกัน
 export const scrollManager = {
     state: { lastScrollY: 0, ticking: false, subNavOffsetTop: 0, subNavHeight: 0, isSubNavFixed: false },
-    constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 160, Z_INDEX: { SUB_NAV: 999 } },
+    constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 0, Z_INDEX: { SUB_NAV: 999 } },
 
     createStickyStyles() {
         if (document.getElementById('sticky-styles')) return;
@@ -11,7 +11,7 @@ export const scrollManager = {
         styleSheet.id = 'sticky-styles';
         styleSheet.textContent = `
 #sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease, box-shadow ${this.constants.ANIMATION_DURATION}ms ease; }
-#sub-nav.fixed { box-shadow: 0 0 15px rgba(58, 60, 79, 0.08); background: rgba(240, 252, 255, 1); border-bottom: 1px solid rgba(19, 180, 127, 0.18); }
+#sub-nav.fixed { background: rgba(255, 255, 255, 1); border-bottom: 0.5px solid rgba(19, 180, 127, 0.18); }
 #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
 #sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
         `;

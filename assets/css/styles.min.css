@@ -38,18 +38,18 @@ main { margin-top: 30px; }
 
 .button-sub {
   margin: 0;
-  padding: 8px 16px;
+  padding: 12px 16px;
   background: var(--app-surface-primary);
   color: var(--text-color);
   border: 0.5px solid var(--app-border-subtle);
   border-radius: var(--app-pill-radius);
-  font-size: 13.5px;
+  font-size: 0.9em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   transition: background var(--app-motion-quick), border-color var(--app-motion-quick), color var(--app-motion-quick);
   letter-spacing: 0.01em;
-  font-family: inherit;
+  font-weight: 600;
 
   /* hint ให้ browser เตรียม compositing สำหรับปุ่มที่มี transition */
   will-change: background, color, border-color;
@@ -63,22 +63,21 @@ main { margin-top: 30px; }
 .button-sub.active {
   color: var(--text-primary);
   border-color: var(--app-theme-indigo-light);
-  font-weight: bold;
 }
 
 .hi { padding: 0 10px 0 10px; }
-.hj { border-radius: 25px;background: #FFFFFF; border-radius: 25px; border: 0.5px solid #E9E9E9; }
+.hj { border-radius: 30px;background: #FFFFFF; border: 0.5px solid rgba(0, 0, 0, 0.1); }
 
 .button-content {
   box-sizing: border-box;
   width: 60px !important;
-  padding: 14px 20px !important;
+  padding: 13px 19px !important;
   margin: 8px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
-  font-size: 17px;
+  border-radius: 23px;
+  font-size: 19px;
   background: var(--app-surface-primary, #fff);
   color: var(--app-theme-indigo, #10B981);
   border: 1px solid var(--app-theme-indigo-border, #54CBAB);
