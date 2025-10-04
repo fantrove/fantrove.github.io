@@ -760,13 +760,16 @@ section.o:has(.faq-toggle:checked) {
   letter-spacing: 0.013em;
   opacity: 0.99;
   max-width: 100%;
-  line-height: 1.37;
+  /*line-height: 2.1;*/
   margin-bottom: 0.09em;
   z-index: 2;
   white-space: nowrap;           /* ไม่ขึ้นบรรทัดใหม่ */
   overflow: hidden;              /* ซ่อนส่วนที่เกิน */
   text-overflow: ellipsis;       /* แสดง ... เมื่อเกิน */
   display: block;                /* แน่ใจว่า element เป็น block สำหรับตัดบรรทัด */
+  background: #E8FDFF;
+  padding: 0.3em 0.5em;
+  border-radius: 25px;
 }
 .item-card .desc,
 .item-card .detail,
@@ -792,7 +795,7 @@ section.o:has(.faq-toggle:checked) {
     min-width: 125px;
     max-width: 140px;
     padding: 1.2rem 1rem 1.2rem 1rem !important;
-    border-radius: 30px;
+    border-radius: 35px;
   }
 }
 
@@ -816,7 +819,7 @@ section.o:has(.faq-toggle:checked) {
   .text-h h1 { font-size: 1.1em; }
   .text-h button { font-size: 0.9em !important; padding: 1.4em 1.3em; border-radius: 30px; }
   .category-section h2 { font-size: 1.03em; margin: 0.6rem 0 0.6rem 0; }
-  .item-card { font-size: 0.91em; border-radius: 30px; }
+  .item-card { font-size: 0.91em; }
   .item-card .name { font-size: 1.01em; }
   .item-card .desc, .item-card .detail, .item-card .content { font-size: 1.1em; }
   .img-d1 { padding: 0 10px 0 10px; }
