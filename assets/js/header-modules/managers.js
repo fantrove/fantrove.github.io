@@ -9,8 +9,11 @@ export const scrollManager = {
         if (document.getElementById('sticky-styles')) return;
         const styleSheet = document.createElement('style');
         styleSheet.id = 'sticky-styles';
+        // Ensure header sits above overlay by giving header a clear z-index > sub-nav
+        const headerZ = (this.constants.Z_INDEX.SUB_NAV || 999) + 2;
         styleSheet.textContent = `
-#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease, box-shadow ${this.constants.ANIMATION_DURATION}ms ease; }
+header { position: relative; z-index: ${headerZ}; }
+#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; }
 #sub-nav.fixed { background: rgba(255, 255, 255, 1); border-bottom: 0.5px solid rgba(19, 180, 127, 0.18); }
 #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
 #sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
@@ -197,7 +200,7 @@ export const performanceOptimizer = {
     }
 };
 
-// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager และถูกปรับให้ส่ง placeholder jsonFile ให้ contentManager เพื่อให้ fetch เป็นแบบ on-demand
+// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager แล[...]
 export const subNavManager = {
     ensureSubNavContainer() {
         let subNav = document.getElementById('sub-nav');
@@ -298,7 +301,7 @@ export const buttonManager = {
             await this.renderMainButtons();
             return;
         }
-        const response = await window._headerV2_dataManager.fetchWithRetry(window._headerV2_dataManager.constants.BUTTONS_CONFIG_PATH);
+        const response = await window._headerV2_dataManager.fetchWithRetry(window._headerV2_data_manager?.constants?.BUTTONS_CONFIG_PATH || window._headerV2_dataManager.constants.BUTTONS_CONFIG_PATH);
         this.buttonConfig = response;
         window._headerV2_dataManager.setCache('buttonConfig', response);
         await this.renderMainButtons();
@@ -425,7 +428,7 @@ export const buttonManager = {
         navList.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
         mainButton.classList.add('active');
         this.state.currentMainButton = mainButton;
-        await window._headerV2_contentManager.clearContent();
+        await window._headerV2_content_manager?.clearContent?.() || await window._headerV2_contentManager.clearContent();
         if (mainConfig.subButtons && mainConfig.subButtons.length > 0) {
             window._headerV2_subNavManager.showSubNav();
             await this.renderSubButtons(mainConfig.subButtons, mainConfig.url || mainConfig.jsonFile, localStorage.getItem('selectedLang') || 'en');

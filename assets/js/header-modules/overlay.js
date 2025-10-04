@@ -13,7 +13,7 @@
 
 const OVERLAY_ID = 'instant-loading-overlay';
 const STYLE_ID = 'instant-loading-styles';
-const DEFAULT_ZINDEX = 2147483647;
+const DEFAULT_ZINDEX = 15000;
 const FADE_DURATION_MS = 360;
 
 /**

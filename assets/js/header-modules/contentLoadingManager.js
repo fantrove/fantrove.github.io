@@ -65,7 +65,7 @@ export const contentLoadingManager = {
     opts = messageOrOptions;
    }
    
-   // Determine whether to render overlay behind sub-nav
+   // Determine whether to render overlay behind sub-nav/header
    let useOverlay = typeof showInstantLoadingOverlay === 'function';
    let computedZ = undefined;
    
@@ -85,26 +85,54 @@ export const contentLoadingManager = {
      } catch (e) {}
     }
     
-    if (behindSubNav) {
-     // try to compute subNav z-index (fallback to scrollManager constant)
+    // Compute z-index so overlay will be below header/sub-nav when requested.
+    try {
+     // try header first
+     let headerZ = 0;
+     try {
+      const headerEl = document.querySelector('header');
+      if (headerEl) {
+       const hStyle = window.getComputedStyle(headerEl);
+       headerZ = parseInt(hStyle.zIndex, 10) || 0;
+      }
+     } catch (e) { headerZ = 0; }
+     
+     // try sub-nav next
      let subZ = 0;
      try {
       const subNav = document.getElementById('sub-nav');
       if (subNav) {
-       const style = window.getComputedStyle(subNav);
-       subZ = parseInt(style.zIndex, 10) || 0;
+       const sStyle = window.getComputedStyle(subNav);
+       subZ = parseInt(sStyle.zIndex, 10) || 0;
       }
      } catch (e) { subZ = 0; }
      
+     // fallback from scrollManager constants if present
      try {
       if (!subZ && window._headerV2_scrollManager && window._headerV2_scrollManager.constants && window._headerV2_scrollManager.constants.Z_INDEX)
        subZ = window._headerV2_scrollManager.constants.Z_INDEX.SUB_NAV || subZ;
      } catch (e) {}
      
-     // overlay z should be below subNav
-     computedZ = Math.max(0, (opts.zIndex != null ? Number(opts.zIndex) : subZ ? (subZ - 1) : undefined));
-    } else {
-     if (opts.zIndex != null) computedZ = Number(opts.zIndex);
+     // Decide target element z-index to place overlay below.
+     let targetZ = 0;
+     if (behindSubNav) {
+      targetZ = subZ || headerZ || 1000;
+     } else {
+      targetZ = headerZ || subZ || 1000;
+     }
+     
+     // If user provided explicit zIndex in opts, use it (but ensure it's not above header)
+     if (opts.zIndex != null) {
+      const provided = Number(opts.zIndex);
+      // If provided is >= targetZ, lower it to targetZ - 1 to keep overlay below header/sub-nav.
+      if (!isNaN(provided)) {
+       computedZ = provided >= targetZ ? Math.max(0, targetZ - 1) : Math.max(0, provided);
+      }
+     } else {
+      computedZ = Math.max(0, targetZ - 1);
+     }
+    } catch (e) {
+     computedZ = undefined;
     }
     
     // show overlay (idempotent)
