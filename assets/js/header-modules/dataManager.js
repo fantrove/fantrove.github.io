@@ -31,7 +31,11 @@ const dataManager = {
         }
     },
 
+    // NOTE: We keep the IndexedDB helper methods in the file for compatibility,
+    // but we no longer use them in fetchWithRetry. This ensures we don't persist
+    // fetched content across page reloads.
     _openIndexedDB() {
+        // kept for compatibility but unused
         if (this._dbPromise) return this._dbPromise;
         this._dbPromise = new Promise((resolve, reject) => {
             try {
@@ -50,29 +54,12 @@ const dataManager = {
     },
 
     async _getFromIndexedDB(key) {
-        try {
-            const db = await this._openIndexedDB();
-            return await new Promise((resolve) => {
-                const tx = db.transaction('json', 'readonly');
-                const store = tx.objectStore('json');
-                const req = store.get(key);
-                req.onsuccess = () => resolve(req.result || null);
-                req.onerror = () => resolve(null);
-            });
-        } catch { return null; }
+        // unused now — return null to indicate no persistent cache
+        return null;
     },
 
     async _setToIndexedDB(key, data) {
-        try {
-            const db = await this._openIndexedDB();
-            await new Promise((resolve) => {
-                const tx = db.transaction('json', 'readwrite');
-                const store = tx.objectStore('json');
-                const req = store.put(data, key);
-                req.onsuccess = () => resolve();
-                req.onerror = () => resolve();
-            });
-        } catch {}
+        // unused now — do nothing
     },
 
     getCached(key) {
@@ -115,16 +102,15 @@ const dataManager = {
     },
 
     async fetchWithRetry(url, options = {}) {
+        // Important change:
+        // - Do NOT read/write IndexedDB anymore.
+        // - Use only in-memory cache (this.cache) for session-lifetime caching.
         const key = `${url}-${JSON.stringify(options)}`;
         const cached = this.getCached(key);
         if (cached) return cached;
 
         try {
-            const dbData = await this._getFromIndexedDB(key);
-            if (dbData) {
-                this.setCache(key, dbData);
-                return dbData;
-            }
+            // Skip any persistent DB retrieval — we intentionally do not persist across reloads.
         } catch (err) {}
 
         try {
@@ -135,7 +121,7 @@ const dataManager = {
                 ...options,
                 headers: { 'Content-Type': 'application/json', ...options.headers },
                 signal: controller.signal,
-                cache: options.cache === 'reload' ? 'reload' : 'force-cache'
+                cache: options.cache === 'reload' ? 'reload' : 'no-store'
             });
             clearTimeout(timeoutId);
             if (!response.ok) throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
@@ -150,25 +136,25 @@ const dataManager = {
                 }
                 if (data) {
                     if (options.cache !== false) {
+                        // only in-memory cache; do not persist to IndexedDB
                         this.setCache(key, data);
-                        this._setToIndexedDB(key, data);
                     }
+                    // build json index for in-memory DB (no persistence)
                     this._buildJsonDbIndex(data, text).catch(()=>{});
                     return data;
                 } else {
+                    // fallback if parsing failed
+                    const parsed = JSON.parse(text);
                     if (options.cache !== false) {
-                        const parsed = JSON.parse(text);
                         this.setCache(key, parsed);
-                        this._setToIndexedDB(key, parsed);
-                        this._buildJsonDbIndex(parsed, text).catch(()=>{});
-                        return parsed;
                     }
+                    this._buildJsonDbIndex(parsed, text).catch(()=>{});
+                    return parsed;
                 }
             } else {
                 const data = await response.json();
                 if (options.cache !== false) {
                     this.setCache(key, data);
-                    this._setToIndexedDB(key, data);
                 }
                 return data;
             }

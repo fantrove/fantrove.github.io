@@ -1,7 +1,6 @@
 // contentManager.js
-// ปรับปรุง: เอาการสังเกต viewport per-item (view observer) ออกไป — ยังคงเก็บ sentinel สำหรับการโหลดชุดต่อไป
-// ปรับปรุงเพิ่มเติม: เอา CSS transition ที่ถูกฉีดเข้ามาใน JS ออกสำหรับ .button-content (และเอา !important transition ออกจาก .card ด้วย)
-// เหตุผล: การฉีด transition ด้วย !important ทำให้ CSS ที่ผู้ใช้กำหนดบน .button-content (hover/active) ถูกบล็อก
+// ปรับปรุง: เอาการสังเกต viewport per-item (view observer) ออกไป — ยังคงเก็บ sentinel สำหรับการโหลดชิ้นถัดไป
+// ปรับปรุงเพิ่มเติม: เอา CSS transition ที่ถูกฉีดเข้ามาใน JS ออกสำหรับ .button-content (และเอา !important ออก)
 // ใช้งานร่วมกับ dataManager และ contentLoadingManager ผ่าน window._headerV2_*
 export const contentManager = {
     _renderSession: 0,
@@ -201,6 +200,9 @@ export const contentManager = {
     },
 
     async renderContent(data) {
+        // Accept either:
+        // - an array of item objects (legacy), or
+        // - an array of placeholders like { jsonFile: '/path/to/file.json' }
         if (!Array.isArray(data)) throw new Error('Content data should be array');
         const container = document.getElementById(window._headerV2_contentLoadingManager.LOADING_CONTAINER_ID);
         if (!container) return;
@@ -214,6 +216,7 @@ export const contentManager = {
         this._isUnmounted = false;
         this._isRenderingNextBatch = false;
 
+        // items may contain placeholders
         const items = data.slice();
         this._items = items;
         this._initLearningWorkerIfNeeded(items.length);
@@ -231,17 +234,14 @@ export const contentManager = {
             document.head.appendChild(style);
         }
 
-        // หักการทำงานของ per-item viewport observation (viewObserver) เพื่อประหยัดทรัพยากร
-        // การบันทึก "view" จะถูกยกเลิก (ยังคงบันทึก clicks อยู่ตามเดิม)
-
-        const idList = items.map((it, idx) => it.id || `__idx_${idx}`);
+        const idList = items.map((it, idx) => (it && it.id) ? it.id : `__idx_${idx}`);
         let priorityScores = {};
         try { priorityScores = await this._getPriorityScoresFor(idList); } catch {}
         const scored = idList.some(id => priorityScores && priorityScores[id] && priorityScores[id] > 0);
         if (scored) {
             items.sort((a, b) => {
-                const idA = a.id || '';
-                const idB = b.id || '';
+                const idA = a && (a.id || '') || '';
+                const idB = b && (b.id || '') || '';
                 const sa = priorityScores[idA] || 0;
                 const sb = priorityScores[idB] || 0;
                 return sb - sa;
@@ -261,9 +261,10 @@ export const contentManager = {
             return sentinel;
         };
 
+        // renderBatch now handles placeholders: if item has jsonFile, fetch it (show spinner) then splice fetched array in place
         const renderBatch = async (startIndex, batchSize) => {
             if (signal.aborted || this._isUnmounted || session !== this._renderSession) return 0;
-            const end = Math.min(items.length, startIndex + batchSize);
+            let end = Math.min(items.length, startIndex + batchSize);
             if (startIndex >= end) return 0;
             const frag = document.createDocumentFragment();
             const t0 = performance.now();
@@ -272,7 +273,55 @@ export const contentManager = {
             for (let i = startIndex; i < end; i++) {
                 if (signal.aborted || this._isUnmounted || session !== this._renderSession) break;
                 if (this._renderedSet.has(i)) continue;
-                const item = items[i];
+                let item = items[i];
+
+                // If item is a placeholder pointing to a JSON file, fetch it now (only when about to render)
+                if (item && item.jsonFile && !item._fetched) {
+                    try {
+                        // show loading spinner while fetching the referenced file
+                        try { window._headerV2_contentLoadingManager.show(); } catch {}
+                        // fetch (no persistent storage) — allow dataManager to in-memory cache but not persist
+                        const fetched = await window._headerV2_dataManager.fetchWithRetry(item.jsonFile, { cache: true }).catch(err => { throw err; });
+                        // If fetched is an array, splice into items replacing placeholder
+                        if (Array.isArray(fetched)) {
+                            // mark placeholder as fetched to avoid re-fetch loops
+                            item._fetched = true;
+                            // replace placeholder with fetched items
+                            items.splice(i, 1, ...fetched);
+                            // adjust end to account for newly inserted items
+                            const delta = fetched.length - 1;
+                            end = Math.min(items.length, end + delta);
+                            // decrement i to process the first of newly inserted items next loop iteration
+                            i = i - 1;
+                            continue;
+                        } else if (typeof fetched === 'object' && fetched !== null && Array.isArray(fetched.data)) {
+                            // some JSON may return an object with data array
+                            const arr = fetched.data;
+                            item._fetched = true;
+                            items.splice(i, 1, ...arr);
+                            const delta = arr.length - 1;
+                            end = Math.min(items.length, end + delta);
+                            i = i - 1;
+                            continue;
+                        } else {
+                            // if fetched is single object, replace placeholder with that object
+                            items.splice(i, 1, fetched);
+                            // adjust end (delta = 0)
+                            item = fetched;
+                        }
+                    } catch (err) {
+                        console.error('Error fetching referenced jsonFile', err);
+                        // hide spinner on error and skip this placeholder
+                    } finally {
+                        try { window._headerV2_contentLoadingManager.hide(); } catch {}
+                    }
+                }
+
+                // refresh item reference (in case we spliced)
+                item = items[i];
+                if (!item) continue;
+
+                if (this._renderedSet.has(i)) continue;
                 const wrapper = this._acquireFromPool();
                 wrapper.id = item.id || `content-item-${i}`;
                 const inner = this.createContainer(item);
@@ -303,13 +352,12 @@ export const contentManager = {
             if (frag.childNodes.length > 0) {
                 container.appendChild(frag);
                 const appended = Array.from(container.children).slice(-created);
-                // ไม่ต้อง observe แต่ยังคงใช้ sentinel เพื่อโหลดชุดต่อไป
                 requestAnimationFrame(() => {
                     for (const node of appended) node.style.opacity = 1;
                 });
             }
 
-            // ถ้าต้องการจำกัดจำนวน DOM เพื่อไม่ให้หนักเกินไป ให้เก็บ MAX_IN_DOM ต่ำ ๆ
+            // Keep DOM size bounded
             const MAX_IN_DOM = 28;
             while (this._virtualNodes.length > MAX_IN_DOM) {
                 const old = this._virtualNodes.shift();
@@ -346,6 +394,8 @@ export const contentManager = {
                     scheduleIdle(async () => {
                         try {
                             if (signal.aborted || this._isUnmounted || session !== this._renderSession) return;
+                            // Before rendering next batch, ensure placeholders that will be rendered in this batch
+                            // get fetched inside renderBatch itself (so renderBatch will show spinner per-file)
                             const nextBatch = this._computeAdaptiveBatchSize();
                             const created = await renderBatch(renderedCount, nextBatch);
                             renderedCount = this._renderedSet.size;
@@ -372,7 +422,7 @@ export const contentManager = {
             this._sentinelObserver = new IntersectionObserver(onSentinelIntersect, { root: null, rootMargin: '400px', threshold: 0.1 });
             try { this._sentinelObserver.observe(sentinel); } catch {}
         } else {
-            // Fallback: ใช้การตรวจสอบตำแหน่ง sentinel แบบ throttle บน scroll
+            // Fallback: throttle scroll check
             this._throttledScrollCheck = this._throttledScrollCheck || (() => {
                 if (this._isRenderingNextBatch || signal.aborted || this._isUnmounted || session !== this._renderSession) return;
                 const rect = sentinel.getBoundingClientRect();

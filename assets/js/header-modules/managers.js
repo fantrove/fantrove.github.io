@@ -197,7 +197,7 @@ export const performanceOptimizer = {
     }
 };
 
-// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager แล[...]
+// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager และถูกปรับให้ส่ง placeholder jsonFile ให้ contentManager เพื่อให้ fetch เป็นแบบ on-demand
 export const subNavManager = {
     ensureSubNavContainer() {
         let subNav = document.getElementById('sub-nav');
@@ -349,10 +349,11 @@ export const buttonManager = {
                 if (!button.subButtons && button.url) {
                     await window._headerV2_navigationManager.navigateTo(button.url, { skipUrlUpdate });
                 }
+                // IMPORTANT: Do not fetch the entire jsonFile here.
+                // Instead, pass a placeholder to contentManager so it will fetch-on-demand per batch.
                 if (button.jsonFile) {
                     try {
-                        const data = await window._headerV2_dataManager.fetchWithRetry(button.jsonFile);
-                        await window._headerV2_contentManager.renderContent(data);
+                        await window._headerV2_contentManager.renderContent([{ jsonFile: button.jsonFile }]);
                     } catch {
                         window._headerV2_utils.showNotification('โหลดเนื้อหาไม่สำเร็จ', 'error');
                     }
@@ -432,8 +433,8 @@ export const buttonManager = {
             window._headerV2_subNavManager.hideSubNav();
         }
         if (mainConfig.jsonFile) {
-            const mainData = await window._headerV2_dataManager.fetchWithRetry(mainConfig.jsonFile);
-            await window._headerV2_contentManager.renderContent(mainData);
+            // send placeholder to contentManager
+            await window._headerV2_contentManager.renderContent([{ jsonFile: mainConfig.jsonFile }]);
         }
     },
 
@@ -451,8 +452,8 @@ export const buttonManager = {
                 this.state.currentSubButton = subButton;
                 if (subButtonConfig.jsonFile) {
                     await window._headerV2_contentManager.clearContent();
-                    const subData = await window._headerV2_dataManager.fetchWithRetry(subButtonConfig.jsonFile);
-                    await window._headerV2_contentManager.renderContent(subData);
+                    // render via placeholder (on-demand fetch)
+                    await window._headerV2_contentManager.renderContent([{ jsonFile: subButtonConfig.jsonFile }]);
                 }
                 this.scrollActiveSubButtonIntoView(subButton);
             }
@@ -488,8 +489,8 @@ export const buttonManager = {
         this.state.currentMainButton = button;
         this.state.currentMainButtonUrl = buttonUrl;
         if (mainConfig?.jsonFile) {
-            const data = await window._headerV2_dataManager.fetchWithRetry(mainConfig.jsonFile);
-            await window._headerV2_contentManager.renderContent(data);
+            // placeholder fetch-on-demand
+            await window._headerV2_contentManager.renderContent([{ jsonFile: mainConfig.jsonFile }]);
         }
         this.updateButtonState(button, false);
     },
@@ -503,8 +504,8 @@ export const buttonManager = {
         const subConfig = mainConfig?.subButtons?.find(btn => btn.url === subRoute || btn.jsonFile === subRoute);
         this.state.currentSubButton = button;
         if (subConfig?.jsonFile) {
-            const data = await window._headerV2_dataManager.fetchWithRetry(subConfig.jsonFile);
-            await window._headerV2_contentManager.renderContent(data);
+            // placeholder
+            await window._headerV2_contentManager.renderContent([{ jsonFile: subConfig.jsonFile }]);
         }
         this.updateButtonState(button, true);
         await window._headerV2_navigationManager.changeURL(buttonUrl);
@@ -547,8 +548,8 @@ export const buttonManager = {
                 await window._headerV2_contentManager.clearContent();
                 if (button.jsonFile) {
                     try {
-                        const data = await window._headerV2_dataManager.fetchWithRetry(button.jsonFile);
-                        await window._headerV2_contentManager.renderContent(data);
+                        // placeholder render to fetch-on-demand
+                        await window._headerV2_contentManager.renderContent([{ jsonFile: button.jsonFile }]);
                     } catch {
                         window._headerV2_utils.showNotification('โหลดเนื้อหาย่อยไม่สำเร็จ', 'error');
                     }
@@ -789,7 +790,7 @@ export const navigationManager = {
                 (() => {
                     const [m, s] = normalizedRoute.split('-');
                     return { main: m, sub: s || '' };
-                })() :
+                }) :
                 { main: normalizedRoute, sub: '' };
 
             this.state.currentMainRoute = main;
@@ -847,8 +848,8 @@ export const navigationManager = {
                 await window._headerV2_contentManager.clearContent();
                 if (subButton && subButton.jsonFile) {
                     try {
-                        const subData = await window._headerV2_dataManager.fetchWithRetry(subButton.jsonFile);
-                        await window._headerV2_content_manager?.renderContent ? await window._headerV2_content_manager.renderContent(subData) : await window._headerV2_contentManager.renderContent(subData);
+                        // Do NOT fetch subData here; pass placeholder to contentManager
+                        await window._headerV2_contentManager.renderContent([{ jsonFile: subButton.jsonFile }]);
                     } catch (e) {
                         window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาย่อย', 'error');
                     }
@@ -860,8 +861,8 @@ export const navigationManager = {
                 await window._headerV2_contentManager.clearContent();
                 if (mainButton?.jsonFile) {
                     try {
-                        const mainData = await window._headerV2_dataManager.fetchWithRetry(mainButton.jsonFile);
-                        await window._headerV2_contentManager.renderContent(mainData);
+                        // placeholder for main content
+                        await window._headerV2_contentManager.renderContent([{ jsonFile: mainButton.jsonFile }]);
                     } catch (e) {
                         window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาหลัก', 'error');
                     }
