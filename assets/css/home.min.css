@@ -266,9 +266,13 @@ section.mn {
 .hio {
   height: 100%;
   width: 100%;
-  background: radial-gradient(circle, #101A24 0%, #0E1A24 100%);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(181, 140, 255, 0.35) 0%, transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(24, 228, 161, 0.35) 0%, transparent 60%),
+    linear-gradient(135deg, #B58CFF 0%, #18E4A1 100%);
+  background-blend-mode: screen;
   padding-top: 0rem;
-  contain: paint; /* จำกัดผลกระทบของ background effect ต่อการ repaint ของหน้า */
+  contain: paint;
 }
 /* ---------- HERO ---------- */
 .hero {
