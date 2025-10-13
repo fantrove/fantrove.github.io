@@ -18,12 +18,6 @@
 /* Rendering & font smoothing - ช่วยให้ตัวอักษรคมขึ้นบนบางแพลตฟอร์ม */
 html {
   font-size: 15px;
-  -webkit-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth; /* ปรับปรุงการเลื่อนเมื่อใช้ anchor, ปลอดภัยและไม่กระทบ layout */
-  /* ป้องกันการเปลี่ยนขนาดฟอนต์แบบไม่ได้ตั้งใจบนมือถือ */
 }
 *, *:before, *:after {
   box-sizing: inherit;

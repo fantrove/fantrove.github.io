@@ -26,18 +26,9 @@
         0 0 2px rgba(19, 180, 127, 0.1);
 }
 
-/* base rendering tweaks */
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scrollbar-gutter: stable;
-}
-
 body {
  margin: 0;
  padding: 0;
- overflow-x: hidden;
 }
 
 /* ---------- HEADER ---------- */
