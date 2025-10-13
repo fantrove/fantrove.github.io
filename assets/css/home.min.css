@@ -31,12 +31,6 @@ body {
   font-size: 1.07rem;
   letter-spacing: 0.01em;
   -webkit-tap-highlight-color: transparent;
-
-  /* ประสิทธิภาพการเรนเดอร์ตัวอักษร */
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-synthesis: none;
 }
 
 /* ---------- TYPOGRAPHY ---------- */
