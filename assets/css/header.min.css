@@ -145,7 +145,6 @@ nav ul li button {
 
     will-change: color, background, transform, border;
     backface-visibility: hidden;
-    transform: translateZ(0);
 }
 
 nav ul li button:hover {
