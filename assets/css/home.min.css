@@ -826,7 +826,7 @@ section.o:has(.faq-toggle:checked) {
   html { font-size: 15.2px; }
   body { font-size: 0.9rem; }
   .section { margin: 1.1rem 0; }
-  .h1, h1 { font-size: 1.15rem; }
+  .h1, h1 { font-size: 1.2rem; }
   .h2, h2 { font-size: 1.1rem; }
   .h3, h3 { font-size: 1.05rem; }
   .lead { font-size: 1em; }
