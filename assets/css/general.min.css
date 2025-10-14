@@ -133,7 +133,6 @@ footer.footer-minimal {
   stroke: currentColor;
 }
 .footer-social:hover {
-  filter: brightness(0.8);
   border-color: rgba(181,140,255,0.4);
 }
 
