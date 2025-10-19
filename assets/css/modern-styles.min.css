@@ -7,7 +7,7 @@
   --primary-300: #7DD5FF;
   --primary-400: #38B6FF;
   --primary-500: #0095FF;
-  --primary-600: #009F6B;
+  --primary-600: #00CEB0;
   --primary-700: #005CB3;
   --primary-800: #004280;
   --primary-900: #002952;
@@ -181,7 +181,7 @@
   left: 50%;
   width: 30px;
   height: 40px;
-  background: rgba(32, 255, 182, 0.15) !important;
+  background: rgba(24,228,161,0.15) !important;
   border-radius: 50px;
   z-index: 0;
   transform: translate(-50%, -50%) scale(1);
@@ -199,6 +199,7 @@
 .nav-item.active-1 .label {
  letter-spacing: 0.02em;
  transition: color var(--transition-fast);
+ color: var(--primary-600);
 }
 
 /* Tablet and up (>=768px) -> left-side vertical navigation (tablet + desktop) */
