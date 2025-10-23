@@ -9,7 +9,7 @@
 :root{
   /* เพิ่มตัวแปรธีม เพื่อให้ง่ายต่อการปรับและไม่กระทบกับดีไซน์เดิม */
   --brand-1: #13b47f;
-  --brand-2: #0eb0d5;
+  --brand-2: #B58CFF;
   --bg-soft: #f6f7fb;
   --card-border: rgba(14,176,213,0.06);
   --muted: #8ea1b8;
@@ -56,7 +56,7 @@ h1, .h1 {
 h2, .h2 {
   font-size: 1.23rem;
   font-weight: 700;
-  color: var(--brand-2);
+  color: #B58CFF;
   margin: 0 0 1.08rem 0;
   letter-spacing: 0.018em;
 }
@@ -205,7 +205,6 @@ section.mn {
   z-index: 1;
   border: 1px solid rgba(181,140,255,0.15);
   background: transparent;
-  transition: border-color 0.3s cubic-bezier(.4,0,.2,1) !important;
   
   /* Gradient ข้อความ */
   background-image: radial-gradient(circle at 30% 30%, rgba(181, 140, 255, 0.75) 0%, transparent 60%),
@@ -535,7 +534,7 @@ section.o:has(.faq-toggle:checked) {
   background-clip: padding-box;
   position: relative;
   cursor: pointer;
-  transition: background 500ms, color 150ms, box-shadow 500ms, transform 100ms;
+  transition: transform 100ms;
 
   /* สร้างขอบ gradient */
   --border-gradient: radial-gradient(circle at 30% 30%, rgba(181, 140, 255, 0.35) 0%, transparent 60%),
@@ -771,7 +770,7 @@ section.o:has(.faq-toggle:checked) {
   overflow: hidden;              /* ซ่อนส่วนที่เกิน */
   text-overflow: ellipsis;       /* แสดง ... เมื่อเกิน */
   display: block;                /* แน่ใจว่า element เป็น block สำหรับตัดบรรทัด */
-  background: #E8FDFF;
+  background: #FAF8FF;
   padding: 0.3em 0.5em;
   border-radius: 25px;
 }
@@ -788,7 +787,7 @@ section.o:has(.faq-toggle:checked) {
   font-weight: 500;
 }
 .item-card:hover {
-  border-color: var(--brand-1);
+  border-color: #00CEB0;
   background: #F6FFFD;
   z-index: 2;
 }

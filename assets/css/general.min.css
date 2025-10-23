@@ -5,7 +5,8 @@
   --ft-shadow: 0 10px 30px rgba(0,0,0,0.08);
   --ft-radius: 24px;
 
-  --ft-accent: #18e4a1;
+  --ft-accent: #00CEB0;
+  --ft-accent-3: #18e4a1;
   --ft-accent-2: #b58cff;
   --ft-gradient: linear-gradient(135deg, rgba(181,140,255,0.15), rgba(24,228,161,0.15));
 
@@ -45,7 +46,7 @@ footer.footer-minimal {
   font-weight: 900;
   font-size: 1.3rem !important;
   letter-spacing: 0.05em;
-  background: linear-gradient(90deg, var(--ft-accent-2), var(--ft-accent));
+  background: linear-gradient(90deg, var(--ft-accent-2), var(--ft-accent-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-flex;

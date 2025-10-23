@@ -1,11 +1,11 @@
 :root {
-  --app-theme-indigo: #10B981;
+  --app-theme-indigo: #00CEB0;
   --app-theme-indigo-hover: #54CBAB;
   --app-theme-indigo-light: #54CBAB;
   --app-theme-indigo-lighter: rgba(96, 81, 255, 0.04);
-  --app-theme-indigo-border: rgba(84, 203, 171, 0.15);
-  --app-theme-indigo-border-strong: rgba(84, 203, 171, 0.8);
-  --app-theme-indigo-border2: rgba(84, 203, 171, 0.3);
+  --app-theme-indigo-border: rgba(0, 206, 176, 0.15);
+  --app-theme-indigo-border-strong: rgba(0, 206, 176, 0.8);
+  --app-theme-indigo-border2: rgba(0, 206, 176, 0.3);
   --app-text-heading: #494E59;
   --app-text-body: #52638A;
   --app-text-light: #6F6F82;

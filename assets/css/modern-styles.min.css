@@ -181,11 +181,12 @@
   left: 50%;
   width: 30px;
   height: 40px;
-  background: rgba(24,228,161,0.15) !important;
+  background: rgba(24,228,161,0.08) !important;
   border-radius: 50px;
   z-index: 0;
   transform: translate(-50%, -50%) scale(1);
   opacity: 0;
+  border: 1px solid rgba(24,228,161,0.3);
   transition: 
     width 1.2s cubic-bezier(.7,-.56,.3,1.55),
     transform 1.2s cubic-bezier(.7,-.56,.3,1.55),
