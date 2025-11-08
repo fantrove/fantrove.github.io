@@ -2,7 +2,7 @@
   <section class="n">
     <div class="text-h">
       <h1 data-ref="type-name"></h1>
-      <button data-ref="view-all-btn"></button>
+      <button data-ref="view-all-btn" style="user-select: none;"></button>
     </div>
     <div data-ref="categories-container"></div>
   </section>
@@ -21,7 +21,7 @@
 </template>
 
 <template id="home-item-card-template">
-  <div class="item-card" style="cursor: pointer;">
+  <div class="item-card" style="cursor: pointer; user-select: none;">
     <div class="emoji" data-ref="item-text"></div>
     <div class="name" data-ref="item-name"></div>
   </div>

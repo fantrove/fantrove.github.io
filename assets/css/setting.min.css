@@ -50,9 +50,23 @@
   --ui-font-size-heading: 1.7em;
 }
 
+/* 0) Make sizing predictable across elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* พื้นฐานของเว็บไซต์ */
+html, body {
+  height: 100%;
+}
+
 body {
   color: var(--ui-color-text-primary);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 main {
@@ -104,7 +118,6 @@ h5 {
 }
 
 section {
-  /*border-radius: 30px;*/
   overflow: hidden !important;
   padding: 2px;
   padding-top: 5px;
@@ -137,7 +150,7 @@ section.con h1 {
   padding: 20px;
 }
 
-/* สไตล์ select และ button */
+/* สไตล์ select และ button (ปรับให้ไม่ล้น) */
 .setting-item select,
 #language-button, .buttons {
   width: 100%;
@@ -153,26 +166,33 @@ section.con h1 {
   appearance: none;
   -webkit-tap-highlight-color: transparent;
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1.25rem;
   padding-right: 2.5rem;
   user-select: none;
+  min-width: 0; /* important for flex children shrinking */
+}
+
+/* ใช้ background arrow เฉพาะ container ที่ต้องการ */
+.setting-item.select, #language-button {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Buttons group */
+.buttons {
+  display: flex;
+  gap: 15px;
   align-items: center;
 }
 
-.setting-item.select, #language-button {
- background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");  
-}
-
-.buttons {
- display: flex;
- gap: 15px;
-}
-
+/* วงกลมและ width ปรับให้ปลอดภัย */
 .w {
   border-radius: 30px;
   width: 100%;
+  min-width: 0;
 }
 
 .buttons:hover, .setting-item.select:hover, #language-button:hover, .buttons.auto-update-toggle:hover {
@@ -183,22 +203,19 @@ section.con h1 {
 }
 
 .buttons svg {
- height: 21px !important;
- width: auto;
- flex-shrink: 0;
- display: block;
- align-items: center;
- stroke-width: 1.5 !important;
+  height: 21px !important;
+  width: auto;
+  flex-shrink: 0;
+  display: block;
+  align-items: center;
+  stroke-width: 1.5 !important;
 }
 
 .buttons.tap {
- background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");  
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
 }
 
-.buttons.e svg {
-  height: 18.5px;
-}
-
+.buttons.e svg,
 .buttons.a svg {
   height: 18.5px;
 }
@@ -229,10 +246,12 @@ section.con h1 {
   position: relative;
 }
 
+/* Disable touch scroll when overlay active (controlled by JS adding .scroll-lock) */
 .scroll-lock {
   touch-action: none;
 }
 
+/* overlay ครอบหน้าจอ */
 #language-overlay {
   position: fixed;
   top: 0;
@@ -256,35 +275,57 @@ section.con h1 {
   opacity: 0;
 }
 
+/* main dropdown: ใช้ box-sizing, max-width, min-width และ min-height เพื่อควบคุมขนาด */
 #language-dropdown {
   position: fixed;
   top: 50%;
   left: 50%;
   width: 85%;
+  max-width: 960px;
+  min-width: 280px;
   max-height: 60%;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(0.9);
   background: white;
   padding: 25px;
   border-radius: 30px;
   box-shadow: 0 0px 15px rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transition: opacity 1000ms ease;
+  transition: opacity 250ms var(--ui-transition-speed-fast), transform 700ms ease;
   z-index: 99990;
   display: none;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* ถ้ามี fade-in ใช้แสดง */
 #language-dropdown.fade-in {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+  
 }
 
 #language-dropdown.fade-out {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(1);
 }
 
+@keyframes c {
+  from {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ป้องกัน flex child ขยายเกินขอบ */
+#language-dropdown > * {
+  min-width: 0;
+}
+
+/* ปรับ .language-option ให้คงความกว้างภายใน container */
 .language-option {
+  box-sizing: border-box;
+  display: block;
   width: 100%;
   padding: var(--ui-spacing-medium) var(--ui-spacing-large);
   margin-bottom: var(--ui-spacing-small);
@@ -299,12 +340,36 @@ section.con h1 {
   text-align: left;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* เปลี่ยนเป็น normal ถ้าต้องการ wrap */
+  min-width: 0;
 }
 
+/* hover ของ option */
 .language-option:hover {
   border-color: #00FFAA;
+  background-color: rgba(0, 255, 170, 0.03);
 }
 
+/* ถ้าต้องการให้ option สามารถ wrap ข้อความได้ ให้ใช้ class .language-option--wrap */
+.language-option--wrap {
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* ข้อความภายใน option ที่แยกเป็น label/meta */
+.language-option .label,
+.language-option .meta {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Error toast สำหรับ language */
 .language-error {
   position: fixed;
   top: 20px;
@@ -327,6 +392,21 @@ section.con h1 {
 .language-error.hide {
   opacity: 0;
   transform: translateX(20px);
+}
+
+/* เลี่ยงการใช้ padding-right ใหญ่จนเกินไปบน small screens */
+@media (max-width: 420px) {
+  .setting-item select,
+  #language-button, .buttons {
+    padding-right: 1.25rem;
+    font-size: 0.95em;
+  }
+
+  #language-dropdown {
+    width: 92%;
+    padding: 18px;
+    border-radius: 20px;
+  }
 }
 
 /* Responsive Design */
