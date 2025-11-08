@@ -25,6 +25,7 @@ footer.footer-minimal {
   margin: 6rem 0;
   padding: 4rem 2rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Layout & Grid */
