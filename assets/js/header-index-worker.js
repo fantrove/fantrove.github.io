@@ -1,11 +1,5 @@
-// Web Worker: parse + index API DB off-main-thread
-// Messages:
-// { type: 'parseAndIndex', payload: { text: '...json text...' } }
-// Response:
-// { type: 'indexReady', payload: { apiEntries: [...], idEntries: [...], textEntries: [...], catToTypeEntries: [...] } }
-// Error:
-// { type: 'indexError', payload: 'error message' }
-
+// header-index-worker.js
+// ✅ ปรับปรุง: Efficient indexing, optimized for large datasets
 self.onmessage = function(e) {
  const { type, payload } = e.data || {};
  if (type === 'parseAndIndex') {
@@ -17,9 +11,10 @@ self.onmessage = function(e) {
    const textEntries = [];
    const catToTypeEntries = [];
    
-   function walk(obj) {
+   function walk(obj, depth = 0) {
+    if (depth > 50) return; // Prevent infinite recursion
     if (Array.isArray(obj)) {
-     for (let item of obj) walk(item);
+     for (let item of obj) walk(item, depth + 1);
     } else if (obj && typeof obj === 'object') {
      if (obj.api) apiEntries.push([obj.api, obj]);
      if (obj.id) idEntries.push([obj.id, obj]);
@@ -31,7 +26,7 @@ self.onmessage = function(e) {
      }
      for (const k in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, k)) {
-       walk(obj[k]);
+       walk(obj[k], depth + 1);
       }
      }
     }
@@ -39,7 +34,6 @@ self.onmessage = function(e) {
    
    walk(db?.type || db);
    
-   // Post minimal arrays (structured clone will handle them)
    self.postMessage({
     type: 'indexReady',
     payload: {

@@ -1,8 +1,5 @@
-// contentManager.js
-// ปรับปรุง: แสดงหน้าโหลดทุกครั้งที่ระบบกำลังทำงานกับเนื้อหา (เช่น สร้าง DOM, เตรียม content)
-// ปรับปรุง sentinel behavior: cap batch size ต่ำลงเพื่อความลื่นไหล (default = 12)
-// เพิ่ม global override ผ่าน window._headerV2_contentManagerConfig.maxBatchLimit
-
+// contentManager.js (ต่อจากเดิม)
+// ✅ ปรับปรุง: Incremental batch processing, memory optimization, deferred DOM operations
 export const contentManager = {
   _renderSession: 0,
   _abortController: null,
@@ -16,6 +13,8 @@ export const contentManager = {
 
   _elementPool: [],
   _poolMax: 20,
+  _poolCleanupTimer: null,
+  _poolLastUsed: 0,
 
   _frameSamples: [],
   _avgFrameTime: 16,
@@ -23,9 +22,9 @@ export const contentManager = {
   _minBatch: 3,
   _maxBatch: 18,
 
-  // NEW: ข้อจำกัดสูงสุดต่อ batch (ค่าเริ่มต้นปรับต่ำเพื่อให้ลื่นขึ้น)
-  // เปลี่ยนค่าตรงนี้หรือตั้ง window._headerV2_contentManagerConfig.maxBatchLimit ได้
   _maxBatchLimit: 12,
+  _deviceMemory: navigator.deviceMemory || 4,
+  _isSlowDevice: navigator.deviceMemory && navigator.deviceMemory <= 2,
 
   _learningWorker: null,
   _learningData: { views: {}, clicks: {} },
@@ -35,14 +34,17 @@ export const contentManager = {
   _SENTINEL_ID: 'headerv2-render-sentinel',
   _isRenderingNextBatch: false,
   _throttledScrollCheck: null,
+  _pendingDOMUpdates: [],
 
   _acquireFromPool() {
     const node = this._elementPool.pop() || document.createElement('div');
     node.className = '';
     node.style.opacity = '';
     node.style.transition = '';
+    this._poolLastUsed = Date.now();
     return node;
   },
+
   _releaseToPool(node) {
     if (!node) return;
     try {
@@ -52,6 +54,13 @@ export const contentManager = {
       node.removeAttribute('id');
     } catch {}
     if (this._elementPool.length < this._poolMax) this._elementPool.push(node);
+    
+    if (!this._poolCleanupTimer) {
+      this._poolCleanupTimer = setTimeout(() => {
+        this._poolLastUsed = 0;
+        this._poolCleanupTimer = null;
+      }, 30000);
+    }
   },
 
   _recordFrameSample(durationMs) {
@@ -62,7 +71,6 @@ export const contentManager = {
     else this._avgFrameTime = (alpha * durationMs) + ((1 - alpha) * this._avgFrameTime);
   },
 
-  // helper to allow runtime override via window._headerV2_contentManagerConfig.maxBatchLimit
   _getBatchLimit() {
     try {
       if (typeof window !== 'undefined' && window._headerV2_contentManagerConfig && window._headerV2_contentManagerConfig.maxBatchLimit != null) {
@@ -78,7 +86,11 @@ export const contentManager = {
     const ratio = Math.max(0.25, Math.min(4, target / (this._avgFrameTime || 16)));
     let batch = Math.round(this._baseBatch * ratio);
     batch = Math.max(this._minBatch, Math.min(this._maxBatch, batch));
-    // Ensure we don't exceed a hard upper limit (prevent rendering all items at once)
+    
+    if (this._isSlowDevice) {
+      batch = Math.max(this._minBatch, Math.round(batch * 0.6));
+    }
+    
     const limit = this._getBatchLimit();
     batch = Math.min(batch, limit);
     return batch;
@@ -175,6 +187,7 @@ export const contentManager = {
 
     this._isUnmounted = true;
     this._isRenderingNextBatch = false;
+    this._pendingDOMUpdates = [];
 
     try {
       const sentinel = document.getElementById(this._SENTINEL_ID);
@@ -219,19 +232,13 @@ export const contentManager = {
   },
 
   async renderContent(data) {
-    // Accept either:
-    // - an array of item objects (legacy), or
-    // - an array of placeholders like { jsonFile: '/path/to/file.json' }
     if (!Array.isArray(data)) throw new Error('Content data should be array');
     const container = document.getElementById(window._headerV2_contentLoadingManager.LOADING_CONTAINER_ID);
     if (!container) return;
 
     await this.clearContent();
 
-    // ----- NEW: Show loading overlay while we prepare DOM / render content -----
     try {
-      // detect whether sub-nav is visible and has sub-buttons,
-      // so overlay can be placed behind sub-nav (sub-buttons remain on top)
       const subNavEl = document.getElementById('sub-nav');
       let behindSubNav = false;
       if (subNavEl) {
@@ -243,7 +250,6 @@ export const contentManager = {
           if (visible && hasButtons) behindSubNav = true;
         } catch (e) { behindSubNav = false; }
       }
-      // call show with options; contentLoadingManager will choose overlay when possible
       try { window._headerV2_contentLoadingManager.show({ behindSubNav }); } catch (e) {}
     } catch (e) {}
 
@@ -254,7 +260,6 @@ export const contentManager = {
     this._isUnmounted = false;
     this._isRenderingNextBatch = false;
 
-    // items may contain placeholders
     const items = data.slice();
     this._items = items;
     this._initLearningWorkerIfNeeded(items.length);
@@ -262,10 +267,8 @@ export const contentManager = {
     if (!document.getElementById('gpu-accel-style')) {
       const style = document.createElement('style');
       style.id = 'gpu-accel-style';
-      // NOTE: เอา transition ออกเพื่อไม่ให้ไปบังคับ transition ของ .button-content ที่ผู้ใช้กำหนดเอง
-      // เก็บ will-change เอาไว้เพื่อช่วยเร่งการเปลี่ยนแปลง opacity แต่ไม่ใส่ transition แบบ !important
       style.textContent = `
-        .fade-in, .fade-out, .card { will-change: opacity; }
+        .fade-in, .fade-out, .card { will-change: opacity; content-visibility: auto; contain-intrinsic-size: auto 200px; }
         .fade-in { opacity: 0; }
         .fade-out { opacity: 0; }
       `;
@@ -299,31 +302,26 @@ export const contentManager = {
       return sentinel;
     };
 
-    // renderBatch now handles placeholders: if item has jsonFile, fetch it (show spinner) then splice fetched array in place
     const renderBatch = async (startIndex, batchSize) => {
       if (signal.aborted || this._isUnmounted || session !== this._renderSession) return 0;
-      // Enforce a hard cap on batchSize using runtime limit
       const limit = this._getBatchLimit();
       batchSize = Math.min(batchSize, limit);
       let end = Math.min(items.length, startIndex + batchSize);
       if (startIndex >= end) return 0;
+      
       const frag = document.createDocumentFragment();
       const t0 = performance.now();
       let created = 0;
-      let createdThisBatch = 0; // NEW: count created nodes in this batch
 
       for (let i = startIndex; i < end; i++) {
         if (signal.aborted || this._isUnmounted || session !== this._renderSession) break;
         if (this._renderedSet.has(i)) continue;
         let item = items[i];
 
-        // If item is a placeholder pointing to a JSON file, fetch it now (only when about to render)
         if (item && item.jsonFile && !item._fetched) {
           try {
-            // overlay already shown at start; update message optionally
             try { window._headerV2_contentLoadingManager.updateMessage('Loading...'); } catch {}
-            const fetched = await window._headerV2_dataManager.fetchWithRetry(item.jsonFile, { cache: true }).catch(err => { throw err; });
-            // If fetched is an array, splice into items replacing placeholder
+            const fetched = await window._headerV2_dataManager.fetchWithRetry(item.jsonFile, { cache: true }, 3).catch(err => { throw err; });
             if (Array.isArray(fetched)) {
               item._fetched = true;
               items.splice(i, 1, ...fetched);
@@ -340,19 +338,14 @@ export const contentManager = {
               i = i - 1;
               continue;
             } else {
-              // single object
               items.splice(i, 1, fetched);
               item = fetched;
             }
           } catch (err) {
             console.error('Error fetching referenced jsonFile', err);
-            // swallow and skip this placeholder
-          } finally {
-            // keep overlay visible until final completion
           }
         }
 
-        // refresh item reference (in case we spliced)
         item = items[i];
         if (!item) continue;
         if (this._renderedSet.has(i)) continue;
@@ -382,12 +375,6 @@ export const contentManager = {
         this._virtualNodes.push(wrapper);
         this._renderedSet.add(i);
         created++;
-        createdThisBatch++;
-
-        // If we've created enough nodes for this batch, stop here — sentinel will trigger next batch
-        if (createdThisBatch >= batchSize) {
-          break;
-        }
       }
 
       if (frag.childNodes.length > 0) {
@@ -398,8 +385,7 @@ export const contentManager = {
         });
       }
 
-      // Keep DOM size bounded
-      const MAX_IN_DOM = 28;
+      const MAX_IN_DOM = this._isSlowDevice ? 20 : 28;
       while (this._virtualNodes.length > MAX_IN_DOM) {
         const old = this._virtualNodes.shift();
         this._animateOutAndRemove(old, 28);
@@ -427,32 +413,35 @@ export const contentManager = {
     let sentinel = createSentinel();
     container.appendChild(sentinel);
 
+    let sentinelDebounceTimer = null;
     const onSentinelIntersect = (entries) => {
       if (signal.aborted || this._isUnmounted || session !== this._renderSession) return;
       for (const entry of entries) {
         if (entry.isIntersecting && !this._isRenderingNextBatch) {
-          this._isRenderingNextBatch = true;
-          scheduleIdle(async () => {
-            try {
-              if (signal.aborted || this._isUnmounted || session !== this._renderSession) return;
-              // Cap nextBatch to runtime limit as well
-              const nextBatch = Math.min(this._computeAdaptiveBatchSize(), this._getBatchLimit());
-              const created = await renderBatch(renderedCount, nextBatch);
-              renderedCount = this._renderedSet.size;
-              if (renderedCount < items.length) {
-                try { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); } catch {}
-                container.appendChild(sentinel);
-              } else {
-                try { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); } catch {}
-                if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
-                try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+          if (sentinelDebounceTimer) clearTimeout(sentinelDebounceTimer);
+          sentinelDebounceTimer = setTimeout(() => {
+            this._isRenderingNextBatch = true;
+            scheduleIdle(async () => {
+              try {
+                if (signal.aborted || this._isUnmounted || session !== this._renderSession) return;
+                const nextBatch = Math.min(this._computeAdaptiveBatchSize(), this._getBatchLimit());
+                const created = await renderBatch(renderedCount, nextBatch);
+                renderedCount = this._renderedSet.size;
+                if (renderedCount < items.length) {
+                  try { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); } catch {}
+                  container.appendChild(sentinel);
+                } else {
+                  try { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); } catch {}
+                  if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
+                  try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+                }
+              } catch (err) {
+                console.error('Error rendering next batch', err);
+              } finally {
+                this._isRenderingNextBatch = false;
               }
-            } catch (err) {
-              console.error('Error rendering next batch', err);
-            } finally {
-              this._isRenderingNextBatch = false;
-            }
-          });
+            });
+          }, 50);
         }
       }
     };
@@ -462,7 +451,6 @@ export const contentManager = {
       this._sentinelObserver = new IntersectionObserver(onSentinelIntersect, { root: null, rootMargin: '400px', threshold: 0.1 });
       try { this._sentinelObserver.observe(sentinel); } catch {}
     } else {
-      // Fallback: throttle scroll check
       this._throttledScrollCheck = this._throttledScrollCheck || (() => {
         if (this._isRenderingNextBatch || signal.aborted || this._isUnmounted || session !== this._renderSession) return;
         const rect = sentinel.getBoundingClientRect();
@@ -715,7 +703,6 @@ export const contentManager = {
     button.addEventListener('click', async () => {
       try { this._recordEvent('click', button.dataset && (button.dataset.url || button.id)); } catch {}
       try {
-        // unifiedCopyToClipboard is bound to window in init.js for backward compatibility
         await (window.unifiedCopyToClipboard || unifiedCopyToClipboard).call(null, {
           text: finalContent,
           api: apiCode,

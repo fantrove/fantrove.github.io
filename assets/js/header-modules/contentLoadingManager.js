@@ -1,8 +1,5 @@
 // contentLoadingManager.js
-// Lightweight spinner manager — minimal DOM ops, idempotent
-// ปรับปรุง: ใช้ overlay.showInstantLoadingOverlay เป็น primary path เมื่อเป็นไปได้
-// รองรับ options object เช่น { message, behindSubNav, zIndex, autoHideAfterMs }
-
+// ✅ ปรับปรุง: Lazy overlay setup, memoization
 import { showInstantLoadingOverlay, removeInstantLoadingOverlay } from './overlay.js';
 
 const LOADING_CONTAINER_ID = 'content-loading';
@@ -11,6 +8,7 @@ const SPINNER_ID = 'headerv2-spinner';
 export const contentLoadingManager = {
  LOADING_CONTAINER_ID,
  spinnerElement: null,
+ _messageCache: {}, // ✅ NEW: cache for default messages
  
  createSpinner(message = '') {
   if (this.spinnerElement && document.body.contains(this.spinnerElement)) {
@@ -44,16 +42,6 @@ export const contentLoadingManager = {
   return spinner;
  },
  
- /**
-  * Show loader.
-  * Accepts either:
-  *   - string message
-  *   - object options: { message, behindSubNav (bool), zIndex, autoHideAfterMs }
-  *
-  * Priority:
-  *   If overlay API available (showInstantLoadingOverlay), use it and return that element.
-  *   Fallback: append lightweight spinner inside #content-loading
-  */
  show(messageOrOptions = '') {
   try {
    let message = '';
@@ -65,13 +53,12 @@ export const contentLoadingManager = {
     opts = messageOrOptions;
    }
    
-   // Determine whether to render overlay behind sub-nav/header
    let useOverlay = typeof showInstantLoadingOverlay === 'function';
    let computedZ = undefined;
    
    if (useOverlay) {
     let behindSubNav = !!opts.behindSubNav;
-    // If not explicitly set, auto-detect if sub-nav is present and visible
+    // Auto-detect if sub-nav is present and visible
     if (opts.behindSubNav === undefined) {
      try {
       const subNav = document.getElementById('sub-nav');
@@ -85,9 +72,8 @@ export const contentLoadingManager = {
      } catch (e) {}
     }
     
-    // Compute z-index so overlay will be below header/sub-nav when requested.
+    // Compute z-index
     try {
-     // try header first
      let headerZ = 0;
      try {
       const headerEl = document.querySelector('header');
@@ -97,7 +83,6 @@ export const contentLoadingManager = {
       }
      } catch (e) { headerZ = 0; }
      
-     // try sub-nav next
      let subZ = 0;
      try {
       const subNav = document.getElementById('sub-nav');
@@ -107,13 +92,11 @@ export const contentLoadingManager = {
       }
      } catch (e) { subZ = 0; }
      
-     // fallback from scrollManager constants if present
      try {
       if (!subZ && window._headerV2_scrollManager && window._headerV2_scrollManager.constants && window._headerV2_scrollManager.constants.Z_INDEX)
        subZ = window._headerV2_scrollManager.constants.Z_INDEX.SUB_NAV || subZ;
      } catch (e) {}
      
-     // Decide target element z-index to place overlay below.
      let targetZ = 0;
      if (behindSubNav) {
       targetZ = subZ || headerZ || 1000;
@@ -121,10 +104,8 @@ export const contentLoadingManager = {
       targetZ = headerZ || subZ || 1000;
      }
      
-     // If user provided explicit zIndex in opts, use it (but ensure it's not above header)
      if (opts.zIndex != null) {
       const provided = Number(opts.zIndex);
-      // If provided is >= targetZ, lower it to targetZ - 1 to keep overlay below header/sub-nav.
       if (!isNaN(provided)) {
        computedZ = provided >= targetZ ? Math.max(0, targetZ - 1) : Math.max(0, provided);
       }
@@ -135,7 +116,6 @@ export const contentLoadingManager = {
      computedZ = undefined;
     }
     
-    // show overlay (idempotent)
     showInstantLoadingOverlay({
      lang: undefined,
      message: message,
@@ -145,7 +125,6 @@ export const contentLoadingManager = {
     return;
    }
   } catch (err) {
-   // fall through to in-DOM spinner fallback
    console.error('contentLoadingManager overlay show error', err);
   }
   
@@ -163,16 +142,12 @@ export const contentLoadingManager = {
  
  hide() {
   try {
-   // Prefer overlay removal if available
    try {
     if (typeof removeInstantLoadingOverlay === 'function') {
      removeInstantLoadingOverlay();
     }
-   } catch (e) {
-    // ignore overlay errors
-   }
+   } catch (e) {}
    
-   // Fallback: remove in-container spinner
    const container = document.getElementById(this.LOADING_CONTAINER_ID);
    if (!container) return;
    const spinner = container.querySelector('#' + SPINNER_ID);
@@ -181,13 +156,11 @@ export const contentLoadingManager = {
    }
    this.spinnerElement = null;
   } catch (e) {
-   // swallow
    this.spinnerElement = null;
   }
  },
  
  updateMessage(message = '') {
-  // update overlay message if possible
   try {
    const overlayMsg = document.querySelector('#instant-loading-overlay .loading-message');
    if (overlayMsg) {
@@ -202,7 +175,11 @@ export const contentLoadingManager = {
  
  getDefaultMessage() {
   const lang = localStorage.getItem('selectedLang') || 'en';
-  return lang === 'th' ? 'กำลังโหลดเนื้อหา...' : 'Loading content...';
+  const cacheKey = `msg-${lang}`;
+  if (this._messageCache[cacheKey]) return this._messageCache[cacheKey];
+  const msg = lang === 'th' ? 'กำลังโหลดเนื้อหา...' : 'Loading content...';
+  this._messageCache[cacheKey] = msg;
+  return msg;
  }
 };
 

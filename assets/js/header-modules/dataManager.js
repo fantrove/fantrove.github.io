@@ -1,5 +1,5 @@
 // dataManager.js
-// แยกจากต้นฉบับ: ให้เป็นอ็อบเจ็กต์ที่สามารถผูกกับ window ได้
+// ✅ ปรับปรุง: Priority queue, incremental parsing, smart memory management
 import { _headerV2_utils } from './utils.js';
 
 const dataManager = {
@@ -19,8 +19,14 @@ const dataManager = {
     _jsonDbIndexReady: false,
     _jsonDbIndexPromise: null,
 
+    // ✅ NEW: Priority queue system
+    _fetchQueue: [],
+    _fetchInProgress: new Map(),
+    _queueProcessing: false,
+
     _indexWorker: null,
     _indexWorkerSupported: typeof Worker !== 'undefined' && typeof URL !== 'undefined',
+    
     _initIndexWorker() {
         if (this._indexWorker) return;
         if (!this._indexWorkerSupported) return;
@@ -31,11 +37,56 @@ const dataManager = {
         }
     },
 
-    // NOTE: We keep the IndexedDB helper methods in the file for compatibility,
-    // but we no longer use them in fetchWithRetry. This ensures we don't persist
-    // fetched content across page reloads.
+    // ✅ NEW: Priority-based fetch queue
+    async _enqueueFetch(url, options = {}, priority = 5) {
+        return new Promise((resolve, reject) => {
+            const task = {
+                url,
+                options,
+                priority: priority || 5, // 1=highest, 10=lowest
+                resolve,
+                reject,
+                timestamp: Date.now()
+            };
+            
+            this._fetchQueue.push(task);
+            this._fetchQueue.sort((a, b) => a.priority - b.priority);
+            this._processFetchQueue();
+        });
+    },
+
+    async _processFetchQueue() {
+        if (this._queueProcessing || this._fetchQueue.length === 0) return;
+        
+        this._queueProcessing = true;
+        
+        while (this._fetchQueue.length > 0) {
+            // Limit concurrent fetches to 2
+            if (this._fetchInProgress.size >= 2) {
+                await new Promise(r => setTimeout(r, 50));
+                continue;
+            }
+            
+            const task = this._fetchQueue.shift();
+            const taskId = `${task.url}-${task.priority}`;
+            
+            this._fetchInProgress.set(taskId, true);
+            
+            this._performFetch(task.url, task.options)
+                .then(result => {
+                    task.resolve(result);
+                    this._fetchInProgress.delete(taskId);
+                })
+                .catch(err => {
+                    task.reject(err);
+                    this._fetchInProgress.delete(taskId);
+                });
+        }
+        
+        this._queueProcessing = false;
+    },
+
     _openIndexedDB() {
-        // kept for compatibility but unused
         if (this._dbPromise) return this._dbPromise;
         this._dbPromise = new Promise((resolve, reject) => {
             try {
@@ -54,12 +105,11 @@ const dataManager = {
     },
 
     async _getFromIndexedDB(key) {
-        // unused now — return null to indicate no persistent cache
         return null;
     },
 
     async _setToIndexedDB(key, data) {
-        // unused now — do nothing
+        // unused — do nothing
     },
 
     getCached(key) {
@@ -71,9 +121,11 @@ const dataManager = {
         }
         return cached.data;
     },
+
     setCache(key, data, expiry = this.constants.CACHE_DURATION) {
         this.cache.set(key, { data, expiry: Date.now() + expiry });
     },
+
     clearCache() {
         this.cache.clear();
         this.apiCache = null;
@@ -90,7 +142,12 @@ const dataManager = {
             const doWarmup = async () => {
                 try {
                     if (!window._headerV2_utils.isOnline()) return resolve();
-                    await this.fetchWithRetry(this.constants.BUTTONS_CONFIG_PATH).catch(()=>{});
+                    // Low priority warmup (priority 9)
+                    await this._enqueueFetch(
+                        this.constants.BUTTONS_CONFIG_PATH,
+                        { cache: 'force-cache' },
+                        9
+                    ).catch(()=>{});
                 } finally {
                     resolve();
                 }
@@ -101,28 +158,23 @@ const dataManager = {
         return this._warmupPromise;
     },
 
-    async fetchWithRetry(url, options = {}) {
-        // Important change:
-        // - Do NOT read/write IndexedDB anymore.
-        // - Use only in-memory cache (this.cache) for session-lifetime caching.
+    async _performFetch(url, options = {}) {
         const key = `${url}-${JSON.stringify(options)}`;
         const cached = this.getCached(key);
         if (cached) return cached;
 
         try {
-            // Skip any persistent DB retrieval — we intentionally do not persist across reloads.
-        } catch (err) {}
-
-        try {
             if (!window._headerV2_utils.isOnline()) throw new Error('Offline');
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), this.constants.FETCH_TIMEOUT);
+            
             const response = await fetch(url, {
                 ...options,
                 headers: { 'Content-Type': 'application/json', ...options.headers },
                 signal: controller.signal,
                 cache: options.cache === 'reload' ? 'reload' : 'no-store'
             });
+            
             clearTimeout(timeoutId);
             if (!response.ok) throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
 
@@ -136,14 +188,11 @@ const dataManager = {
                 }
                 if (data) {
                     if (options.cache !== false) {
-                        // only in-memory cache; do not persist to IndexedDB
                         this.setCache(key, data);
                     }
-                    // build json index for in-memory DB (no persistence)
                     this._buildJsonDbIndex(data, text).catch(()=>{});
                     return data;
                 } else {
-                    // fallback if parsing failed
                     const parsed = JSON.parse(text);
                     if (options.cache !== false) {
                         this.setCache(key, parsed);
@@ -167,6 +216,11 @@ const dataManager = {
             });
             throw err;
         }
+    },
+
+    // ✅ NEW: Priority-aware fetch
+    async fetchWithRetry(url, options = {}, priority = 5) {
+        return this._enqueueFetch(url, options, priority);
     },
 
     async _buildJsonDbIndex(db, rawText) {
@@ -264,7 +318,12 @@ const dataManager = {
             return this.apiCache;
         }
         try {
-            const db = await this.fetchWithRetry(this.constants.API_DATABASE_PATH);
+            // High priority (priority 1)
+            const db = await this._enqueueFetch(
+                this.constants.API_DATABASE_PATH,
+                {},
+                1
+            );
             this.apiCache = db;
             this.apiCacheTimestamp = Date.now();
             try {

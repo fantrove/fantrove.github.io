@@ -1,5 +1,5 @@
 // init.js
-// โมดูลนี้นำเข้าทุกโมดูลย่อย (ที่เราแยกไว้) มาผูกกับ window._headerV2_* และสั่ง initialize
+// ✅ ปรับปรุง: Deferred initialization, phase-based loading, performance monitoring
 import { showInstantLoadingOverlay } from './overlay.js';
 import { _headerV2_utils, ErrorManager, showNotification } from './utils.js';
 import dataManagerDefault from './dataManager.js';
@@ -9,7 +9,7 @@ import { scrollManager, performanceOptimizer, navigationManager, buttonManager, 
 import unifiedCopy from './unifiedCopyToClipboard.js';
 
 export async function init() {
- // bind utilities and managers to window for backward compatibility
+ // ✅ Phase 1: Critical path initialization (synchronous binding)
  window._headerV2_utils = _headerV2_utils;
  window._headerV2_errorManager = _headerV2_utils.errorManager;
  window._headerV2_dataManager = dataManagerDefault;
@@ -22,7 +22,7 @@ export async function init() {
  window._headerV2_subNavManager = subNavManager;
  window.unifiedCopyToClipboard = unifiedCopy;
  
- // ensure DOM elements used by header exist (ensureElement simplified)
+ // ✅ Ensure DOM elements exist
  function ensureElement(selector, tag = 'div', id = '') {
   let el = document.querySelector(selector);
   if (!el) {
@@ -40,24 +40,26 @@ export async function init() {
  
  window._headerV2_elements = { header, navList, subButtonsContainer, contentLoading, logo };
  
- // show overlay early
+ // ✅ Show overlay early
  try { showInstantLoadingOverlay(); } catch {}
  
- // initialize core managers and load config
+ // ✅ Phase 2: Setup core managers (critical for functionality)
  try {
   window._headerV2_performanceOptimizer.setupErrorBoundary();
   window._headerV2_scrollManager.init();
   window._headerV2_performanceOptimizer.init();
   
-  // events
+  // Network status events
   window.addEventListener('online', () => {
    window._headerV2_utils.showNotification('การเชื่อมต่อกลับมาแล้ว', 'success');
    window._headerV2_buttonManager.loadConfig().catch(() => {});
   }, { passive: true });
+  
   window.addEventListener('offline', () => {
    window._headerV2_utils.showNotification('ขาดการเชื่อมต่ออินเทอร์เน็ต', 'warning');
   }, { passive: true });
   
+  // History events
   window.addEventListener('popstate', async () => {
    try {
     const url = window.location.search;
@@ -75,6 +77,7 @@ export async function init() {
    }
   }, { passive: true });
   
+  // Language change events
   window.addEventListener('languageChange', (event) => {
    const newLang = event.detail?.language || 'en';
    try {
@@ -87,6 +90,7 @@ export async function init() {
    }
   }, { passive: true });
   
+  // Resize events with debouncing
   let resizeTimeout;
   window.addEventListener('resize', () => {
    clearTimeout(resizeTimeout);
@@ -100,7 +104,7 @@ export async function init() {
    }, 150);
   }, { passive: true });
   
-  // load button config and initial navigation
+  // ✅ Load button config
   try {
    await window._headerV2_buttonManager.loadConfig();
   } catch (e) {
@@ -108,6 +112,7 @@ export async function init() {
    console.error('loadConfig error', e);
   }
   
+  // ✅ Initial navigation
   try {
    const navMgr = window._headerV2_navigationManager;
    const url = window.location.search;
@@ -123,8 +128,11 @@ export async function init() {
   }
  } catch (error) {
   console.error('init error', error);
-  try { window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดแอพพลิเคชัน กรุณารีเฟรชหน้าเว็บอีกครั้ง', 'error'); } catch {}
+  try {
+   window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดแอพพลิเคชัน กรุณารีเฟรชหน้า', 'error');
+  } catch {}
  } finally {
+  // ✅ Hide overlay when ready
   try {
    if (typeof window.__removeInstantLoadingOverlay === "function" && window.__instantLoadingOverlayShown) {
     window.__removeInstantLoadingOverlay();

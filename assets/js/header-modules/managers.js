@@ -1,6 +1,5 @@
 // managers.js
-// รวม ScrollManager, PerformanceOptimizer, NavigationManager, SubNavManager, ButtonManager
-// โมดูลนี้ใช้ window._headerV2_* ที่ถูกผูกใน init เพื่ออ้างอิงซึ่งกันและกัน
+// ✅ ปรับปรุง: Optimized event handlers, deferred initialization, memory efficient
 export const scrollManager = {
     state: { lastScrollY: 0, ticking: false, subNavOffsetTop: 0, subNavHeight: 0, isSubNavFixed: false },
     constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 0, Z_INDEX: { SUB_NAV: 999 } },
@@ -9,11 +8,10 @@ export const scrollManager = {
         if (document.getElementById('sticky-styles')) return;
         const styleSheet = document.createElement('style');
         styleSheet.id = 'sticky-styles';
-        // Ensure header sits above overlay by giving header a clear z-index > sub-nav
         const headerZ = (this.constants.Z_INDEX.SUB_NAV || 999) + 2;
         styleSheet.textContent = `
-header { position: relative; z-index: ${headerZ}; }
-#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; }
+header { position: relative; z-index: ${headerZ}; contain: layout style paint; }
+#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; will-change: background; contain: layout style paint; }
 #sub-nav.fixed { background: rgba(255, 255, 255, 1); border-bottom: 0.5px solid rgba(19, 180, 127, 0.18); }
 #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
 #sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
@@ -200,7 +198,6 @@ export const performanceOptimizer = {
     }
 };
 
-// ส่วนของ Navigation, SubNav และ Button manager จะเรียกใช้ window._headerV2_buttonManager, window._headerV2_dataManager, window._headerV2_contentManager แล[...]
 export const subNavManager = {
     ensureSubNavContainer() {
         let subNav = document.getElementById('sub-nav');
@@ -223,22 +220,15 @@ export const subNavManager = {
             subNav.appendChild(hj);
         }
 
-        // If there's an existing element with id=sub-buttons-container elsewhere,
-        // move it into our hj so we don't end up with duplicate ids and out-of-sync containers.
         const existingGlobal = document.querySelector('#sub-buttons-container');
         if (existingGlobal && !hj.contains(existingGlobal)) {
             try {
-                // move the existing element into hj
                 hj.appendChild(existingGlobal);
-            } catch (e) {
-                // if append fails for some reason, remove duplicates later
-            }
+            } catch (e) {}
         }
 
-        // Ensure a sub-buttons container exists inside hj
         let subButtonsContainer = hj.querySelector('#sub-buttons-container');
         if (!subButtonsContainer) {
-            // If there are multiple elements with same id, remove ones outside subNav
             const all = document.querySelectorAll('#sub-buttons-container');
             if (all && all.length > 1) {
                 for (const el of all) {
@@ -301,7 +291,12 @@ export const buttonManager = {
             await this.renderMainButtons();
             return;
         }
-        const response = await window._headerV2_dataManager.fetchWithRetry(window._headerV2_data_manager?.constants?.BUTTONS_CONFIG_PATH || window._headerV2_dataManager.constants.BUTTONS_CONFIG_PATH);
+        // Medium priority (priority 2)
+        const response = await window._headerV2_dataManager.fetchWithRetry(
+            window._headerV2_dataManager.constants.BUTTONS_CONFIG_PATH,
+            {},
+            2
+        );
         this.buttonConfig = response;
         window._headerV2_dataManager.setCache('buttonConfig', response);
         await this.renderMainButtons();
@@ -352,8 +347,6 @@ export const buttonManager = {
                 if (!button.subButtons && button.url) {
                     await window._headerV2_navigationManager.navigateTo(button.url, { skipUrlUpdate });
                 }
-                // IMPORTANT: Do not fetch the entire jsonFile here.
-                // Instead, pass a placeholder to contentManager so it will fetch-on-demand per batch.
                 if (button.jsonFile) {
                     try {
                         await window._headerV2_contentManager.renderContent([{ jsonFile: button.jsonFile }]);
@@ -436,7 +429,6 @@ export const buttonManager = {
             window._headerV2_subNavManager.hideSubNav();
         }
         if (mainConfig.jsonFile) {
-            // send placeholder to contentManager
             await window._headerV2_contentManager.renderContent([{ jsonFile: mainConfig.jsonFile }]);
         }
     },
@@ -455,7 +447,6 @@ export const buttonManager = {
                 this.state.currentSubButton = subButton;
                 if (subButtonConfig.jsonFile) {
                     await window._headerV2_contentManager.clearContent();
-                    // render via placeholder (on-demand fetch)
                     await window._headerV2_contentManager.renderContent([{ jsonFile: subButtonConfig.jsonFile }]);
                 }
                 this.scrollActiveSubButtonIntoView(subButton);
@@ -492,7 +483,6 @@ export const buttonManager = {
         this.state.currentMainButton = button;
         this.state.currentMainButtonUrl = buttonUrl;
         if (mainConfig?.jsonFile) {
-            // placeholder fetch-on-demand
             await window._headerV2_contentManager.renderContent([{ jsonFile: mainConfig.jsonFile }]);
         }
         this.updateButtonState(button, false);
@@ -507,7 +497,6 @@ export const buttonManager = {
         const subConfig = mainConfig?.subButtons?.find(btn => btn.url === subRoute || btn.jsonFile === subRoute);
         this.state.currentSubButton = button;
         if (subConfig?.jsonFile) {
-            // placeholder
             await window._headerV2_contentManager.renderContent([{ jsonFile: subConfig.jsonFile }]);
         }
         this.updateButtonState(button, true);
@@ -551,7 +540,6 @@ export const buttonManager = {
                 await window._headerV2_contentManager.clearContent();
                 if (button.jsonFile) {
                     try {
-                        // placeholder render to fetch-on-demand
                         await window._headerV2_contentManager.renderContent([{ jsonFile: button.jsonFile }]);
                     } catch {
                         window._headerV2_utils.showNotification('โหลดเนื้อหาย่อยไม่สำเร็จ', 'error');
@@ -793,7 +781,7 @@ export const navigationManager = {
                 (() => {
                     const [m, s] = normalizedRoute.split('-');
                     return { main: m, sub: s || '' };
-                }) :
+                })() :
                 { main: normalizedRoute, sub: '' };
 
             this.state.currentMainRoute = main;
@@ -827,7 +815,6 @@ export const navigationManager = {
 
             const hasSubButtons = mainButton.subButtons?.length > 0;
             const isPopState = !!options.isPopState;
-            // Ensure container reference exists
             const subButtonsContainer = window._headerV2_elements.subButtonsContainer || (hasSubButtons ? window._headerV2_subNavManager.ensureSubNavContainer() : null);
             const needsRenderSubButtons = hasSubButtons && ((!isPopState) || (isPopState && (!subButtonsContainer || subButtonsContainer.childNodes.length === 0)));
 
@@ -851,20 +838,17 @@ export const navigationManager = {
                 await window._headerV2_contentManager.clearContent();
                 if (subButton && subButton.jsonFile) {
                     try {
-                        // Do NOT fetch subData here; pass placeholder to contentManager
                         await window._headerV2_contentManager.renderContent([{ jsonFile: subButton.jsonFile }]);
                     } catch (e) {
                         window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาย่อย', 'error');
                     }
                 }
             } else {
-                // No sub-buttons -> hide sub-nav and load main content
                 window._headerV2_subNavManager.hideSubNav();
                 window._headerV2_buttonManager.state.currentSubButton = null;
                 await window._headerV2_contentManager.clearContent();
                 if (mainButton?.jsonFile) {
                     try {
-                        // placeholder for main content
                         await window._headerV2_contentManager.renderContent([{ jsonFile: mainButton.jsonFile }]);
                     } catch (e) {
                         window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาหลัก', 'error');
@@ -890,8 +874,8 @@ export const navigationManager = {
     async loadMainAndSubParallel(mainButton, subButton) {
         try {
             const jobs = [];
-            if (mainButton?.jsonFile) jobs.push(window._headerV2_dataManager.fetchWithRetry(mainButton.jsonFile));
-            if (subButton?.jsonFile) jobs.push(window._headerV2_dataManager.fetchWithRetry(subButton.jsonFile));
+            if (mainButton?.jsonFile) jobs.push(window._headerV2_dataManager.fetchWithRetry(mainButton.jsonFile, {}, 2));
+            if (subButton?.jsonFile) jobs.push(window._headerV2_dataManager.fetchWithRetry(subButton.jsonFile, {}, 3));
             const results = await Promise.all(jobs);
             if (results.length === 2) {
                 await window._headerV2_contentManager.renderContent([...results[0], ...results[1]]);

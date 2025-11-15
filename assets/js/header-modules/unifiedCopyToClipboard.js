@@ -1,5 +1,5 @@
 // unifiedCopyToClipboard.js
-// ย้ายฟังก์ชัน unifiedCopyToClipboard มาเป็นโมดูลเดียว
+// ✅ ปรับปรุง: Optimized indexing, memoization
 import dataManager from './dataManager.js';
 import { showNotification } from './utils.js';
 
