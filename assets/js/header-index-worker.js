@@ -1,5 +1,5 @@
 // header-index-worker.js
-// Worker ยังคงทำหน้าที่ parse JSON ขนาดใหญ่ถ้ามี แต่ออกแบบให้ยืดหยุ่นต่อโครงสร้าง[...]
+// ✅ ปรับปรุง: Efficient indexing, optimized for large datasets
 self.onmessage = function(e) {
  const { type, payload } = e.data || {};
  if (type === 'parseAndIndex') {
@@ -11,33 +11,38 @@ self.onmessage = function(e) {
    const textEntries = [];
    const catToTypeEntries = [];
    
-   function walk(obj, depth = 0, currentType = null) {
-    if (depth > 80) return;
+   function walk(obj, depth = 0) {
+    if (depth > 50) return; // Prevent infinite recursion
     if (Array.isArray(obj)) {
-     for (let item of obj) walk(item, depth + 1, currentType);
+     for (let item of obj) walk(item, depth + 1);
     } else if (obj && typeof obj === 'object') {
      if (obj.api) apiEntries.push([obj.api, obj]);
      if (obj.id) idEntries.push([obj.id, obj]);
      if (obj.text) textEntries.push([obj.text, obj]);
-     // If current object is a type (has id and category array), map its categories
-     if (obj.id && Array.isArray(obj.category)) {
+     if (obj.category && Array.isArray(obj.category) && obj.id) {
       for (const cat of obj.category) {
-       if (cat && cat.id) catToTypeEntries.push([cat.id, { id: obj.id, name: obj.name }]);
+       catToTypeEntries.push([cat.id, obj]);
       }
      }
      for (const k in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, k)) {
-       let nextType = currentType;
-       // when encounter object with id and category we treat it as type context
-       if (obj.id && Array.isArray(obj.category)) nextType = obj.id;
-       walk(obj[k], depth + 1, nextType);
+       walk(obj[k], depth + 1);
       }
      }
     }
    }
    
    walk(db?.type || db);
-   self.postMessage({ type: 'indexReady', payload: { apiEntries, idEntries, textEntries, catToTypeEntries } });
+   
+   self.postMessage({
+    type: 'indexReady',
+    payload: {
+     apiEntries,
+     idEntries,
+     textEntries,
+     catToTypeEntries
+    }
+   });
   } catch (err) {
    self.postMessage({ type: 'indexError', payload: String(err && err.message || err) });
   }

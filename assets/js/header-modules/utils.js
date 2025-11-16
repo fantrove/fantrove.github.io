@@ -44,17 +44,17 @@ export function showNotification(message, type = 'info', options = {}) {
    const style = document.createElement('style');
    style.id = 'notification-styles';
    style.textContent = `
-                .notification { position: fixed; top: 20px; right: 20px; padding: 16px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); z-index: 10000; opacity: 0; transform: translateY(-10px); animation: slideIn 0.24s ease forwards; display:flex; align-items:center; gap:12px; min-width:220px; max-width:420px; }
+                .notification { position: fixed; top: 20px; right: 20px; padding: 16px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); z-index: 10000; opacity: 0; transform: translateY(-20px); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 12px; max-width: 360px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
                 .notification-success { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; }
                 .notification-error { background: linear-gradient(135deg, #f44336 0%, #e53935 100%); color: white; }
                 .notification-warning { background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%); color: white; }
                 .notification-info { background: linear-gradient(135deg, #2196f3 0%, #1e88e5 100%); color: white; }
                 .notification-loading { background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%); color: white; }
-                .notification-icon { background: rgba(255,255,255,0.12); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink:0; }
+                .notification-icon { background: rgba(255,255,255,0.12); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
                 .notification-message-container { flex: 1; display: flex; flex-direction: column; }
                 .notification-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
                 .notification-content { font-size: 14px; opacity: 0.94; word-break: break-word; }
-                .notification-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+                .notification-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0.7; transition: opacity 0.2s; }
                 .notification-close:hover { opacity: 1; }
                 @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
                 @keyframes slideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
