@@ -1,5 +1,6 @@
 // contentManager.js (ต่อจากเดิม)
 // ✅ ปรับปรุง: Incremental batch processing, memory optimization, deferred DOM operations
+// ✅ ปรับปรุงเล็กน้อย: renderGroupItems จะพยายามใช้ loadCategoryGroup ของ dataManager (distributed) ก่อน fallback
 export const contentManager = {
   _renderSession: 0,
   _abortController: null,
@@ -54,7 +55,7 @@ export const contentManager = {
       node.removeAttribute('id');
     } catch {}
     if (this._elementPool.length < this._poolMax) this._elementPool.push(node);
-    
+
     if (!this._poolCleanupTimer) {
       this._poolCleanupTimer = setTimeout(() => {
         this._poolLastUsed = 0;
@@ -86,11 +87,11 @@ export const contentManager = {
     const ratio = Math.max(0.25, Math.min(4, target / (this._avgFrameTime || 16)));
     let batch = Math.round(this._baseBatch * ratio);
     batch = Math.max(this._minBatch, Math.min(this._maxBatch, batch));
-    
+
     if (this._isSlowDevice) {
       batch = Math.max(this._minBatch, Math.round(batch * 0.6));
     }
-    
+
     const limit = this._getBatchLimit();
     batch = Math.min(batch, limit);
     return batch;
@@ -282,7 +283,7 @@ export const contentManager = {
     if (scored) {
       items.sort((a, b) => {
         const idA = a && (a.id || '') || '';
-        const idB = b && (b.id || '') || '';
+        const idB = b && (b && b.id || '') || '';
         const sa = priorityScores[idA] || 0;
         const sb = priorityScores[idB] || 0;
         return sb - sa;
@@ -308,7 +309,7 @@ export const contentManager = {
       batchSize = Math.min(batchSize, limit);
       let end = Math.min(items.length, startIndex + batchSize);
       if (startIndex >= end) return 0;
-      
+
       const frag = document.createDocumentFragment();
       const t0 = performance.now();
       let created = 0;
@@ -506,7 +507,42 @@ export const contentManager = {
   async renderGroupItems(container, group) {
     if (!group.categoryId && !group.items) throw new Error("Group ต้องระบุ categoryId หรือ items");
 
+    // First try to use the distributed loader if available
     if (group.categoryId) {
+      const categoryType = group.categoryType || 'emoji';
+      if (window._headerV2_dataManager && typeof window._headerV2_dataManager.loadCategoryGroup === 'function') {
+        try {
+          const grp = await window._headerV2_dataManager.loadCategoryGroup(group.categoryId, categoryType);
+          if (grp) {
+            const headerElement = group.header ? this.createGroupHeader(group.header) : (grp.header ? this.createGroupHeader(grp.header) : null);
+            if (headerElement) container.appendChild(headerElement);
+
+            const data = grp.data || grp;
+            if (group.type === "card") {
+              for (const item of data) {
+                const card = await this.createCard(item);
+                if (card) container.appendChild(card);
+              }
+            } else if (group.type === "button") {
+              for (const item of data) {
+                const btn = await this.createButton(item);
+                if (btn) container.appendChild(btn);
+              }
+            } else {
+              // default to button items
+              for (const item of data) {
+                const btn = await this.createButton(item);
+                if (btn) container.appendChild(btn);
+              }
+            }
+            return;
+          }
+        } catch (err) {
+          // fallback to legacy fetchCategoryGroup
+        }
+      }
+
+      // Fallback: existing fetchCategoryGroup (works with aggregated monolithic DB)
       const { id, name, data, header } = await window._headerV2_data_manager?.fetchCategoryGroup
         ? await window._headerV2_data_manager.fetchCategoryGroup(group.categoryId)
         : await window._headerV2_dataManager.fetchCategoryGroup(group.categoryId);
@@ -525,7 +561,11 @@ export const contentManager = {
           if (btn) container.appendChild(btn);
         }
       } else {
-        throw new Error("รองรับเฉพาะ type: 'button' หรือ 'card' ใน group");
+        // fallback: render as buttons
+        for (const item of data) {
+          const btn = await this.createButton(item);
+          if (btn) container.appendChild(btn);
+        }
       }
     } else if (Array.isArray(group.items)) {
       if (group.header) {
@@ -645,11 +685,11 @@ export const contentManager = {
       await this.renderGroupItems(container, { categoryId: item.categoryId, type: item.type || "button" });
       return;
     }
-    const element =
+    thelement =
       item.type === 'button'
         ? await this.createButton(item)
         : await this.createCard(item);
-    if (element) container.appendChild(element);
+    if (thelement) container.appendChild(thelement);
   },
 
   async createButton(config) {

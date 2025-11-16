@@ -1,5 +1,6 @@
 // init.js
 // ✅ ปรับปรุง: Deferred initialization, phase-based loading, performance monitoring
+// ✅ ปรับปรุงเพิ่มเติม: ตั้งค่าข้อมูล repository base (fantrove-data) และพรีโหลด category lists
 import { showInstantLoadingOverlay } from './overlay.js';
 import { _headerV2_utils, ErrorManager, showNotification } from './utils.js';
 import dataManagerDefault from './dataManager.js';
@@ -40,6 +41,16 @@ export async function init() {
  
  window._headerV2_elements = { header, navList, subButtonsContainer, contentLoading, logo };
  
+ // NEW: Set distributed repository base if not already set
+ try {
+  // You can change this URL to point to your fantrove-data repo if different
+  if (window._headerV2_dataManager && typeof window._headerV2_dataManager.setRepositoryBase === 'function') {
+   window._headerV2_dataManager.setRepositoryBase('https://fantrove.github.io/fantrove-data/');
+  }
+ } catch (e) {
+  console.warn('setRepositoryBase failed', e);
+ }
+ 
  // ✅ Show overlay early
  try { showInstantLoadingOverlay(); } catch {}
  
@@ -48,6 +59,20 @@ export async function init() {
   window._headerV2_performanceOptimizer.setupErrorBoundary();
   window._headerV2_scrollManager.init();
   window._headerV2_performanceOptimizer.init();
+  
+  // Attempt to preload category lists (best-effort)
+  try {
+   if (window._headerV2_dataManager && typeof window._headerV2_dataManager.loadCategoryList === 'function') {
+    try {
+     const preEmoji = window._headerV2_dataManager.loadCategoryList('emoji');
+     const preSymbols = window._headerV2_dataManager.loadCategoryList('symbols');
+     const [emojiCategories, symbolCategories] = await Promise.all([preEmoji.catch(() => null), preSymbols.catch(() => null)]);
+     window._headerV2_dataManager.categoriesCache = { emoji: emojiCategories, symbols: symbolCategories };
+    } catch (e) {
+     // silently ignore preload errors
+    }
+   }
+  } catch (e) {}
   
   // Network status events
   window.addEventListener('online', () => {
