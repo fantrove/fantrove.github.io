@@ -1,5 +1,7 @@
-// contentManager.js (ต่อจากเดิม)
-// ✅ ปรับปรุง: Incremental batch processing, memory optimization, deferred DOM operations
+// contentManager.js
+// ปรับให้ทำงานร่วมกับ dataManager (โครงสร้าง fantrove-data ใหม่)
+// - เรียก dataManager.fetchCategoryGroup() เพื่อดึงกลุ่มจาก categories-list + categories/*
+// - รองรับ item.jsonFile ที่เป็น URL เต็มหรือ relative (pages/...) และจัดการผลลัพธ์ array/object
 export const contentManager = {
   _renderSession: 0,
   _abortController: null,
@@ -54,7 +56,7 @@ export const contentManager = {
       node.removeAttribute('id');
     } catch {}
     if (this._elementPool.length < this._poolMax) this._elementPool.push(node);
-    
+
     if (!this._poolCleanupTimer) {
       this._poolCleanupTimer = setTimeout(() => {
         this._poolLastUsed = 0;
@@ -86,11 +88,11 @@ export const contentManager = {
     const ratio = Math.max(0.25, Math.min(4, target / (this._avgFrameTime || 16)));
     let batch = Math.round(this._baseBatch * ratio);
     batch = Math.max(this._minBatch, Math.min(this._maxBatch, batch));
-    
+
     if (this._isSlowDevice) {
       batch = Math.max(this._minBatch, Math.round(batch * 0.6));
     }
-    
+
     const limit = this._getBatchLimit();
     batch = Math.min(batch, limit);
     return batch;
@@ -308,7 +310,7 @@ export const contentManager = {
       batchSize = Math.min(batchSize, limit);
       let end = Math.min(items.length, startIndex + batchSize);
       if (startIndex >= end) return 0;
-      
+
       const frag = document.createDocumentFragment();
       const t0 = performance.now();
       let created = 0;
@@ -329,20 +331,27 @@ export const contentManager = {
               end = Math.min(items.length, end + delta);
               i = i - 1;
               continue;
-            } else if (typeof fetched === 'object' && fetched !== null && Array.isArray(fetched.data)) {
-              const arr = fetched.data;
+            } else if (typeof fetched === 'object' && fetched !== null && (Array.isArray(fetched.data) || Array.isArray(fetched.items))) {
+              const arr = fetched.data || fetched.items;
               item._fetched = true;
               items.splice(i, 1, ...arr);
               const delta = arr.length - 1;
               end = Math.min(items.length, end + delta);
               i = i - 1;
               continue;
-            } else {
+            } else if (typeof fetched === 'object' && fetched !== null) {
               items.splice(i, 1, fetched);
               item = fetched;
+            } else {
+              items.splice(i, 1, { content: fetched });
+              item = items[i];
             }
           } catch (err) {
             console.error('Error fetching referenced jsonFile', err);
+            items.splice(i, 1);
+            i = i - 1;
+            end = Math.min(items.length, end - 1);
+            continue;
           }
         }
 
@@ -507,9 +516,9 @@ export const contentManager = {
     if (!group.categoryId && !group.items) throw new Error("Group ต้องระบุ categoryId หรือ items");
 
     if (group.categoryId) {
-      const { id, name, data, header } = await window._headerV2_data_manager?.fetchCategoryGroup
-        ? await window._headerV2_data_manager.fetchCategoryGroup(group.categoryId)
-        : await window._headerV2_dataManager.fetchCategoryGroup(group.categoryId);
+      // ใช้ fetchCategoryGroup ของ dataManager ที่รองรับโครงสร้างใหม่
+      const dm = window._headerV2_dataManager;
+      const { id, name, data, header } = await dm.fetchCategoryGroup(group.categoryId);
       if (header) {
         const headerElement = this.createGroupHeader(header);
         container.appendChild(headerElement);
@@ -519,13 +528,12 @@ export const contentManager = {
           const card = await this.createCard(item);
           if (card) container.appendChild(card);
         }
-      } else if (group.type === "button") {
+      } else {
+        // default -> button
         for (const item of data) {
           const btn = await this.createButton(item);
           if (btn) container.appendChild(btn);
         }
-      } else {
-        throw new Error("รองรับเฉพาะ type: 'button' หรือ 'card' ใน group");
       }
     } else if (Array.isArray(group.items)) {
       if (group.header) {
@@ -537,7 +545,7 @@ export const contentManager = {
           const card = await this.createCard(item);
           if (card) container.appendChild(card);
         }
-      } else if (group.type === "button") {
+      } else {
         for (const item of group.items) {
           const btn = await this.createButton(item);
           if (btn) container.appendChild(btn);
@@ -553,9 +561,7 @@ export const contentManager = {
     if (typeof headerConfig === 'string') {
       return this.createSimpleHeader(headerConfig, headerContainer);
     }
-    if (headerConfig.className) {
-      headerContainer.classList.add(headerConfig.className);
-    }
+    if (headerConfig.className) headerContainer.classList.add(headerConfig.className);
     this.createHeaderComponents(headerContainer, headerConfig, currentLang);
     this.addLanguageChangeListener(headerContainer, headerConfig);
     return headerContainer;
@@ -660,31 +666,25 @@ export const contentManager = {
     let type = config.type || null;
     try {
       if (apiCode) {
-        const db = await window._headerV2_data_manager?.loadApiDatabase?.()
-          || await window._headerV2_dataManager.loadApiDatabase();
-        function findApiNode(obj, code) {
-          if (Array.isArray(obj)) {
-            for (const item of obj) {
-              const found = findApiNode(item, code);
-              if (found) return found;
-            }
-          } else if (typeof obj === 'object' && obj !== null) {
-            if (obj.api === code) return obj;
-            for (const key in obj) {
-              if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                const found = findApiNode(obj[key], code);
-                if (found) return found;
-              }
-            }
+        const dm = window._headerV2_dataManager;
+        let apiNode = null;
+        try {
+          if (dm && dm._jsonDbIndexReady && dm._jsonDbIndex && dm._jsonDbIndex.apiMap) {
+            apiNode = dm._jsonDbIndex.apiMap.get(apiCode) || null;
           }
-          return null;
+        } catch (e) { apiNode = null; }
+        if (!apiNode) {
+          try {
+            const fetched = await dm.fetchApiContent(apiCode);
+            if (typeof fetched === 'object' && fetched.text) apiNode = fetched;
+            else if (typeof fetched === 'string') apiNode = { api: apiCode, text: fetched };
+          } catch (e) { apiNode = null; }
         }
-        const apiNode = findApiNode(db, apiCode);
         if (apiNode) {
-          finalContent = apiNode.text;
+          finalContent = apiNode.text || apiNode.api || config.content || '';
           type = type || (apiNode.api ? 'emoji' : 'symbol');
         } else {
-          finalContent = apiCode;
+          finalContent = config.content || config.text || apiCode;
         }
       } else if (config.content) {
         finalContent = config.content;
