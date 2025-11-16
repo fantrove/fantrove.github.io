@@ -1,6 +1,5 @@
 // unifiedCopyToClipboard.js
 // ✅ ปรับปรุง: Optimized indexing, memoization
-// NOTE: This file works with dataManager.loadApiDatabase, which now supports both monolithic and distributed data.
 import dataManager from './dataManager.js';
 import { showNotification } from './utils.js';
 
