@@ -512,27 +512,47 @@ export const contentManager = {
     return container;
   },
 
+  // Improved renderGroupItems with robust fetching + normalization
   async renderGroupItems(container, group) {
-    if (!group.categoryId && !group.items) throw new Error("Group ต้องระบุ categoryId หรือ items");
+    if (!group) throw new Error("Group configuration missing");
 
     if (group.categoryId) {
       // ใช้ fetchCategoryGroup ของ dataManager ที่รองรับโครงสร้างใหม่
       const dm = window._headerV2_dataManager;
-      const { id, name, data, header } = await dm.fetchCategoryGroup(group.categoryId);
+      let categoryData = null;
+      try {
+        categoryData = await dm.fetchCategoryGroup(group.categoryId);
+      } catch (err) {
+        console.warn(`Failed to fetch category ${group.categoryId}:`, err);
+        const errEl = document.createElement('div');
+        errEl.className = 'group-load-error';
+        errEl.textContent = (localStorage.getItem('selectedLang') === 'th') ? 'โหลดหมวดหมู่ไม่สำเร็จ' : 'Unable to load category';
+        container.appendChild(errEl);
+        return;
+      }
+
+      if (!categoryData) return;
+
+      const { header, data } = categoryData;
       if (header) {
         const headerElement = this.createGroupHeader(header);
         container.appendChild(headerElement);
       }
-      if (group.type === "card") {
-        for (const item of data) {
-          const card = await this.createCard(item);
-          if (card) container.appendChild(card);
-        }
-      } else {
-        // default -> button
-        for (const item of data) {
-          const btn = await this.createButton(item);
-          if (btn) container.appendChild(btn);
+
+      const t = group.type || 'button';
+      if (!Array.isArray(data)) return;
+
+      for (const item of data) {
+        try {
+          if (t === 'card') {
+            const card = await this.createCard(item);
+            if (card) container.appendChild(card);
+          } else {
+            const btn = await this.createButton(item);
+            if (btn) container.appendChild(btn);
+          }
+        } catch (err) {
+          console.error('renderGroupItems item render error', err);
         }
       }
     } else if (Array.isArray(group.items)) {
@@ -540,17 +560,21 @@ export const contentManager = {
         const headerElement = this.createGroupHeader(group.header);
         container.appendChild(headerElement);
       }
-      if (group.type === "card") {
-        for (const item of group.items) {
-          const card = await this.createCard(item);
-          if (card) container.appendChild(card);
-        }
-      } else {
-        for (const item of group.items) {
-          const btn = await this.createButton(item);
-          if (btn) container.appendChild(btn);
+      for (const item of group.items) {
+        try {
+          if (group.type === 'card') {
+            const card = await this.createCard(item);
+            if (card) container.appendChild(card);
+          } else {
+            const btn = await this.createButton(item);
+            if (btn) container.appendChild(btn);
+          }
+        } catch (err) {
+          console.error('renderGroupItems item render error', err);
         }
       }
+    } else {
+      throw new Error("Group ต้องระบุ categoryId หรือ items");
     }
   },
 
@@ -658,66 +682,73 @@ export const contentManager = {
     if (element) container.appendChild(element);
   },
 
+  // Robust createButton: improved error handling and api fallback
   async createButton(config) {
-    const button = document.createElement('button');
-    button.className = 'button-content';
-    let finalContent = '';
-    let apiCode = config.api || null;
-    let type = config.type || null;
     try {
-      if (apiCode) {
-        const dm = window._headerV2_dataManager;
-        let apiNode = null;
-        try {
-          if (dm && dm._jsonDbIndexReady && dm._jsonDbIndex && dm._jsonDbIndex.apiMap) {
-            apiNode = dm._jsonDbIndex.apiMap.get(apiCode) || null;
-          }
-        } catch (e) { apiNode = null; }
-        if (!apiNode) {
-          try {
-            const fetched = await dm.fetchApiContent(apiCode);
-            if (typeof fetched === 'object' && fetched.text) apiNode = fetched;
-            else if (typeof fetched === 'string') apiNode = { api: apiCode, text: fetched };
-          } catch (e) { apiNode = null; }
-        }
-        if (apiNode) {
-          finalContent = apiNode.text || apiNode.api || config.content || '';
-          type = type || (apiNode.api ? 'emoji' : 'symbol');
-        } else {
-          finalContent = config.content || config.text || apiCode;
-        }
-      } else if (config.content) {
-        finalContent = config.content;
-        type = 'symbol';
-      } else if (config.text) {
-        finalContent = config.text;
-        type = 'symbol';
-      } else {
-        throw new Error('ต้องระบุ api, content หรือ text สำหรับ button content type');
-      }
-      button.textContent = finalContent;
-    } catch (error) {
-      button.textContent = 'Error';
-    }
-
-    button.addEventListener('click', async () => {
-      try { this._recordEvent('click', button.dataset && (button.dataset.url || button.id)); } catch {}
+      const button = document.createElement('button');
+      button.className = 'button-content';
+      let finalContent = '';
+      let apiCode = config.api || null;
+      let type = config.type || null;
       try {
-        await (window.unifiedCopyToClipboard || unifiedCopyToClipboard).call(null, {
-          text: finalContent,
-          api: apiCode,
-          type,
-          name: apiCode ? `${apiCode}` : ''
-        });
+        if (apiCode) {
+          const dm = window._headerV2_dataManager;
+          let apiNode = null;
+          try {
+            if (dm && dm._jsonDbIndexReady && dm._jsonDbIndex && dm._jsonDbIndex.apiMap) {
+              apiNode = dm._jsonDbIndex.apiMap.get(apiCode) || null;
+            }
+          } catch (e) { apiNode = null; }
+          if (!apiNode) {
+            try {
+              const fetched = await dm.fetchApiContent(apiCode);
+              if (typeof fetched === 'object' && fetched.text) apiNode = fetched;
+              else if (typeof fetched === 'string') apiNode = { api: apiCode, text: fetched };
+            } catch (e) { apiNode = null; }
+          }
+          if (apiNode) {
+            finalContent = apiNode.text || apiNode.api || config.content || '';
+            type = type || (apiNode.api ? 'emoji' : 'symbol');
+          } else {
+            finalContent = config.content || config.text || apiCode;
+          }
+        } else if (config.content) {
+          finalContent = config.content;
+          type = 'symbol';
+        } else if (config.text) {
+          finalContent = config.text;
+          type = 'symbol';
+        } else {
+          finalContent = '';
+        }
+        if (!finalContent) throw new Error('ต้องระบุ api, content หรือ text สำหรับ button content type');
+        button.textContent = finalContent;
       } catch (error) {
-        window._headerV2_utils.showNotification('Copy failed', 'error');
+        button.textContent = 'Error';
       }
-    });
 
-    button.classList.add('fade-in');
-    button.style.opacity = 0;
-    requestAnimationFrame(() => { button.style.opacity = 1; });
-    return button;
+      button.addEventListener('click', async () => {
+        try { this._recordEvent('click', button.dataset && (button.dataset.url || button.id)); } catch {}
+        try {
+          await (window.unifiedCopyToClipboard || unifiedCopyFallback).call(null, {
+            text: finalContent,
+            api: apiCode,
+            type,
+            name: apiCode ? `${apiCode}` : ''
+          });
+        } catch (error) {
+          window._headerV2_utils.showNotification('Copy failed', 'error');
+        }
+      });
+
+      button.classList.add('fade-in');
+      button.style.opacity = 0;
+      requestAnimationFrame(() => { button.style.opacity = 1; });
+      return button;
+    } catch (err) {
+      console.error('createButton error', err);
+      return null;
+    }
   },
 
   async createCard(cardConfig) {
@@ -808,5 +839,32 @@ export const contentManager = {
     }
   }
 };
+
+function unifiedCopyFallback(copyInfo) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (!copyInfo || !copyInfo.text) return reject(new Error('No content'));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyInfo.text).then(resolve).catch(reject);
+      } else {
+        // Older fallback
+        const ta = document.createElement('textarea');
+        ta.value = copyInfo.text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          resolve();
+        } catch (e) {
+          document.body.removeChild(ta);
+          reject(e);
+        }
+      }
+    } catch (e) { reject(e); }
+  });
+}
 
 export default contentManager;

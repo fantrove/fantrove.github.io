@@ -1,5 +1,5 @@
 // header-index-worker.js
-// Worker ยังคงทำหน้าที่ parse JSON ขนาดใหญ่ถ้ามี แต่ออกแบบให้ยืดหยุ่นต่อโครงสร้างใหม่
+// Worker ยังคงทำหน้าที่ parse JSON ขนาดใหญ่ถ้ามี แต่ออกแบบให้ยืดหยุ่นต่อโครงสร้าง[...]
 self.onmessage = function(e) {
  const { type, payload } = e.data || {};
  if (type === 'parseAndIndex') {

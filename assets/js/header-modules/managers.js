@@ -11,7 +11,7 @@ export const scrollManager = {
         const headerZ = (this.constants.Z_INDEX.SUB_NAV || 999) + 2;
         styleSheet.textContent = `
 header { position: relative; z-index: ${headerZ}; contain: layout style paint; }
-#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; will-change: background; contain: layout style paint; }
+#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; }
 #sub-nav.fixed { background: rgba(255, 255, 255, 1); border-bottom: 0.5px solid rgba(19, 180, 127, 0.18); }
 #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
 #sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
@@ -297,6 +297,9 @@ export const buttonManager = {
             {},
             2
         );
+        if (!response || !response.mainButtons) {
+            throw new Error('Invalid button config');
+        }
         this.buttonConfig = response;
         window._headerV2_dataManager.setCache('buttonConfig', response);
         await this.renderMainButtons();
@@ -421,7 +424,7 @@ export const buttonManager = {
         navList.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
         mainButton.classList.add('active');
         this.state.currentMainButton = mainButton;
-        await window._headerV2_content_manager?.clearContent?.() || await window._headerV2_contentManager.clearContent();
+        await window._headerV2_contentManager.clearContent();
         if (mainConfig.subButtons && mainConfig.subButtons.length > 0) {
             window._headerV2_subNavManager.showSubNav();
             await this.renderSubButtons(mainConfig.subButtons, mainConfig.url || mainConfig.jsonFile, localStorage.getItem('selectedLang') || 'en');

@@ -213,6 +213,29 @@ const dataManager = {
     }
   },
 
+  // helper: normalize category content into {id, name, data}
+  _normalizeCategoryData(content, sourceFile) {
+    let dataArray = [];
+    let name = {};
+    let id = '';
+    if (Array.isArray(content)) {
+      dataArray = content;
+      id = sourceFile.replace(/\.json$/, '').split('/').pop();
+    } else if (typeof content === 'object' && content !== null) {
+      dataArray = content.data || content.items || [];
+      name = content.name || content.title || {};
+      id = content.id || sourceFile.replace(/\.json$/, '').split('/').pop();
+    }
+    if (!Array.isArray(dataArray)) {
+      dataArray = dataArray ? [dataArray] : [];
+    }
+    return {
+      id,
+      name: typeof name === 'string' ? { en: name } : (name || {}),
+      data: dataArray
+    };
+  },
+
   // Build db.type structure from categories-list + category files
   async _buildDbFromCategories() {
     if (this.apiCache && (Date.now() - this.apiCacheTimestamp < this.constants.CACHE_DURATION)) return this.apiCache;
@@ -228,10 +251,14 @@ const dataManager = {
     for (const typeName of candidateTypes) {
       try {
         const groups = await this.loadCategoriesList(typeName).catch(()=>[]);
+        if (!Array.isArray(groups) || groups.length === 0) {
+          continue;
+        }
         const categories = [];
-        for (const g of groups) {
+
+        // Load category files in parallel but bounded
+        const promises = groups.map(async (g) => {
           try {
-            // g could be string filename or object { id, file }
             let fileName = null;
             let entryId = null;
             let entryName = null;
@@ -244,23 +271,26 @@ const dataManager = {
               entryName = g.name || g.title || null;
             }
             if (!fileName && entryId) fileName = `${entryId}.json`;
-            if (!fileName) continue;
+            if (!fileName) return null;
             const content = await this._loadCategoryFile(typeName, fileName);
-            if (!content) continue;
-            // Expect content: { name: {...}, data: [ ... ] } OR array directly
-            let dataArray = [];
-            if (Array.isArray(content)) dataArray = content;
-            else if (content && Array.isArray(content.data)) dataArray = content.data;
-            else if (content && Array.isArray(content.items)) dataArray = content.items;
-            else dataArray = [];
-            const catId = entryId || (content.id ? content.id : fileName.replace(/\.json$/, '').split('/').pop());
-            const catName = entryName || content.name || content.title || {};
-            categories.push({ id: catId, name: catName, data: dataArray });
+            if (!content) return null;
+            const normalized = this._normalizeCategoryData(content, fileName);
+            if (entryName) normalized.name = entryName;
+            if (!normalized.id) normalized.id = entryId || fileName.replace(/\.json$/, '').split('/').pop();
+            return normalized;
           } catch (err) {
-            // ignore
+            return null;
           }
+        });
+
+        const results = await Promise.all(promises);
+        for (const r of results) {
+          if (r) categories.push(r);
         }
-        typeArr.push({ id: typeName, name: typeName, category: categories });
+
+        if (categories.length > 0) {
+          typeArr.push({ id: typeName, name: typeName, category: categories });
+        }
       } catch (err) {
         // ignore per-type errors
       }
