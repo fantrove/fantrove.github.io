@@ -188,7 +188,7 @@
   opacity: 0;
   border: 1px solid rgba(24,228,161,0.3);
   transition: 
-    width 1.2s cubic-bezier(.7,-.56,.3,1.55),
+    width 1.8s cubic-bezier(.7,-.56,.3,1.55),
     transform 1.2s cubic-bezier(.7,-.56,.3,1.55),
     opacity 0.5s ease-in-out;
 }
