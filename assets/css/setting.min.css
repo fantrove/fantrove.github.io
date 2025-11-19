@@ -186,6 +186,7 @@ section.con h1 {
   display: flex;
   gap: 15px;
   align-items: center;
+  text-decoration: none;
 }
 
 /* วงกลมและ width ปรับให้ปลอดภัย */
