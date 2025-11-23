@@ -1,12 +1,13 @@
 /*
-  search-ui-with-keyboard-detection.min.js (v22.0 - PROFESSIONAL MERGED SYSTEM)
-  - ✅ MERGED: v7.0 History Logic (Only save on ACTUAL SEARCH)
-  - ✅ MERGED: v21.0 Gap-based Keyboard Auto-Toggle
-  - ✅ IMPROVED: Clean State Separation (Overlay vs Search)
-  - ✅ FIXED: History pushes only on successful search
-  - ✅ IMPROVED: Smart backup/restore on overlay close
-  - ✅ ENHANCED: Keyboard detection with recovery
-  - ✅ PROFESSIONAL: User-friendly flow, no history pollution
+  search-ui-with-keyboard-detection.min.js (v7.0 - KEYBOARD BEHAVIOR DETECTION)
+  - ✅ NEW: Keyboard detection to prevent overlay close when keyboard is open
+  - ✅ ENHANCED: Smart backdrop detection for search vs close
+  - ✅ FIX: Prevent layout shift when opening overlay using placeholder
+  - ✅ IMPROVED: Clear distinction between SEARCH STATE vs OVERLAY STATE
+  - Detects if mobile/virtual keyboard is open on focus/blur events
+  - History only saved on ACTUAL SEARCH, not on overlay open
+  - Proper sync between popstate (back button) and overlay close
+  - Supports device/browser back button
 */
 (function () {
   'use strict';
@@ -33,8 +34,7 @@
       sentinelHeight: '36px',
       suggestionMax: 8,
       intersectionThreshold: 0.1,
-      intersectionRootMargin: '0px',
-      suggestionsFullscreenMax: 30
+      intersectionRootMargin: '0px'
     },
     TIMING: {
       debounceMs: 120,
@@ -44,10 +44,7 @@
       renderDelayMs: 40,
       transitionDelayMs: 350,
       blurDelayMs: 200,
-      keyboardDetectionDelayMs: 100,
-      keyboardGapMinMs: 300,        // ✅ Gap-based: Min spacing between toggles
-      keyboardGapRecoveryMs: 400,   // ✅ Gap-based: Recovery auto-open time
-      keyboardIdleTimeMs: 250       // ✅ Gap-based: Idle detection time
+      keyboardDetectionDelayMs: 100
     },
     STORAGE: {
       historyKey: 'searchHistory_v1',
@@ -73,9 +70,7 @@
         search_placeholder: 'ค้นหาข้อมูล...',
         type: 'ประเภท',
         category: 'หมวดหมู่',
-        emoji: 'อีโมจิ',
-        trending: 'ยอดนิยม',
-        recent: 'ล่าสุด'
+        emoji: 'อีโมจิ'
       },
       en: {
         all_types: 'All Types',
@@ -89,9 +84,7 @@
         search_placeholder: 'Search information...',
         type: 'Type',
         category: 'Category',
-        emoji: 'Emoji',
-        trending: 'Trending',
-        recent: 'Recent'
+        emoji: 'Emoji'
       }
     }
   };
@@ -114,26 +107,20 @@
     overlayOpen: false,
     overlayTransitioning: false,
     preOverlayState: null,
-    overlayHistoryPushed: false,
     
-    // ===== KEYBOARD STATE =====
+    // ===== KEYBOARD STATE (NEW) =====
+    // ✅ NEW: Track if virtual keyboard is open on mobile/tablet
     keyboardOpen: false,
     keyboardDetectionTimeout: null,
     lastWindowInnerHeight: 0,
     
-    // ===== HISTORY STATE (v7.0 LOGIC) =====
-    // ✅ KEY: Only push to history on ACTUAL SEARCH, not on overlay open
+    // ===== HISTORY STATE =====
+    // KEY: Only push to history on ACTUAL SEARCH, not on overlay open
     searchHistoryPushed: false,
     suppressHistoryPush: false,
-    ignoreNextPopstate: false,
-    
-    // ===== GAP-BASED KEYBOARD STATE =====
-    lastKeyboardToggleTime: 0,
-    lastScrollTime: 0,
-    isScrollingActive: false,
-    scrollIdleTimer: null,
     
     // ===== UI STATE =====
+    ignoreNextHideSuggestions: false,
     overlayOpenedAt: null,
     originalInputParent: null,
     originalInputNextSibling: null,
@@ -141,16 +128,7 @@
 
     debounceTimeout: null,
     renderObserver: null,
-    currentRenderIndex: 0,
-    
-    lastOverlayScrollY: 0,
-    keyboardAutoToggleHandler: null,
-    
-    readyModeSuggestions: [],
-    isReadyMode: false,
-    lastQuery: '',
-    
-    navHiddenBySearch: false
+    currentRenderIndex: 0
   };
 
   // ========================================
@@ -202,12 +180,11 @@
     decodeUrl: function(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
   };
 
-  // ✅ IMPROVED: Storage Service (v7.0 Logic - Only save on ACTUAL SEARCH)
   const StorageService = {
     getHistory: function() {
       try { return JSON.parse(sessionStorage.getItem(CONFIG.STORAGE.historyKey) || '[]'); } catch (e) { return []; }
     },
-    // ✅ KEY: Only called when actual search is performed
+    // ===== ONLY SAVE ON ACTUAL SEARCH =====
     addSearchToHistory: function(state) {
       try {
         const arr = this.getHistory();
@@ -227,11 +204,13 @@
     }
   };
 
-  // ✅ NEW: Keyboard Detection Service (v7.0 + v21.0 merged)
+  // ✅ NEW SERVICE: Keyboard Detection Service
   const KeyboardService = {
+    // ✅ Initialize keyboard detection listeners
     initKeyboardDetection: function() {
       State.lastWindowInnerHeight = window.innerHeight;
 
+      // ✅ Monitor resize events to detect keyboard open/close
       window.addEventListener('resize', () => {
         clearTimeout(State.keyboardDetectionTimeout);
         State.keyboardDetectionTimeout = setTimeout(() => {
@@ -239,6 +218,7 @@
         }, CONFIG.TIMING.keyboardDetectionDelayMs);
       }, false);
 
+      // ✅ On input focus, assume keyboard might be opening
       const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
       if (inputEl) {
         DOMService.on(inputEl, 'focus', () => {
@@ -249,6 +229,7 @@
         });
 
         DOMService.on(inputEl, 'blur', () => {
+          // On blur, set keyboard to closed after a delay
           clearTimeout(State.keyboardDetectionTimeout);
           State.keyboardDetectionTimeout = setTimeout(() => {
             State.keyboardOpen = false;
@@ -257,13 +238,17 @@
       }
     },
 
+    // ✅ Update keyboard status based on viewport height changes
     updateKeyboardStatus: function() {
       const currentHeight = window.innerHeight;
       const heightDiff = State.lastWindowInnerHeight - currentHeight;
 
+      // ✅ If height decreased significantly, keyboard is likely open
+      // Typically on mobile, keyboard takes 30-50% of viewport
       if (heightDiff > 100) {
         State.keyboardOpen = true;
       } 
+      // ✅ If height increased back, keyboard is likely closed
       else if (heightDiff < -100) {
         State.keyboardOpen = false;
       }
@@ -271,73 +256,9 @@
       State.lastWindowInnerHeight = currentHeight;
     },
 
+    // ✅ Check if keyboard is currently open
     isKeyboardOpen: function() {
       return State.keyboardOpen;
-    }
-  };
-
-  // ✅ NEW: Gap-Based Keyboard Control (v21.0 logic)
-  const GapBasedKeyboardService = {
-    // ✅ Check if gap time has passed since last toggle
-    isGapExpired: function() {
-      const now = Date.now();
-      const timeSinceLastToggle = now - State.lastKeyboardToggleTime;
-      return timeSinceLastToggle >= CONFIG.TIMING.keyboardGapMinMs;
-    },
-
-    // ✅ Check if recovery time allows auto-open
-    isRecoveryTimeExpired: function() {
-      const now = Date.now();
-      const timeSinceLastToggle = now - State.lastKeyboardToggleTime;
-      return timeSinceLastToggle >= CONFIG.TIMING.keyboardGapRecoveryMs;
-    },
-
-    // ✅ Record toggle (no consecutive counting)
-    recordToggle: function() {
-      State.lastKeyboardToggleTime = Date.now();
-    },
-
-    // ✅ Detect idle scrolling
-    markScrollActivity: function() {
-      State.lastScrollTime = Date.now();
-      
-      if (!State.isScrollingActive) {
-        State.isScrollingActive = true;
-      }
-
-      if (State.scrollIdleTimer) {
-        clearTimeout(State.scrollIdleTimer);
-      }
-
-      State.scrollIdleTimer = setTimeout(() => {
-        State.isScrollingActive = false;
-      }, CONFIG.TIMING.keyboardIdleTimeMs);
-    },
-
-    isScrollIdle: function() {
-      return !State.isScrollingActive;
-    },
-
-    resetGap: function() {
-      State.lastKeyboardToggleTime = 0;
-    }
-  };
-
-  const NavigationService = {
-    hideNavigation: function() {
-      if (typeof window.modernNav !== 'undefined' && window.modernNav.hideNav) {
-        State.navHiddenBySearch = true;
-        window.modernNav.hideNav('search-overlay');
-      }
-    },
-
-    showNavigation: function() {
-      if (typeof window.modernNav !== 'undefined' && window.modernNav.showNav) {
-        if (State.navHiddenBySearch) {
-          State.navHiddenBySearch = false;
-          window.modernNav.showNav('search-overlay-closed');
-        }
-      }
     }
   };
 
@@ -382,8 +303,7 @@
       const ac = (a.category || 'all'); const bc = (b.category || 'all');
       return aq === bq && at === bt && ac === bc;
     },
-    
-    // ✅ IMPROVED: Push history only on ACTUAL SEARCH (v7.0 logic)
+    // ===== PUSH HISTORY ONLY ON SUCCESSFUL SEARCH =====
     commitSearchState: function(state) {
       if (URLService.isStateEqual(state, State.lastCommittedSearchState)) return;
       
@@ -400,30 +320,21 @@
         State.searchHistoryPushed = false;
       }
       
-      // ✅ KEY: Save to session storage ONLY here (on actual search)
+      // ===== SAVE TO SESSION STORAGE ONLY HERE =====
       StorageService.addSearchToHistory(state);
       State.lastCommittedSearchState = { q: state.q || '', type: state.type || 'all', category: state.category || 'all' };
     },
     
-    // ✅ IMPROVED: Sync overlay close with history (v7.0 logic)
+    // ===== SYNC OVERLAY CLOSE WITH HISTORY =====
     syncOverlayCloseWithHistory: function() {
-      // If overlay was opened but no search done, restore previous state
-      if (State.overlayHistoryPushed) {
+      // If overlay was opened but no search done, clean up history
+      if (State.searchHistoryPushed) {
         try {
-          history.back();
+          const stateToRestore = State.lastCommittedSearchState || { q: '', type: 'all', category: 'all' };
+          history.replaceState(stateToRestore, '', this.buildUrlForState(stateToRestore));
         } catch (e) {}
-        State.overlayHistoryPushed = false;
+        State.searchHistoryPushed = false;
       }
-    },
-
-    // ✅ NEW: Push overlay state separately
-    pushOverlayState: function(state) {
-      const url = this.buildUrlForState(state);
-      try {
-        const overlayState = Object.assign({ __overlay: true }, state);
-        history.pushState(overlayState, '', url);
-        State.overlayHistoryPushed = true;
-      } catch (e) {}
     }
   };
 
@@ -448,68 +359,32 @@
     }
   };
 
-  const HighlightService = {
-    highlightAllMatches: function(text, query) {
-      if (!text || !query) return StringService.escapeHtml(text || '');
-      
-      const textStr = String(text).toLowerCase();
-      const queryStr = String(query).toLowerCase();
-      
-      if (!queryStr) return StringService.escapeHtml(textStr);
-      
-      const queryChars = new Set(queryStr.split(''));
-      
-      let result = '';
-      for (let i = 0; i < textStr.length; i++) {
-        const char = textStr[i];
-        if (queryChars.has(char)) {
-          result += '<strong style="background-color:#fff3cd;font-weight:700">' + StringService.escapeHtml(String(text)[i]) + '</strong>';
-        } else {
-          result += StringService.escapeHtml(String(text)[i]);
-        }
-      }
-      
-      return result;
-    }
-  };
-
   const RenderingService = {
-    renderResultItem: function(item, lang) {
-      const itemData = item.item || item;
-      const itemText = itemData?.text || itemData?.name?.[lang] || itemData?.name?.['en'] || item.itemName || '';
-      const itemApi = itemData?.api || '';
-      const typeName = item.typeName || item.typeObj?.name?.[lang] || item.typeObj?.name?.['en'] || LanguageService.t('emoji');
-      const catName = item.catName || item.category?.name?.[lang] || item.category?.name?.['en'] || '';
-      
+    renderResultItemHTML: function(res, lang) {
       let itemNames = [];
-      if (item.itemName) itemNames.push(item.itemName);
-      if (itemData?.name) {
-        const nameLang = itemData.name[lang] || itemData.name['en'];
-        if (nameLang && !itemNames.includes(nameLang)) itemNames.push(nameLang);
+      if (res.item?.name) itemNames.push(res.item.name[lang] || res.item.name['en'] || '');
+      for (const k in (res.item || {})) {
+        if (/_name$/.test(k) && res.item[k]) itemNames.push(res.item[k][lang] || res.item[k]['en'] || '');
       }
-      for (const k in (itemData || {})) {
-        if (/_name$/.test(k) && itemData[k]) {
-          const nameLang = itemData[k][lang] || itemData[k]['en'];
-          if (nameLang && !itemNames.includes(nameLang)) itemNames.push(nameLang);
-        }
-      }
-      const itemNamesStr = itemNames.filter(Boolean).join(' / ');
-      
-      const text = itemText || itemApi || '-';
-      const copyTextVal = StringService.encodeUrl(text);
+      itemNames = itemNames.filter(Boolean).join(' / ');
+      const typeDisplay = (res.typeObj?.name?.[lang] || res.typeObj?.name?.['en']) || LanguageService.t('emoji');
+      const catDisplay = (res.category?.name?.[lang] || res.category?.name?.['en']) || '';
+      const text = res.item?.text ? res.item.text : '-';
+      const api = res.item?.api ? res.item.api : '';
+      const copyTextVal = StringService.encodeUrl(res.item?.text ? res.item.text : (res.itemName || api || ''));
 
       return `<div class="result-item">
         <div class="result-content-area">
           <div class="result-text-area">
             <span class="result-text">${StringService.escapeHtml(text)}</span>
-            ${itemApi ? `<span class="result-api">${StringService.escapeHtml(itemApi)}</span>` : ''}
+            ${api ? `<span class="result-api">${StringService.escapeHtml(api)}</span>` : ''}
           </div>
-          ${itemNamesStr ? `<div class="result-names">${StringService.escapeHtml(itemNamesStr)}</div>` : ''}
+          <div class="result-names">${StringService.escapeHtml(itemNames)}</div>
           <div class="result-meta">
             <span class="result-meta-label">${LanguageService.t('type')}:</span>
-            <span class="result-meta-value">${StringService.escapeHtml(typeName)}</span>
-            ${catName ? `<span class="result-meta-label" style="margin-left:8px">${LanguageService.t('category')}:</span>
-            <span class="result-meta-value">${StringService.escapeHtml(catName)}</span>` : ''}
+            <span class="result-meta-value">${StringService.escapeHtml(typeDisplay)}</span>
+            <span class="result-meta-label" style="margin-left:8px">${LanguageService.t('category')}:</span>
+            <span class="result-meta-value">${StringService.escapeHtml(catDisplay)}</span>
           </div>
           <button class="result-copy-btn" data-text="${copyTextVal}" aria-label="${LanguageService.t('copy')}">${LanguageService.t('copy')}</button>
         </div>
@@ -533,7 +408,7 @@
       const end = Math.min(State.currentRenderIndex + CONFIG.RENDER.batchSize, State.currentFilteredResults.length);
       let fragment = '';
       for (let i = start; i < end; i++) {
-        fragment += this.renderResultItem(State.currentFilteredResults[i], lang);
+        fragment += this.renderResultItemHTML(State.currentFilteredResults[i], lang);
       }
       const sentinelEl = DOMService.get(CONFIG.DOM.sentinelId);
       if (sentinelEl) sentinelEl.insertAdjacentHTML('beforebegin', fragment);
@@ -588,6 +463,8 @@
         ? results.filter(res => ((res.category?.name?.[lang] || res.category?.name?.['en']) || '') === State.selectedCategory)
         : results;
 
+      document.body.style.marginBottom = '60px';
+
       this.disconnectRenderObserver();
       State.currentFilteredResults = [];
       State.currentRenderIndex = 0;
@@ -597,20 +474,9 @@
         if (showSuggestionsIfNoResult) {
           html += `<div class="suggestions-title-main">${LanguageService.t('suggestions_for_you')}</div>`;
           const sample = (State.apiData?.type?.[0]?.category?.[0]?.data) ? State.apiData.type[0].category[0].data.slice(0, 5) : [];
-          html += `<div class="suggestions-block-list">`;
-          for (let i = 0; i < sample.length; i++) {
-            const item = sample[i];
-            const recommendationObj = {
-              item: item,
-              typeObj: State.apiData?.type?.[0],
-              category: State.apiData?.type?.[0]?.category?.[0],
-              itemName: item.name?.[lang] || item.name?.['en'] || '',
-              typeName: State.apiData?.type?.[0]?.name?.[lang] || State.apiData?.type?.[0]?.name?.['en'] || '',
-              catName: State.apiData?.type?.[0]?.category?.[0]?.name?.[lang] || State.apiData?.type?.[0]?.category?.[0]?.name?.['en'] || ''
-            };
-            html += this.renderResultItem(recommendationObj, lang);
-          }
-          html += `</div>`;
+          html += `<div class="suggestions-block-list">${sample.map(it =>
+            `<div class="result-item"><div class="result-content-area"><div class="result-text-area"><span class="result-text">${StringService.escapeHtml(it.text || '')}</span></div></div></div>`
+          ).join('')}</div>`;
         }
         DOMService.setHTML(container, html);
         const catFilterEl = DOMService.get(CONFIG.DOM.categoryFilterId);
@@ -669,93 +535,16 @@
     }
   };
 
-  const ReadyModeService = {
-    extractSmartNames: function() {
-      if (!State.apiData || !State.allKeywordsCache) return [];
-      
-      const lang = LanguageService.getLang();
-      const suggestions = [];
-      const seen = new Set();
-      
-      for (let i = 0; i < State.allKeywordsCache.length && suggestions.length < CONFIG.RENDER.suggestionsFullscreenMax; i++) {
-        const kw = State.allKeywordsCache[i];
-        if (!kw || !kw.item) continue;
-        
-        let name = '';
-        if (kw.item.name && typeof kw.item.name === 'object') {
-          name = kw.item.name[lang] || kw.item.name['en'] || '';
-        }
-        
-        if (!name || name.length < 2) continue;
-        
-        if (name.includes('/') || name.includes('.') || name.includes(':') || /^[A-Za-z0-9_]+$/.test(name)) {
-          if (!/[\u0E00-\u0E7F]/.test(name) && /^[A-Za-z0-9_\-]+$/.test(name) && name.length <= 20) {
-            continue;
-          }
-        }
-        
-        if (seen.has(name)) continue;
-        seen.add(name);
-        
-        suggestions.push({
-          raw: name,
-          display: name,
-          highlightedHtml: StringService.escapeHtml(name),
-          source: 'trending'
-        });
-      }
-      
-      return suggestions;
-    },
-
-    renderReadyModeSuggestions: function() {
-      if (!State.isReadyMode || !State.overlayOpen) return;
-      
-      const container = SuggestionService.ensureSuggestionContainer();
-      if (!container) return;
-      
-      const suggestions = this.extractSmartNames();
-      if (!suggestions?.length) {
-        DOMService.setHTML(container, '');
-        container.style.display = 'none';
-        return;
-      }
-      
-      let html = `<div class="suggestions-head" style="padding:12px 14px;font-weight:700;color:#333;font-size:0.95rem;">${LanguageService.t('trending')}</div>`;
-      
-      for (let i = 0; i < suggestions.length; i++) {
-        const s = suggestions[i];
-        html += `<div class="suggestion-item" role="option" tabindex="0" data-val="${StringService.encodeUrl(s.raw)}" style="padding:12px 14px;border-top:1px solid #f4f6fa;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 120ms;font-size:0.99rem;">
-                  <div class="suggestion-body" style="flex:1;word-break:break-word">${s.highlightedHtml || StringService.escapeHtml(s.raw)}</div>
-                </div>`;
-      }
-      
-      DOMService.setHTML(container, html);
-      container.style.display = 'block';
-      SuggestionService.createSuggestionBackdrop();
-      
-      State.readyModeSuggestions = suggestions;
-    }
-  };
-
   const SuggestionService = {
     ensureSuggestionContainer: function() {
       let c = DOMService.get(CONFIG.DOM.suggestionContainerId);
       const overlay = DOMService.get(CONFIG.DOM.overlayContainerId);
       if (!overlay) return null;
       if (!c) {
-        c = DOMService.create('div', CONFIG.DOM.suggestionContainerId, 'search-suggestions-fullscreen', {
-          position: 'relative', 
-          zIndex: '10000',
-          width: '100%',
-          maxHeight: 'none',
-          overflow: 'visible',
-          background: '#fff', 
-          border: '1px solid #e6e9ee', 
-          boxShadow: '0 8px 30px rgba(19,23,40,0.12)', 
-          borderRadius: '16px',
-          marginTop: '12px', 
-          pointerEvents: 'auto'
+        c = DOMService.create('div', CONFIG.DOM.suggestionContainerId, 'search-suggestions', {
+          position: 'relative', zIndex: '10001', maxHeight: '320px', overflow: 'auto',
+          background: '#fff', border: '1px solid #e6e9ee', boxShadow: '0 8px 30px rgba(19,23,40,0.12)', 
+          borderRadius: '10px', marginTop: '8px', pointerEvents: 'auto'
         });
         overlay.appendChild(c);
         DOMService.on(c, 'keydown', (ev) => this.handleSuggestionKeydown(ev, c));
@@ -784,11 +573,11 @@
       DOMService.remove(bd);
     },
 
-    closeSuggestionsWithOverlay: function() {
+    hideSuggestions: function() {
+      if (State.ignoreNextHideSuggestions) return;
       const c = DOMService.get(CONFIG.DOM.suggestionContainerId);
-      if (c) DOMService.remove(c);
+      if (c) c.style.display = 'none';
       this.removeSuggestionBackdrop();
-      State.isReadyMode = false;
     },
 
     handleSuggestionKeydown: function(ev, container) {
@@ -809,7 +598,7 @@
         if (active?.classList?.contains('suggestion-item')) active?.click?.();
       } else if (ev.key === 'Escape') {
         ev.preventDefault();
-        OverlayService.closeSearchOverlay();
+        this.hideSuggestions();
       }
     },
 
@@ -822,46 +611,40 @@
       val = StringService.decodeUrl(val);
       const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
       if (inputEl) inputEl.value = val;
+      this.hideSuggestions();
       SearchService.doSearch(null, false);
     },
 
     renderQuerySuggestions: function(query) {
       if (State.overlayTransitioning) return;
       
+      if (!State.overlayOpen) OverlayService.openSearchOverlay();
       const container = this.ensureSuggestionContainer();
       if (!container) return;
-      
       if (!query?.trim()) {
-        State.isReadyMode = true;
-        State.lastQuery = '';
-        ReadyModeService.renderReadyModeSuggestions();
+        DOMService.setHTML(container, '');
+        container.style.display = 'none';
+        this.removeSuggestionBackdrop();
         return;
       }
-      
-      State.lastQuery = query;
-      State.isReadyMode = false;
-      
-      const suggestions = window.SearchEngine.querySuggestions(query, CONFIG.RENDER.suggestionsFullscreenMax);
+      const suggestions = window.SearchEngine.querySuggestions(query, CONFIG.RENDER.suggestionMax);
       if (!suggestions?.length) {
-        State.isReadyMode = true;
-        ReadyModeService.renderReadyModeSuggestions();
+        DOMService.setHTML(container, '');
+        container.style.display = 'none';
+        this.removeSuggestionBackdrop();
         return;
       }
-      
-      let html = `<div class="suggestions-head" style="padding:12px 14px;font-weight:700;color:#333;font-size:0.95rem;">${LanguageService.t('suggestion_label')}</div>`;
-      
+      let html = `<div class="suggestions-head" style="padding:8px 10px;font-weight:600;color:#333;">${LanguageService.t('suggestion_label')}</div>`;
       for (let i = 0; i < suggestions.length; i++) {
         const s = suggestions[i];
-        const highlighted = HighlightService.highlightAllMatches(s.raw, query);
-        html += `<div class="suggestion-item" role="option" tabindex="0" data-val="${StringService.encodeUrl(s.raw)}" style="padding:12px 14px;border-top:1px solid #f4f6fa;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 120ms;font-size:0.99rem;">
-                  <div class="suggestion-body" style="flex:1;word-break:break-word">${highlighted}</div>
+        html += `<div class="suggestion-item" role="option" tabindex="0" data-val="${StringService.encodeUrl(s.raw)}" style="padding:8px 10px;border-top:1px solid #f4f6fa;cursor:pointer;display:flex;align-items:center;">
+                  <div class="suggestion-body" style="flex:1">${s.highlightedHtml || StringService.escapeHtml(s.raw)}</div>
+                  <div class="suggestion-source" style="color:#8b95a6;font-size:12px;margin-left:8px">${StringService.escapeHtml(s.source || '')}</div>
                 </div>`;
       }
-      
       DOMService.setHTML(container, html);
       container.style.display = 'block';
       this.createSuggestionBackdrop();
-      
       const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
       if (inputEl) {
         inputEl.onkeydown = (e) => {
@@ -870,92 +653,15 @@
             const first = container.querySelector('.suggestion-item');
             first?.focus?.();
           } else if (e.key === 'Escape') {
-            e.preventDefault();
-            OverlayService.closeSearchOverlay();
+            this.hideSuggestions();
           }
         };
       }
     }
   };
 
-  // ✅ IMPROVED: Keyboard Auto Toggle Service (v21.0 + gap-based)
-  const KeyboardAutoToggleService = {
-    enableAutoToggle: function() {
-      if (State.keyboardAutoToggleHandler) return;
-      
-      State.lastOverlayScrollY = 0;
-      GapBasedKeyboardService.resetGap();
-      
-      const overlay = DOMService.get(CONFIG.DOM.overlayContainerId);
-      if (!overlay) return;
-      
-      State.keyboardAutoToggleHandler = () => {
-        const currentScrollY = overlay.scrollTop || 0;
-        
-        // Mark scroll activity
-        GapBasedKeyboardService.markScrollActivity();
-        
-        // At top (scrollY = 0) after scrolling away
-        if (currentScrollY === 0 && State.lastOverlayScrollY > 0) {
-          // ✅ Check if gap time has expired OR recovery time available
-          if (GapBasedKeyboardService.isGapExpired() || GapBasedKeyboardService.isRecoveryTimeExpired()) {
-            this.openKeyboard();
-            GapBasedKeyboardService.recordToggle();
-          }
-        }
-        // Away from top (scrollY > 0) after being at top
-        else if (currentScrollY > 0 && State.lastOverlayScrollY === 0) {
-          // ✅ Check if gap time has expired
-          if (GapBasedKeyboardService.isGapExpired()) {
-            this.closeKeyboard();
-            GapBasedKeyboardService.recordToggle();
-          }
-        }
-        // ✅ RECOVERY: At top + idle + recovery time = open keyboard
-        else if (currentScrollY === 0 && GapBasedKeyboardService.isScrollIdle() && GapBasedKeyboardService.isRecoveryTimeExpired()) {
-          const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
-          if (inputEl && document.activeElement !== inputEl) {
-            this.openKeyboard();
-            GapBasedKeyboardService.recordToggle();
-          }
-        }
-        
-        State.lastOverlayScrollY = currentScrollY;
-      };
-      
-      overlay.addEventListener('scroll', State.keyboardAutoToggleHandler, { passive: true });
-    },
-
-    disableAutoToggle: function() {
-      const overlay = DOMService.get(CONFIG.DOM.overlayContainerId);
-      if (overlay && State.keyboardAutoToggleHandler) {
-        overlay.removeEventListener('scroll', State.keyboardAutoToggleHandler);
-      }
-
-      if (State.scrollIdleTimer) {
-        clearTimeout(State.scrollIdleTimer);
-      }
-      
-      State.keyboardAutoToggleHandler = null;
-    },
-
-    openKeyboard: function() {
-      const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
-      if (inputEl && document.activeElement !== inputEl) {
-        inputEl.focus();
-      }
-    },
-
-    closeKeyboard: function() {
-      const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
-      if (inputEl && document.activeElement === inputEl) {
-        inputEl.blur();
-      }
-    }
-  };
-
   const OverlayService = {
-    // ✅ IMPROVED: Smart backdrop with keyboard detection (v7.0 logic)
+    // ✅ IMPROVED: Smart backdrop with keyboard detection
     createOverlayBackdrop: function() {
       let backdrop = DOMService.get(CONFIG.DOM.overlayBackdropId);
       if (backdrop) return backdrop;
@@ -966,6 +672,7 @@
         pointerEvents: 'auto', cursor: 'default'
       });
 
+      // ✅ IMPROVED: Enhanced backdrop click handler with keyboard detection
       DOMService.on(backdrop, 'click', (e) => {
         if (e.target === backdrop) {
           e.preventDefault?.();
@@ -973,16 +680,20 @@
 
           // ✅ NEW: Check if keyboard is open - if so, prevent backdrop close
           if (KeyboardService.isKeyboardOpen()) {
+            // Keyboard is open, don't close overlay - just prevent default
             return;
           }
 
+          // Get current input value and compare with state when overlay was opened
           const inputEl = DOMService.get(CONFIG.DOM.searchInputId);
           const currentValue = (inputEl?.value || '').trim();
           const lastQ = (State.preOverlayState?.q || '').trim();
 
+          // ✅ If input changed → perform search, then close overlay
           if (currentValue !== lastQ && currentValue.length > 0) {
             SearchService.doSearch(null, false, { keepOverlay: false });
           } 
+          // ✅ Otherwise → just close overlay without searching
           else {
             OverlayService.closeSearchOverlay();
           }
@@ -1004,7 +715,7 @@
       State.originalInputParent = wrapper.parentNode;
       State.originalInputNextSibling = wrapper.nextSibling;
       
-      // ✅ CREATE PLACEHOLDER TO PREVENT LAYOUT SHIFT (v7.0 logic)
+      // ✅ CREATE PLACEHOLDER TO PREVENT LAYOUT SHIFT
       const placeholder = DOMService.create('div', CONFIG.DOM.placeholderId, null, {
         width: wrapper.offsetWidth + 'px',
         height: wrapper.offsetHeight + 'px',
@@ -1028,47 +739,22 @@
       let overlay = DOMService.get(CONFIG.DOM.overlayContainerId);
       if (!overlay) {
         overlay = DOMService.create('div', CONFIG.DOM.overlayContainerId, 'search-overlay search-overlay-open', {
-          position: 'fixed',
-          left: '0', 
-          top: '0', 
-          width: '100%',
-          height: '100%',
-          zIndex: '9998', 
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center', 
-          justifyContent: 'flex-start', 
-          padding: '0px 16px 16px',
-          overflow: 'auto',
-          pointerEvents: 'none'
+          position: 'fixed', left: '0', top: '0', width: '100%', height: '100%',
+          zIndex: '9998', display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'flex-start', padding: '24px 16px 16px',
+          overflow: 'auto', pointerEvents: 'none'
         });
         document.body.appendChild(overlay);
       } else {
         DOMService.setHTML(overlay, '');
       }
 
-      const wrapperContainer = DOMService.create('div', null, 'search-overlay-input-wrapper', {
-        position: 'sticky',
-        top: '0',
-        left: '0',
-        right: '0',
-        width: '100%',
-        maxWidth: '720px',
-        zIndex: '10001',
-        background: 'transparent',
-        pointerEvents: 'auto',
-        paddingTop: '24px',
-        margin: '0 auto'
-      });
-      
       DOMService.addClass(wrapper, 'overlay-elevated');
       DOMService.setStyles(wrapper, {
-        width: '100%',
-        marginTop: '6px',
+        width: '100%', maxWidth: '720px', marginTop: '6px',
         pointerEvents: 'auto'
       });
-      wrapperContainer.appendChild(wrapper);
-      overlay.appendChild(wrapperContainer);
+      overlay.appendChild(wrapper);
 
       SuggestionService.ensureSuggestionContainer();
 
@@ -1078,22 +764,21 @@
         }, CONFIG.TIMING.focusDelayMs);
       }
 
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+
       DOMService.on(document, 'keydown', this.overlayEscHandler);
       State.overlayOpen = true;
-      
-      // ✅ Push overlay state (separate from search state)
-      URLService.pushOverlayState(State.preOverlayState);
-      
-      NavigationService.hideNavigation();
-      
-      // ✅ Enable keyboard auto-toggle
-      KeyboardAutoToggleService.enableAutoToggle();
-      
-      State.isReadyMode = true;
-      State.lastQuery = '';
-      ReadyModeService.renderReadyModeSuggestions();
 
-      State.overlayTransitioning = false;
+      const q = inputEl?.value?.trim() || '';
+      if (q) {
+        setTimeout(() => { 
+          SearchService.doSearch(null, true, { keepOverlay: true });
+          State.overlayTransitioning = false;
+        }, CONFIG.TIMING.renderDelayMs);
+      } else {
+        State.overlayTransitioning = false;
+      }
     },
 
     overlayEscHandler: function(e) {
@@ -1114,13 +799,13 @@
 
       State.overlayTransitioning = true;
 
-      // ===== SYNC OVERLAY CLOSE WITH HISTORY (v7.0 logic) =====
+      // ===== SYNC OVERLAY CLOSE WITH HISTORY =====
       URLService.syncOverlayCloseWithHistory();
 
       const wrapper = DOMService.query('.search-input-wrapper');
       if (wrapper) {
         DOMService.removeClass(wrapper, 'overlay-elevated');
-        DOMService.setStyles(wrapper, { width: '', marginTop: '', pointerEvents: '' });
+        DOMService.setStyles(wrapper, { width: '', maxWidth: '', marginTop: '', pointerEvents: '' });
         
         if (State.originalInputParent) {
           if (State.originalInputNextSibling) {
@@ -1131,13 +816,15 @@
         }
       }
 
-      // ✅ REMOVE PLACEHOLDER (v7.0 logic)
+      // ✅ REMOVE PLACEHOLDER
       if (State.originalPlaceholder) {
         DOMService.remove(State.originalPlaceholder);
         State.originalPlaceholder = null;
       }
 
-      SuggestionService.closeSuggestionsWithOverlay();
+      const sc = DOMService.get(CONFIG.DOM.suggestionContainerId);
+      DOMService.remove(sc);
+      SuggestionService.removeSuggestionBackdrop();
 
       const overlay = DOMService.get(CONFIG.DOM.overlayContainerId);
       DOMService.remove(overlay);
@@ -1145,17 +832,13 @@
       const backdrop = DOMService.get(CONFIG.DOM.overlayBackdropId);
       DOMService.remove(backdrop);
 
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+
       DOMService.off(document, 'keydown', this.overlayEscHandler);
 
-      // ✅ Disable keyboard auto-toggle
-      KeyboardAutoToggleService.disableAutoToggle();
-
       State.overlayOpen = false;
-      State.isReadyMode = false;
-      State.lastQuery = '';
       State.overlayOpenedAt = null;
-
-      NavigationService.showNavigation();
 
       setTimeout(() => {
         State.overlayTransitioning = false;
@@ -1175,7 +858,10 @@
       State.selectedType = typeFilterEl?.value || State.selectedType;
       State.selectedCategory = 'all';
 
+      SuggestionService.hideSuggestions();
+
       if (!q.trim()) {
+        document.body.style.marginBottom = '';
         const placeholderHtml = `<div class="search-result-here" style="text-align:center;color:#969ca8;font-size:1.07em;margin-top:30px;">${LanguageService.t('search_result_here')}</div>`;
         const sr = DOMService.get(CONFIG.DOM.searchResultsId);
         if (sr) DOMService.setHTML(sr, placeholderHtml);
@@ -1194,7 +880,7 @@
       const filterCategories = RenderingService.extractResultCategories(State.currentResults);
       FilterService.setupCategoryFilter(filterCategories, 'all');
 
-      // ===== ONLY COMMIT ACTUAL SEARCH RESULTS (v7.0 logic) =====
+      // ===== ONLY COMMIT ACTUAL SEARCH RESULTS =====
       const stateObj = { q: q, type: State.selectedType || 'all', category: 'all' };
       const willCommit = (!preventPush && !State.suppressHistoryPush && !URLService.isStateEqual(stateObj, State.lastCommittedSearchState));
       if (willCommit) {
@@ -1223,41 +909,27 @@
       input.onkeydown = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
+          SuggestionService.hideSuggestions();
           SearchService.doSearch();
           this.closeMobileKeyboard();
         } else if (e.key === 'ArrowDown') {
           const container = DOMService.get(CONFIG.DOM.suggestionContainerId);
-          if (container && State.overlayOpen) {
+          if (container) {
             const first = container.querySelector('.suggestion-item');
             first?.focus?.();
           }
         }
-        else if (e.key === 'Backspace') {
-          clearTimeout(State.debounceTimeout);
-          State.debounceTimeout = setTimeout(() => {
-            SuggestionService.renderQuerySuggestions(input.value);
-          }, CONFIG.TIMING.debounceMs / 2);
-        }
       };
+      DOMService.on(input, 'blur', () => {
+        if (State.overlayTransitioning || State.ignoreNextHideSuggestions) return;
+        setTimeout(SuggestionService.hideSuggestions.bind(SuggestionService), CONFIG.TIMING.blurDelayMs);
+      });
       DOMService.on(input, 'focus', () => {
-        if (!State.overlayTransitioning) {
-          UIService.warpToTopOfOverlay();
-          OverlayService.openSearchOverlay();
-        }
+        if (!State.overlayTransitioning) OverlayService.openSearchOverlay();
       });
       DOMService.on(input, 'click', () => {
-        if (!State.overlayTransitioning) {
-          UIService.warpToTopOfOverlay();
-          OverlayService.openSearchOverlay();
-        }
+        if (!State.overlayTransitioning) OverlayService.openSearchOverlay();
       });
-    },
-
-    warpToTopOfOverlay: function() {
-      const overlay = DOMService.get(CONFIG.DOM.overlayContainerId);
-      if (overlay) {
-        overlay.scrollTop = 0;
-      }
     },
 
     setupMobileSelectEnter: function() {
@@ -1318,6 +990,7 @@
             UIService.setupMobileSelectEnter();
             UIService.setupAutoSearchInput();
             FilterService.setupCategoryFilter([], 'all');
+            document.body.style.marginBottom = '';
             const placeholderHtml = `<div class="search-result-here" style="text-align:center;color:#969ca8;font-size:1.07em;margin-top:30px;">${LanguageService.t('search_result_here')}</div>`;
             const sr = DOMService.get(CONFIG.DOM.searchResultsId);
             if (sr) DOMService.setHTML(sr, placeholderHtml);
@@ -1372,27 +1045,9 @@
     }
   }
 
-  // ✅ IMPROVED: Popstate handler (v7.0 + v21.0 merged)
   window.addEventListener('popstate', function(e) {
-    State.ignoreNextPopstate = false;
     const state = e.state || {};
-    
-    // ✅ NEW: Handle overlay state separately
-    if (state.__overlay) {
-      if (State.overlayOpen) {
-        if (State.preOverlayState) {
-          const inp = DOMService.get(CONFIG.DOM.searchInputId);
-          if (inp) inp.value = State.preOverlayState.q || '';
-          State.selectedType = State.preOverlayState.type || 'all';
-          State.selectedCategory = State.preOverlayState.category || 'all';
-        }
-        OverlayService.closeSearchOverlay();
-      }
-      return;
-    }
-    
-    // ✅ Close overlay if open and history changes
-    if (State.overlayOpen) {
+    if (State.overlayOpen && !state.__overlay) {
       if (State.preOverlayState) {
         const inp = DOMService.get(CONFIG.DOM.searchInputId);
         if (inp) inp.value = State.preOverlayState.q || '';
@@ -1402,11 +1057,18 @@
       OverlayService.closeSearchOverlay();
       return;
     }
-    
-    // ✅ Restore UI state from history
-    const st = (state && typeof state === 'object') ? state : URLService.readStateFromURL();
+    const st = (e.state && typeof e.state === 'object') ? e.state : URLService.readStateFromURL();
     if (st?.q !== undefined) restoreUIState(st);
   });
+
+  document.addEventListener('click', function(ev) {
+    const container = DOMService.get(CONFIG.DOM.suggestionContainerId);
+    const input = DOMService.get(CONFIG.DOM.searchInputId);
+    if (!container) return;
+    if (State.overlayOpen) return;
+    if (ev.target === input || container.contains(ev.target)) return;
+    SuggestionService.hideSuggestions();
+  }, false);
 
   function restoreUIState(st) {
     try {
@@ -1434,11 +1096,6 @@
       Rendering: RenderingService,
       Filter: FilterService,
       Suggestion: SuggestionService,
-      ReadyMode: ReadyModeService,
-      Highlight: HighlightService,
-      Navigation: NavigationService,
-      GapBasedKeyboard: GapBasedKeyboardService,
-      KeyboardAutoToggle: KeyboardAutoToggleService,
       Overlay: OverlayService,
       Search: SearchService,
       UI: UIService,
@@ -1447,46 +1104,7 @@
     getLastCommittedSearchState: () => State.lastCommittedSearchState,
     getSessionHistory: () => StorageService.getHistory(),
     querySuggestions: (q) => window.SearchEngine.querySuggestions(q, CONFIG.RENDER.suggestionMax),
-    isKeyboardOpen: () => KeyboardService.isKeyboardOpen(),
-    
-    // ✅ NEW: Public API for gap-based keyboard control
-    enableKeyboardAutoToggle: () => KeyboardAutoToggleService.enableAutoToggle(),
-    disableKeyboardAutoToggle: () => KeyboardAutoToggleService.disableAutoToggle(),
-    warpToOverlayTop: () => UIService.warpToTopOfOverlay(),
-    
-    // ✅ NEW: Gap-based system control
-    resetGap: () => GapBasedKeyboardService.resetGap(),
-    isGapExpired: () => GapBasedKeyboardService.isGapExpired(),
-    isRecoveryTimeExpired: () => GapBasedKeyboardService.isRecoveryTimeExpired(),
-    isScrollIdle: () => GapBasedKeyboardService.isScrollIdle(),
-    
-    // ✅ DEBUG: Get full system state
-    getSystemState: () => ({
-      keyboard: {
-        open: State.keyboardOpen,
-        lastToggleTime: State.lastKeyboardToggleTime,
-        gapMinMs: CONFIG.TIMING.keyboardGapMinMs,
-        recoveryMs: CONFIG.TIMING.keyboardGapRecoveryMs,
-        idleMs: CONFIG.TIMING.keyboardIdleTimeMs,
-        gapExpired: GapBasedKeyboardService.isGapExpired(),
-        recoveryExpired: GapBasedKeyboardService.isRecoveryTimeExpired(),
-        scrollIdle: GapBasedKeyboardService.isScrollIdle()
-      },
-      overlay: {
-        open: State.overlayOpen,
-        transitioning: State.overlayTransitioning,
-        preState: State.preOverlayState
-      },
-      search: {
-        lastState: State.lastCommittedSearchState,
-        historyPushed: State.searchHistoryPushed,
-        suppressPush: State.suppressHistoryPush
-      },
-      history: {
-        sessionHistory: StorageService.getHistory(),
-        historyCount: StorageService.getHistory().length
-      }
-    })
+    isKeyboardOpen: () => KeyboardService.isKeyboardOpen()
   };
 
   initializeSearchEngine();
