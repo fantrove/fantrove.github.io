@@ -67,6 +67,7 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: 'Segoe UI', 'Noto Sans Thai', 'Noto Sans', sans-serif;
 }
 
 main {
@@ -173,6 +174,7 @@ section.con h1 {
   background-size: 1.25rem;
   padding-right: 2.5rem;
   user-select: none;
+  /*font-weight: 600;*/
   min-width: 0; /* important for flex children shrinking */
 }
 
@@ -199,17 +201,22 @@ section.con h1 {
 .buttons:hover, .setting-item.select:hover, #language-button:hover, .buttons.auto-update-toggle:hover {
   --b-1: #EFF2F8;
   --b-2: #E9FFF8;
-  background-color: #F5F5F5;
+  background-color: #FBFBFB;
   box-shadow: 0 0 0 0.5px #D8DBE2;
 }
 
-.buttons svg {
+.buttons.buy:hover {
+    background-color: #FFF9FF;
+  box-shadow: 0 0 0 0.5px #E2D4E2;
+}
+
+.buttons svg, #language-button svg {
   height: 21px !important;
   width: auto;
   flex-shrink: 0;
   display: block;
   align-items: center;
-  stroke-width: 1.5 !important;
+  stroke-width: 1.2 !important;
 }
 
 .buttons.tap {
