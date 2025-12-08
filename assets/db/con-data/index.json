@@ -1,0 +1,9 @@
+{
+  "categories": [
+    {
+      "id": "emoji",
+      "name": { "th": "อีโมจิ", "en": "Emoji" },
+      "file": "emoji.min.json"
+    }
+  ]
+}
