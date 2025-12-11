@@ -407,7 +407,7 @@ section.con h1 {
   .setting-item select,
   #language-button, .buttons {
     padding-right: 1.25rem;
-    font-size: 0.85em;
+    font-size: 0.91em;
   }
 
   #language-dropdown {
@@ -435,6 +435,9 @@ section.con h1 {
 @media (min-width: 768px) {
   #language-dropdown {
     width: 80%;
+  }
+  .language-option {
+    font-size: var(--ui-font-size-medium);
   }
 }
 
