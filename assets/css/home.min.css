@@ -553,15 +553,14 @@ section.o:has(.faq-toggle:checked) {
   pointer-events: none;
 }
 
-.text-h button:hover {
+/*.text-h button:hover {
   background: #FAFFFD;
   box-shadow: 0 0 10px rgba(181, 140, 255, 0.25), 0 0 15px rgba(24, 228, 161, 0.25);
   transform: translateY(-1px);
-}
+}*/
 
 .text-h button:active {
   transform: scale(0.98);
-  box-shadow: 0 0 6px rgba(181, 140, 255, 0.3), 0 0 6px rgba(24, 228, 161, 0.3);
 }
 /*.text-h button:active {
   transform: scale(0.97);
@@ -793,7 +792,7 @@ section.o:has(.faq-toggle:checked) {
     min-width: 125px;
     max-width: 140px;
     padding: 1.2rem 1rem 1.2rem 1rem !important;
-    border-radius: 35px;
+    border-radius: 40px;
   }
 }
 
@@ -804,8 +803,8 @@ section.o:has(.faq-toggle:checked) {
   .h2, h2 { font-size: 1rem; }
   .h3, h3 { font-size: 0.95rem; }
   .lead { font-size: 0.9em; }
-  section { font-size: 0.9rem; padding: 1.05rem 1.15rem; border-radius: 30px; }
-  .button, .btn { font-size: 0.9em; padding: 1.5em 1.3em; border-radius: 25px; }
+  section { font-size: 0.9rem; padding: 1.05rem 1.15rem; border-radius: 40px; }
+  .button, .btn { font-size: 0.9em; padding: 1.5em 1.3em; border-radius: 40px; }
   .button-secondary { border-width: 1.5px; }
   .feature-item { font-size: 0.93em; padding: 0.92rem 0.55rem 0.92rem 0.55rem; border-radius: 25px; }
   .notice { font-size: 1.04em; padding: 2.3rem 1.5rem; border-radius: 30px; }
@@ -813,7 +812,7 @@ section.o:has(.faq-toggle:checked) {
   .faq-question { font-size: 0.9em; padding: 0.8em 1.1em 0.8em 0; }
   .main { font-size: 0.96em;}
   .text-h h1 { font-size: 1em; }
-  .text-h button { font-size: 0.9em !important; padding: 1.2em 1.2em; border-radius: 20px; }
+  .text-h button { font-size: 0.9em !important; padding: 1.2em 1.2em; border-radius: 25px; }
   .category-section h2 { font-size: 0.95em; margin: 0.6rem 0 0.6rem 0; }
   .item-card { font-size: 0.91em; }
   .item-card .name { font-size: 0.93em; }
