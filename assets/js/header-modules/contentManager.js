@@ -36,6 +36,11 @@ export const contentManager = {
   _throttledScrollCheck: null,
   _pendingDOMUpdates: [],
 
+  // New: render completion promise control
+  _renderCompletionPromise: null,
+  _resolveRenderCompletion: null,
+  _rejectRenderCompletion: null,
+
   _acquireFromPool() {
     const node = this._elementPool.pop() || document.createElement('div');
     node.className = '';
@@ -228,13 +233,42 @@ export const contentManager = {
     this._frameSamples.length = 0;
     this._avgFrameTime = 16;
 
+    // Resolve pending render promise (if any) so callers don't hang
+    try {
+      if (this._renderCompletionPromise && typeof this._resolveRenderCompletion === 'function') {
+        this._resolveRenderCompletion({ session: currentSession, aborted: true });
+      }
+    } catch {}
+    this._renderCompletionPromise = null;
+    this._resolveRenderCompletion = null;
+    this._rejectRenderCompletion = null;
+
     return currentSession;
   },
 
   async renderContent(data) {
     if (!Array.isArray(data)) throw new Error('Content data should be array');
     const container = document.getElementById(window._headerV2_contentLoadingManager.LOADING_CONTAINER_ID);
-    if (!container) return;
+    if (!container) {
+      // ensure we return a resolved promise to indicate "done" (nothing to render)
+      return Promise.resolve();
+    }
+
+    // If there's an ongoing render promise, clear it first
+    if (this._renderCompletionPromise) {
+      try {
+        if (this._rejectRenderCompletion) this._rejectRenderCompletion(new Error('render superseded'));
+      } catch {}
+      this._renderCompletionPromise = null;
+      this._resolveRenderCompletion = null;
+      this._rejectRenderCompletion = null;
+    }
+
+    // create a new render completion promise that resolves when all items are rendered (or aborted)
+    this._renderCompletionPromise = new Promise((resolve, reject) => {
+      this._resolveRenderCompletion = resolve;
+      this._rejectRenderCompletion = reject;
+    });
 
     await this.clearContent();
 
@@ -300,6 +334,26 @@ export const contentManager = {
         sentinel.style.pointerEvents = 'none';
       }
       return sentinel;
+    };
+
+    // Helper to finalize rendering: hide overlay, allow short RAFs for CSS to apply, resolve promise
+    const finalizeRender = async (result = {}) => {
+      try {
+        if (session !== this._renderSession) return;
+        // Allow a couple of frames for DOM & CSS to settle (fonts/styles)
+        await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
+        // small timeout to increase likelihood CSS is applied (use conservative short delay)
+        await new Promise(res => setTimeout(res, 60));
+        try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+        if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
+        if (this._throttledScrollCheck) { try { window.removeEventListener('scroll', this._throttledScrollCheck); } catch {} this._throttledScrollCheck = null; }
+      } catch (e) {}
+      try {
+        if (this._resolveRenderCompletion) this._resolveRenderCompletion(Object.assign({ session }, result));
+      } catch (e) {}
+      this._renderCompletionPromise = null;
+      this._resolveRenderCompletion = null;
+      this._rejectRenderCompletion = null;
     };
 
     const renderBatch = async (startIndex, batchSize) => {
@@ -406,8 +460,9 @@ export const contentManager = {
     let renderedCount = this._renderedSet.size;
 
     if (renderedCount >= items.length) {
-      try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
-      return;
+      // complete immediately
+      try { await finalizeRender({ rendered: renderedCount }); } catch (e) {}
+      return this._renderCompletionPromise;
     }
 
     let sentinel = createSentinel();
@@ -433,7 +488,7 @@ export const contentManager = {
                 } else {
                   try { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); } catch {}
                   if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
-                  try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+                  try { await finalizeRender({ rendered: renderedCount }); } catch (e) {}
                 }
               } catch (err) {
                 console.error('Error rendering next batch', err);
@@ -464,7 +519,7 @@ export const contentManager = {
               renderedCount = this._renderedSet.size;
               if (renderedCount >= items.length) {
                 window.removeEventListener('scroll', this._throttledScrollCheck);
-                try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+                try { await finalizeRender({ rendered: renderedCount }); } catch (e) {}
               }
             } catch (err) {}
             finally { this._isRenderingNextBatch = false; }
@@ -485,7 +540,17 @@ export const contentManager = {
       this._virtualNodes.length = 0;
       this._renderedSet.clear();
       try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+      // resolve the completion promise on cleanup
+      try {
+        if (this._resolveRenderCompletion) this._resolveRenderCompletion({ session, cleanedUp: true });
+      } catch {}
+      this._renderCompletionPromise = null;
+      this._resolveRenderCompletion = null;
+      this._rejectRenderCompletion = null;
     };
+
+    // Return promise that resolves when all batches complete (or aborted/cleared)
+    return this._renderCompletionPromise;
   },
 
   createContainer(item) {
