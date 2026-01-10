@@ -40,6 +40,7 @@ export const contentManager = {
   _renderCompletionPromise: null,
   _resolveRenderCompletion: null,
   _rejectRenderCompletion: null,
+  _contentReadyMarked: false, // ensure contentRender readiness marked only once
 
   _acquireFromPool() {
     const node = this._elementPool.pop() || document.createElement('div');
@@ -345,6 +346,13 @@ export const contentManager = {
         // small timeout to increase likelihood CSS is applied (use conservative short delay)
         await new Promise(res => setTimeout(res, 60));
         try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+        // Mark contentRender readiness once finalization done (only once)
+        try {
+          if (!this._contentReadyMarked && window._headerV2_startupManager) {
+            window._headerV2_startupManager.markReady('contentRender');
+            this._contentReadyMarked = true;
+          }
+        } catch (e) {}
         if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
         if (this._throttledScrollCheck) { try { window.removeEventListener('scroll', this._throttledScrollCheck); } catch {} this._throttledScrollCheck = null; }
       } catch (e) {}

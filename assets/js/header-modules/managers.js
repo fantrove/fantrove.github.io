@@ -11,7 +11,7 @@ export const scrollManager = {
         const headerZ = (this.constants.Z_INDEX.SUB_NAV || 999) + 2;
         styleSheet.textContent = `
 header { position: relative; z-index: ${headerZ}; contain: layout style paint; }
-#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; }
+#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms; }
 #sub-nav.fixed { background: rgba(255, 255, 255, 1); border-bottom: 0.5px solid rgba(19, 180, 127, 0.18); border-radius: 0 0 40px 40px; }
 #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
 #sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
@@ -113,6 +113,8 @@ header { position: relative; z-index: ${headerZ}; contain: layout style paint; }
             this.handleInitialScroll();
         } catch (e) {
             console.error('scrollManager init error', e);
+        } finally {
+            try { window._headerV2_startupManager?.markReady('scrollManager'); } catch {}
         }
     }
 };
@@ -194,6 +196,8 @@ export const performanceOptimizer = {
             this.setupErrorBoundary();
         } catch (e) {
             console.error('performanceOptimizer init error', e);
+        } finally {
+            try { window._headerV2_startupManager?.markReady('perf'); } catch {}
         }
     }
 };
@@ -283,12 +287,14 @@ export const buttonManager = {
     async loadConfig() {
         if (this.buttonConfig) {
             await this.renderMainButtons();
+            try { window._headerV2_startupManager?.markReady('buttonManager'); } catch {}
             return;
         }
         const cached = window._headerV2_dataManager.getCached('buttonConfig');
         if (cached) {
             this.buttonConfig = cached;
             await this.renderMainButtons();
+            try { window._headerV2_startupManager?.markReady('buttonManager'); } catch {}
             return;
         }
         // Medium priority (priority 2)
@@ -301,6 +307,7 @@ export const buttonManager = {
         window._headerV2_dataManager.setCache('buttonConfig', response);
         await this.renderMainButtons();
         await window._headerV2_navigationManager.updateButtonStates();
+        try { window._headerV2_startupManager?.markReady('buttonManager'); } catch {}
     },
 
     async renderMainButtons() {
@@ -820,7 +827,7 @@ export const navigationManager = {
 
             if (hasSubButtons) {
                 if (needsRenderSubButtons) {
-                    const container = window._headerV2_subNavManager.ensureSubNavContainer();
+                    const container = window._headerV2_subNav_manager?.ensureSubNavContainer?.() || window._headerV2_subNavManager.ensureSubNavContainer();
                     container.innerHTML = "";
                     try {
                         await window._headerV2_buttonManager.renderSubButtons(mainButton.subButtons, main, lang);
@@ -905,4 +912,12 @@ export const navigationManager = {
             });
         } catch {}
     }
+};
+
+export default {
+    scrollManager,
+    performanceOptimizer,
+    subNavManager,
+    buttonManager,
+    navigationManager
 };
