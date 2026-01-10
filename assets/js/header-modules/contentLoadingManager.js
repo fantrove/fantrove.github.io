@@ -1,5 +1,5 @@
 // contentLoadingManager.js
-// ✅ ปรับปรุง: Lazy overlay setup, memoization
+// ✅ ปรับปรุง: Lazy overlay setup, memoization, respect initial startup overlay to avoid nested loaders
 import { showInstantLoadingOverlay, removeInstantLoadingOverlay } from './overlay.js';
 
 const LOADING_CONTAINER_ID = 'content-loading';
@@ -8,7 +8,7 @@ const SPINNER_ID = 'headerv2-spinner';
 export const contentLoadingManager = {
  LOADING_CONTAINER_ID,
  spinnerElement: null,
- _messageCache: {}, // ✅ NEW: cache for default messages
+ _messageCache: {}, // cache for default messages
  
  createSpinner(message = '') {
   if (this.spinnerElement && document.body.contains(this.spinnerElement)) {
@@ -51,6 +51,14 @@ export const contentLoadingManager = {
    } else if (typeof messageOrOptions === 'object' && messageOrOptions !== null) {
     message = messageOrOptions.message || '';
     opts = messageOrOptions;
+   }
+   
+   // If initial startup overlay active and individual loaders are blocked, update global overlay instead
+   if (window._headerV2_startupManager && window._headerV2_startupManager.blockIndividualLoaders && window._headerV2_startupManager.isInitialOverlayActive) {
+    try {
+     showInstantLoadingOverlay({ message });
+     return;
+    } catch (e) {}
    }
    
    let useOverlay = typeof showInstantLoadingOverlay === 'function';
@@ -129,6 +137,7 @@ export const contentLoadingManager = {
   }
   
   // Fallback: legacy in-container spinner
+  // But if startup overlay active and blocking, do nothing (we already returned earlier)
   const container = document.getElementById(this.LOADING_CONTAINER_ID);
   if (!container) return;
   const existing = container.querySelector('#' + SPINNER_ID);
@@ -142,6 +151,12 @@ export const contentLoadingManager = {
  
  hide() {
   try {
+   // If initial startup overlay is active, leave it to init orchestration to remove
+   if (window._headerV2_startupManager && window._headerV2_startupManager.isInitialOverlayActive) {
+    // update initial overlay message to default or subtle state, but do not remove
+    try { showInstantLoadingOverlay({ message: '' }); } catch {}
+    return;
+   }
    try {
     if (typeof removeInstantLoadingOverlay === 'function') {
      removeInstantLoadingOverlay();

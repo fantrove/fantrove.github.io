@@ -197,14 +197,18 @@ export async function init() {
    const status = await window._headerV2_startupManager.waitForAll(MAX_WAIT);
    if (!status || !status.ok) {
     console.warn('startup readiness did not fully satisfy all requirements within timeout', status);
+    // Optionally notify user (non-blocking)
+    try { window._headerV2_utils.showNotification('การโหลดใช้เวลานานกว่าปกติ กรุณารอสักครู่', 'warning'); } catch {}
    }
-   // At this point either all required are ready or timed out. Remove overlay.
+   // Remove initial overlay only here
    try {
     if (typeof window.__removeInstantLoadingOverlay === "function" && window.__instantLoadingOverlayShown) {
      window.__removeInstantLoadingOverlay();
      window.__instantLoadingOverlayShown = false;
     }
    } catch (e) {}
+   // Allow modules to show their own loaders after startup
+   try { if (window._headerV2_startupManager) { window._headerV2_startupManager.blockIndividualLoaders = false; window._headerV2_startupManager.isInitialOverlayActive = false; } } catch {}
   } catch (e) {
    try {
     if (typeof window.__removeInstantLoadingOverlay === "function" && window.__instantLoadingOverlayShown) {
@@ -212,6 +216,7 @@ export async function init() {
      window.__instantLoadingOverlayShown = false;
     }
    } catch (e2) {}
+   try { if (window._headerV2_startupManager) { window._headerV2_startupManager.blockIndividualLoaders = false; window._headerV2_startupManager.isInitialOverlayActive = false; } } catch {}
   }
  }
 }

@@ -1,5 +1,5 @@
 // overlay.js
-// ✅ ปรับปรุง: Lazy initialization, optimized performance
+// ✅ ปรับปรุง: Lazy initialization、optimized performance
 const OVERLAY_ID = 'instant-loading-overlay';
 const STYLE_ID = 'instant-loading-styles';
 const DEFAULT_ZINDEX = 15000;
