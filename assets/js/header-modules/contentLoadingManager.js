@@ -1,6 +1,6 @@
 // contentLoadingManager.js
-// ✅ ปรับปรุง: Lazy overlay setup, memoization, and integration with startupManager
-import { showInstantLoadingOverlay, removeInstantLoadingOverlay } from './overlay.js';
+// ✅ ปรับปรุง: token-based overlay usage, integration with overlayController
+import { showInstantLoadingOverlay, removeInstantLoadingOverlay, updateInstantLoadingOverlay } from './overlay.js';
 
 const LOADING_CONTAINER_ID = 'content-loading';
 const SPINNER_ID = 'headerv2-spinner';
@@ -8,7 +8,8 @@ const SPINNER_ID = 'headerv2-spinner';
 export const contentLoadingManager = {
  LOADING_CONTAINER_ID,
  spinnerElement: null,
- _messageCache: {}, // cache for default messages
+ _messageCache: {},
+ _overlayToken: null, // token id returned from overlayController when used
  
  createSpinner(message = '') {
   if (this.spinnerElement && document.body.contains(this.spinnerElement)) {
@@ -28,7 +29,6 @@ export const contentLoadingManager = {
       </div>
       <div class="loading-message" style="margin-top:8px;font-weight:500;color:#2196f3">${message || this.getDefaultMessage()}</div>
     `;
-  // minimal style (only if not present)
   if (!document.getElementById('headerv2-loading-styles')) {
    const s = document.createElement('style');
    s.id = 'headerv2-loading-styles';
@@ -44,143 +44,112 @@ export const contentLoadingManager = {
  
  show(messageOrOptions = '') {
   try {
-   // If initial startup overlay active and we block individual loaders,
-   // update the global overlay message instead of creating a second loader.
-   if (window._headerV2_startupManager && window._headerV2_startupManager.blockIndividualLoaders && window._headerV2_startupManager.isInitialOverlayActive) {
+   // If startupManager blocks individual loaders, use/update the existing overlay token instead of adding an in-container spinner
+   const startup = window._headerV2_startupManager;
+   const msg = (typeof messageOrOptions === 'string') ? messageOrOptions : (messageOrOptions && messageOrOptions.message) || '';
+   if (startup && startup.blockIndividualLoaders && startup.isInitialOverlayActive) {
+    // update initial overlay via overlay API (this will update the singleton overlay message)
+    // If there is an initial token id stored globally, try update, else create a dedicated startup-scope token
     try {
-     const msg = typeof messageOrOptions === 'string' ? messageOrOptions : (messageOrOptions && messageOrOptions.message) || '';
-     showInstantLoadingOverlay({ message: msg });
-     return;
-    } catch (e) {}
-   }
-   
-   let message = '';
-   let opts = {};
-   if (typeof messageOrOptions === 'string') {
-    message = messageOrOptions;
-   } else if (typeof messageOrOptions === 'object' && messageOrOptions !== null) {
-    message = messageOrOptions.message || '';
-    opts = messageOrOptions;
-   }
-   
-   let useOverlay = typeof showInstantLoadingOverlay === 'function';
-   let computedZ = undefined;
-   
-   if (useOverlay) {
-    let behindSubNav = !!opts.behindSubNav;
-    // Auto-detect if sub-nav is present and visible
-    if (opts.behindSubNav === undefined) {
-     try {
-      const subNav = document.getElementById('sub-nav');
-      if (subNav) {
-       const style = window.getComputedStyle(subNav);
-       const visible = style.display !== 'none' && style.visibility !== 'hidden' && subNav.offsetHeight > 0;
-       const container = subNav.querySelector('#sub-buttons-container');
-       const hasSubButtons = container && container.childNodes && container.childNodes.length > 0;
-       if (visible && hasSubButtons) behindSubNav = true;
-      }
-     } catch (e) {}
-    }
-    
-    // Compute z-index
-    try {
-     let headerZ = 0;
-     try {
-      const headerEl = document.querySelector('header');
-      if (headerEl) {
-       const hStyle = window.getComputedStyle(headerEl);
-       headerZ = parseInt(hStyle.zIndex, 10) || 0;
-      }
-     } catch (e) { headerZ = 0; }
-     
-     let subZ = 0;
-     try {
-      const subNav = document.getElementById('sub-nav');
-      if (subNav) {
-       const sStyle = window.getComputedStyle(subNav);
-       subZ = parseInt(sStyle.zIndex, 10) || 0;
-      }
-     } catch (e) { subZ = 0; }
-     
-     try {
-      if (!subZ && window._headerV2_scrollManager && window._headerV2_scrollManager.constants && window._headerV2_scrollManager.constants.Z_INDEX)
-       subZ = window._headerV2_scrollManager.constants.Z_INDEX.SUB_NAV || subZ;
-     } catch (e) {}
-     
-     let targetZ = 0;
-     if (behindSubNav) {
-      targetZ = subZ || headerZ || 1000;
+     if (startup._initialTokenId) {
+      updateInstantLoadingOverlay(startup._initialTokenId, { message: msg });
+      return startup._initialTokenId;
      } else {
-      targetZ = headerZ || subZ || 1000;
-     }
-     
-     if (opts.zIndex != null) {
-      const provided = Number(opts.zIndex);
-      if (!isNaN(provided)) {
-       computedZ = provided >= targetZ ? Math.max(0, targetZ - 1) : Math.max(0, provided);
-      }
-     } else {
-      computedZ = Math.max(0, targetZ - 1);
+      const t = showInstantLoadingOverlay({ message: msg, scope: 'startup', priority: 1, owner: 'startup', autoHideMs: 0 });
+      // showInstantLoadingOverlay returns { overlayNode, tokenId } or token wrapper
+      if (t && t.tokenId) { startup._initialTokenId = t.tokenId; }
+      return startup._initialTokenId || null;
      }
     } catch (e) {
-     computedZ = undefined;
+     // fallback to in-container spinner (best-effort)
+     console.error('contentLoadingManager startup overlay update failed', e);
     }
-    
-    showInstantLoadingOverlay({
-     lang: undefined,
-     message: message,
-     zIndex: computedZ,
-     autoHideAfterMs: opts.autoHideAfterMs
-    });
-    return;
    }
+   
+   // Normal path: show a token for this manager, store it locally
+   // If already have overlay token, update message
+   if (this._overlayToken) {
+    updateInstantLoadingOverlay(this._overlayToken, { message: msg });
+    return this._overlayToken;
+   }
+   
+   const res = showInstantLoadingOverlay({ message: msg, scope: 'content', priority: 4, autoHideMs: 15000, owner: 'contentLoadingManager' });
+   const tokenId = res && res.tokenId ? res.tokenId : (typeof res === 'string' ? res : null);
+   this._overlayToken = tokenId;
+   return tokenId;
   } catch (err) {
    console.error('contentLoadingManager overlay show error', err);
   }
   
-  // Fallback: legacy in-container spinner (only if not blocked by startup)
-  const container = document.getElementById(this.LOADING_CONTAINER_ID);
-  if (!container) return;
-  const existing = container.querySelector('#' + SPINNER_ID);
-  if (existing) {
-   this.updateMessage(messageOrOptions && messageOrOptions.message ? messageOrOptions.message : (typeof messageOrOptions === 'string' ? messageOrOptions : ''));
-   return;
+  // Fallback legacy in-container spinner
+  try {
+   const container = document.getElementById(this.LOADING_CONTAINER_ID);
+   if (!container) return;
+   const existing = container.querySelector('#' + SPINNER_ID);
+   if (existing) {
+    this.updateMessage(messageOrOptions && messageOrOptions.message ? messageOrOptions.message : (typeof messageOrOptions === 'string' ? messageOrOptions : ''));
+    return null;
+   }
+   const spinner = this.createSpinner(typeof messageOrOptions === 'string' ? messageOrOptions : (messageOrOptions && messageOrOptions.message ? messageOrOptions.message : ''));
+   container.appendChild(spinner);
+   return null;
+  } catch (e) {
+   return null;
   }
-  const spinner = this.createSpinner(typeof messageOrOptions === 'string' ? messageOrOptions : (messageOrOptions && messageOrOptions.message ? messageOrOptions.message : ''));
-  container.appendChild(spinner);
  },
  
- hide() {
+ hide(tokenOrNothing) {
   try {
-   // If initial overlay is active, do not remove it here.
-   if (window._headerV2_startupManager && window._headerV2_startupManager.isInitialOverlayActive) {
-    // no-op; init orchestration will remove initial overlay when ready
+   const startup = window._headerV2_startupManager;
+   // If startup initial overlay active, do not remove it here; it will be removed by init orchestration
+   if (startup && startup.isInitialOverlayActive) {
+    // If this manager created its own token (not the startup token), hide it normally
+    if (this._overlayToken) {
+     removeInstantLoadingOverlay(this._overlayToken);
+     this._overlayToken = null;
+    }
     return;
    }
    
-   try {
-    if (typeof removeInstantLoadingOverlay === 'function') {
-     removeInstantLoadingOverlay();
-    }
-   } catch (e) {}
-   
-   const container = document.getElementById(this.LOADING_CONTAINER_ID);
-   if (!container) return;
-   const spinner = container.querySelector('#' + SPINNER_ID);
-   if (spinner && spinner.parentNode) {
-    spinner.parentNode.removeChild(spinner);
+   // if token passed, hide that token; else hide our local token if exists
+   if (typeof tokenOrNothing === 'string') {
+    removeInstantLoadingOverlay(tokenOrNothing);
+    if (this._overlayToken === tokenOrNothing) this._overlayToken = null;
+    return;
    }
-   this.spinnerElement = null;
-  } catch (e) {
-   this.spinnerElement = null;
+   
+   if (this._overlayToken) {
+    removeInstantLoadingOverlay(this._overlayToken);
+    this._overlayToken = null;
+    return;
+   }
+   
+   // fallback: legacy removal
+   try {
+    const container = document.getElementById(this.LOADING_CONTAINER_ID);
+    if (!container) return;
+    const spinner = container.querySelector('#' + SPINNER_ID);
+    if (spinner && spinner.parentNode) spinner.parentNode.removeChild(spinner);
+    this.spinnerElement = null;
+   } catch (e) {
+    this.spinnerElement = null;
+   }
+  } catch (err) {
+   console.error('contentLoadingManager hide error', err);
   }
  },
  
  updateMessage(message = '') {
   try {
-   const overlayMsg = document.querySelector('#instant-loading-overlay .loading-message');
-   if (overlayMsg) {
-    overlayMsg.textContent = message || this.getDefaultMessage();
+   // Update overlay if present
+   if (window._headerV2_startupManager && window._headerV2_startupManager._initialTokenId) {
+    updateInstantLoadingOverlay(window._headerV2_startupManager._initialTokenId, { message });
+    return;
+   }
+  } catch (e) {}
+  try {
+   if (this._overlayToken) {
+    updateInstantLoadingOverlay(this._overlayToken, { message });
     return;
    }
   } catch (e) {}

@@ -1,5 +1,6 @@
 // managers.js
-// ✅ ปรับปรุง: Optimized event handlers, deferred initialization, memory efficient
+// ✅ ปรับปรุง: Optimized event handlers, deferred initialization, memory efficient,
+// and robust navigation overlay/ readiness marking to avoid stuck loaders on subbutton first-load
 export const scrollManager = {
     state: { lastScrollY: 0, ticking: false, subNavOffsetTop: 0, subNavHeight: 0, isSubNavFixed: false },
     constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 0, Z_INDEX: { SUB_NAV: 999 } },
@@ -179,7 +180,7 @@ export const performanceOptimizer = {
         }, 800);
 
         window.addEventListener('error', event => {
-            throttledNotify('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
+            throttledNotify('เกิดข้���ผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
             console.error('Captured error', event.error || event);
         });
 
@@ -827,7 +828,7 @@ export const navigationManager = {
 
             if (hasSubButtons) {
                 if (needsRenderSubButtons) {
-                    const container = window._headerV2_subNav_manager?.ensureSubNavContainer?.() || window._headerV2_subNavManager.ensureSubNavContainer();
+                    const container = window._headerV2_subNavManager.ensureSubNavContainer();
                     container.innerHTML = "";
                     try {
                         await window._headerV2_buttonManager.renderSubButtons(mainButton.subButtons, main, lang);
@@ -843,23 +844,48 @@ export const navigationManager = {
                     window._headerV2_buttonManager.state.currentSubButton = subNavBtn;
                 }
                 await window._headerV2_contentManager.clearContent();
-                if (subButton && subButton.jsonFile) {
-                    try {
+
+                try {
+                    if (subButton && subButton.jsonFile && mainButton.jsonFile) {
+                        const pMain = window._headerV2_dataManager.fetchWithRetry(mainButton.jsonFile, {}, 2).catch(e=>null);
+                        const pSub = window._headerV2_dataManager.fetchWithRetry(subButton.jsonFile, {}, 3).catch(e=>null);
+                        const [mainData, subData] = await Promise.all([pMain, pSub]);
+                        const combined = [];
+                        if (Array.isArray(mainData)) combined.push(...mainData);
+                        else if (mainData) combined.push(mainData);
+                        if (Array.isArray(subData)) combined.push(...subData);
+                        else if (subData) combined.push(subData);
+                        await window._headerV2_contentManager.renderContent(combined);
+                    } else if (subButton && subButton.jsonFile) {
                         await window._headerV2_contentManager.renderContent([{ jsonFile: subButton.jsonFile }]);
-                    } catch (e) {
-                        window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาย่อย', 'error');
+                    } else if (mainButton.jsonFile) {
+                        await window._headerV2_contentManager.renderContent([{ jsonFile: mainButton.jsonFile }]);
+                    } else {
+                        try { window._headerV2_startupManager?.markReady('navigation'); } catch {}
                     }
+                    // After render completes, mark navigation readiness
+                    try { window._headerV2_startupManager?.markReady('navigation'); } catch {}
+                } catch (e) {
+                    window._headerV2_utils.showNotification('โหลดเนื้อหาหลัก/ย่อยไม่สำเร็จ', 'error');
+                    console.error(e);
+                    try { window._headerV2_startupManager?.markFailed('navigation'); } catch {}
+                } finally {
+                    try { window._headerV2_contentLoadingManager.hide(); } catch {}
                 }
             } else {
-                window._headerV2_subNavManager.hideSubNav();
-                window._headerV2_buttonManager.state.currentSubButton = null;
+                // No sub buttons: render main only
                 await window._headerV2_contentManager.clearContent();
-                if (mainButton?.jsonFile) {
-                    try {
+                try {
+                    if (mainButton?.jsonFile) {
                         await window._headerV2_contentManager.renderContent([{ jsonFile: mainButton.jsonFile }]);
-                    } catch (e) {
-                        window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาหลัก', 'error');
                     }
+                    try { window._headerV2_startupManager?.markReady('navigation'); } catch {}
+                } catch (e) {
+                    window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาหลัก', 'error');
+                    console.error(e);
+                    try { window._headerV2_startupManager?.markFailed('navigation'); } catch {}
+                } finally {
+                    try { window._headerV2_contentLoadingManager.hide(); } catch {}
                 }
             }
 
@@ -872,6 +898,7 @@ export const navigationManager = {
             window._headerV2_contentLoadingManager.hide();
             window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการนำทาง', 'error');
             console.error('navigateTo error', error);
+            try { window._headerV2_startupManager?.markFailed('navigation'); } catch {}
         } finally {
             window._headerV2_contentLoadingManager.hide();
             this.state.isNavigating = false;
