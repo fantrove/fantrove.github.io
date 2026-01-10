@@ -1,5 +1,5 @@
 // contentLoadingManager.js
-// ✅ ปรับปรุง: Lazy overlay setup, memoization, respect initial startup overlay to avoid nested loaders
+// ✅ ปรับปรุง: Lazy overlay setup, memoization, and integration with startupManager
 import { showInstantLoadingOverlay, removeInstantLoadingOverlay } from './overlay.js';
 
 const LOADING_CONTAINER_ID = 'content-loading';
@@ -44,6 +44,16 @@ export const contentLoadingManager = {
  
  show(messageOrOptions = '') {
   try {
+   // If initial startup overlay active and we block individual loaders,
+   // update the global overlay message instead of creating a second loader.
+   if (window._headerV2_startupManager && window._headerV2_startupManager.blockIndividualLoaders && window._headerV2_startupManager.isInitialOverlayActive) {
+    try {
+     const msg = typeof messageOrOptions === 'string' ? messageOrOptions : (messageOrOptions && messageOrOptions.message) || '';
+     showInstantLoadingOverlay({ message: msg });
+     return;
+    } catch (e) {}
+   }
+   
    let message = '';
    let opts = {};
    if (typeof messageOrOptions === 'string') {
@@ -51,14 +61,6 @@ export const contentLoadingManager = {
    } else if (typeof messageOrOptions === 'object' && messageOrOptions !== null) {
     message = messageOrOptions.message || '';
     opts = messageOrOptions;
-   }
-   
-   // If initial startup overlay active and individual loaders are blocked, update global overlay instead
-   if (window._headerV2_startupManager && window._headerV2_startupManager.blockIndividualLoaders && window._headerV2_startupManager.isInitialOverlayActive) {
-    try {
-     showInstantLoadingOverlay({ message });
-     return;
-    } catch (e) {}
    }
    
    let useOverlay = typeof showInstantLoadingOverlay === 'function';
@@ -136,8 +138,7 @@ export const contentLoadingManager = {
    console.error('contentLoadingManager overlay show error', err);
   }
   
-  // Fallback: legacy in-container spinner
-  // But if startup overlay active and blocking, do nothing (we already returned earlier)
+  // Fallback: legacy in-container spinner (only if not blocked by startup)
   const container = document.getElementById(this.LOADING_CONTAINER_ID);
   if (!container) return;
   const existing = container.querySelector('#' + SPINNER_ID);
@@ -151,12 +152,12 @@ export const contentLoadingManager = {
  
  hide() {
   try {
-   // If initial startup overlay is active, leave it to init orchestration to remove
+   // If initial overlay is active, do not remove it here.
    if (window._headerV2_startupManager && window._headerV2_startupManager.isInitialOverlayActive) {
-    // update initial overlay message to default or subtle state, but do not remove
-    try { showInstantLoadingOverlay({ message: '' }); } catch {}
+    // no-op; init orchestration will remove initial overlay when ready
     return;
    }
+   
    try {
     if (typeof removeInstantLoadingOverlay === 'function') {
      removeInstantLoadingOverlay();
