@@ -1,6 +1,5 @@
-// contentManager.js
-// ✅ ปรับปรุง: Incremental batch processing, memory optimization, deferred DOM operations,
-// and robust readiness marking to avoid false "render slow" states on first subbutton loads.
+// contentManager.js (ต่อจากเดิม)
+// ✅ ปรับปรุง: Incremental batch processing, memory optimization, deferred DOM operations
 export const contentManager = {
   _renderSession: 0,
   _abortController: null,
@@ -36,13 +35,6 @@ export const contentManager = {
   _isRenderingNextBatch: false,
   _throttledScrollCheck: null,
   _pendingDOMUpdates: [],
-
-  // token for overlay for this render
-  _overlayToken: null,
-  _renderCompletionPromise: null,
-  _resolveRenderCompletion: null,
-  _rejectRenderCompletion: null,
-  _contentReadyMarked: false, // ensure contentRender readiness marked only once per render
 
   _acquireFromPool() {
     const node = this._elementPool.pop() || document.createElement('div');
@@ -202,14 +194,6 @@ export const contentManager = {
       if (sentinel && sentinel.parentNode) sentinel.parentNode.removeChild(sentinel);
     } catch {}
 
-    // Release overlay token for render if present
-    try {
-      if (this._overlayToken) {
-        try { window.removeInstantLoadingOverlay(this._overlayToken); } catch {}
-        this._overlayToken = null;
-      }
-    } catch (e) {}
-
     try { window._headerV2_contentLoadingManager.hide(); } catch {}
 
     if (this._sentinelObserver) {
@@ -244,64 +228,13 @@ export const contentManager = {
     this._frameSamples.length = 0;
     this._avgFrameTime = 16;
 
-    // Reset content-ready marker so next render can mark again
-    this._contentReadyMarked = false;
-
-    // Resolve pending render promise (if any) so callers don't hang
-    try {
-      if (this._renderCompletionPromise && typeof this._resolveRenderCompletion === 'function') {
-        this._resolveRenderCompletion({ session: currentSession, aborted: true });
-      }
-    } catch {}
-    this._renderCompletionPromise = null;
-    this._resolveRenderCompletion = null;
-    this._rejectRenderCompletion = null;
-
     return currentSession;
-  },
-
-  // Ensure we mark contentRender readiness once DOM has visible content.
-  _markContentReadyOnce() {
-    try {
-      if (this._contentReadyMarked) return;
-      this._contentReadyMarked = true;
-      if (window._headerV2_startupManager) {
-        try { window._headerV2_startupManager.markReady('contentRender'); } catch (e) {}
-      }
-      // If we have a per-render overlay token, remove it (but do not touch startup initial token)
-      try {
-        if (this._overlayToken) {
-          window.removeInstantLoadingOverlay && window.removeInstantLoadingOverlay(this._overlayToken);
-          this._overlayToken = null;
-        }
-      } catch (e) {}
-    } catch (e) {}
   },
 
   async renderContent(data) {
     if (!Array.isArray(data)) throw new Error('Content data should be array');
     const container = document.getElementById(window._headerV2_contentLoadingManager.LOADING_CONTAINER_ID);
-    if (!container) {
-      // Nothing to render -> mark content ready immediately (defensive) so startup doesn't wait forever
-      try { this._markContentReadyOnce(); } catch (e) {}
-      return Promise.resolve();
-    }
-
-    // If there's an ongoing render promise, clear it first
-    if (this._renderCompletionPromise) {
-      try {
-        if (this._rejectRenderCompletion) this._rejectRenderCompletion(new Error('render superseded'));
-      } catch {}
-      this._renderCompletionPromise = null;
-      this._resolveRenderCompletion = null;
-      this._rejectRenderCompletion = null;
-    }
-
-    // create a new render completion promise that resolves when all items are rendered (or aborted)
-    this._renderCompletionPromise = new Promise((resolve, reject) => {
-      this._resolveRenderCompletion = resolve;
-      this._rejectRenderCompletion = reject;
-    });
+    if (!container) return;
 
     await this.clearContent();
 
@@ -356,19 +289,6 @@ export const contentManager = {
       });
     }
 
-    // create overlay token for this render if startup initial overlay is not active
-    try {
-      const startup = window._headerV2_startupManager;
-      if (!(startup && startup.isInitialOverlayActive)) {
-        const res = window.showInstantLoadingOverlay ? window.showInstantLoadingOverlay({ message: 'Loading content...', scope: 'contentRender', priority: 4, autoHideMs: 20000, owner: 'contentManager' }) : null;
-        this._overlayToken = res && res.tokenId ? res.tokenId : null;
-      } else {
-        this._overlayToken = null;
-      }
-    } catch (e) {
-      this._overlayToken = null;
-    }
-
     const createSentinel = () => {
       let sentinel = document.getElementById(this._SENTINEL_ID);
       if (!sentinel) {
@@ -380,29 +300,6 @@ export const contentManager = {
         sentinel.style.pointerEvents = 'none';
       }
       return sentinel;
-    };
-
-    // Helper to finalize rendering: hide overlay, allow short RAFs for CSS to apply, resolve promise
-    const finalizeRender = async (result = {}) => {
-      try {
-        if (session !== this._renderSession) return;
-        // Allow a couple of frames for DOM & CSS to settle (fonts/styles)
-        await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
-        // small timeout to increase likelihood CSS is applied (use conservative short delay)
-        await new Promise(res => setTimeout(res, 60));
-        // mark contentRender readiness once finalization done (only once)
-        try {
-          this._markContentReadyOnce();
-        } catch (e) {}
-        if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
-        if (this._throttledScrollCheck) { try { window.removeEventListener('scroll', this._throttledScrollCheck); } catch {} this._throttledScrollCheck = null; }
-      } catch (e) {}
-      try {
-        if (this._resolveRenderCompletion) this._resolveRenderCompletion(Object.assign({ session }, result));
-      } catch (e) {}
-      this._renderCompletionPromise = null;
-      this._resolveRenderCompletion = null;
-      this._rejectRenderCompletion = null;
     };
 
     const renderBatch = async (startIndex, batchSize) => {
@@ -423,7 +320,7 @@ export const contentManager = {
 
         if (item && item.jsonFile && !item._fetched) {
           try {
-            try { window._headerV2_contentLoadingManager.updateMessage('Loading data...'); } catch {}
+            try { window._headerV2_contentLoadingManager.updateMessage('Loading...'); } catch {}
             const fetched = await window._headerV2_dataManager.fetchWithRetry(item.jsonFile, { cache: true }, 3).catch(err => { throw err; });
             if (Array.isArray(fetched)) {
               item._fetched = true;
@@ -486,13 +383,6 @@ export const contentManager = {
         requestAnimationFrame(() => {
           for (const node of appended) node.style.opacity = 1;
         });
-        // If this is the first appended content for this render, mark content ready quickly
-        try {
-          // small delay so browser can paint appended nodes before we mark ready
-          setTimeout(() => {
-            try { this._markContentReadyOnce(); } catch (e) {}
-          }, 40);
-        } catch (e) {}
       }
 
       const MAX_IN_DOM = this._isSlowDevice ? 20 : 28;
@@ -506,14 +396,6 @@ export const contentManager = {
       return created;
     };
 
-    // If there are no items at all, mark ready immediately (avoid startup waiting)
-    if (!items || items.length === 0) {
-      try { this._markContentReadyOnce(); } catch (e) {}
-      // finalize and resolve
-      try { await finalizeRender({ rendered: 0 }); } catch (e) {}
-      return this._renderCompletionPromise;
-    }
-
     const scheduleIdle = (fn) => {
       if ('requestIdleCallback' in window) requestIdleCallback(fn, { timeout: 200 });
       else setTimeout(fn, 16);
@@ -524,9 +406,8 @@ export const contentManager = {
     let renderedCount = this._renderedSet.size;
 
     if (renderedCount >= items.length) {
-      // complete immediately
-      try { await finalizeRender({ rendered: renderedCount }); } catch (e) {}
-      return this._renderCompletionPromise;
+      try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
+      return;
     }
 
     let sentinel = createSentinel();
@@ -552,7 +433,7 @@ export const contentManager = {
                 } else {
                   try { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); } catch {}
                   if (this._sentinelObserver) { try { this._sentinelObserver.disconnect(); } catch {} this._sentinelObserver = null; }
-                  try { await finalizeRender({ rendered: renderedCount }); } catch (e) {}
+                  try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
                 }
               } catch (err) {
                 console.error('Error rendering next batch', err);
@@ -583,7 +464,7 @@ export const contentManager = {
               renderedCount = this._renderedSet.size;
               if (renderedCount >= items.length) {
                 window.removeEventListener('scroll', this._throttledScrollCheck);
-                try { await finalizeRender({ rendered: renderedCount }); } catch (e) {}
+                try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
               }
             } catch (err) {}
             finally { this._isRenderingNextBatch = false; }
@@ -604,17 +485,7 @@ export const contentManager = {
       this._virtualNodes.length = 0;
       this._renderedSet.clear();
       try { window._headerV2_contentLoadingManager.hide(); } catch (e) {}
-      // resolve the completion promise on cleanup
-      try {
-        if (this._resolveRenderCompletion) this._resolveRenderCompletion({ session, cleanedUp: true });
-      } catch {}
-      this._renderCompletionPromise = null;
-      this._resolveRenderCompletion = null;
-      this._rejectRenderCompletion = null;
     };
-
-    // Return promise that resolves when all batches complete (or aborted/cleared)
-    return this._renderCompletionPromise;
   },
 
   createContainer(item) {

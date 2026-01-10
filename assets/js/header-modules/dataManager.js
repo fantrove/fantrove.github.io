@@ -30,9 +30,6 @@ const dataManager = {
     _jsonDbIndexReady: false,
     _jsonDbIndexPromise: null,
 
-    // NEW: mark that startup readiness for dataManager has been emitted
-    _startupMarked: false,
-
     // fetch queue / concurrency control
     _fetchQueue: [],
     _fetchInProgress: new Map(),
@@ -141,7 +138,6 @@ const dataManager = {
         this._jsonDbIndexPromise = null;
         this._categoryIndexes.clear();
         this._subcategoryCache.clear();
-        this._startupMarked = false;
     },
 
     _warmupPromise: null,
@@ -258,13 +254,6 @@ const dataManager = {
     // { type: [ { id, name, category: [ { id, name, data: [...] }, ... ] }, ... ] }
     async _assembleFullDatabase() {
         if (this.apiCache && Date.now() - this.apiCacheTimestamp < this.constants.CACHE_DURATION) {
-            // if cached and not yet marked, mark now (best-effort)
-            try {
-                if (!this._startupMarked && window._headerV2_startupManager) {
-                    window._headerV2_startupManager.markReady('dataManager');
-                    this._startupMarked = true;
-                }
-            } catch {}
             return this.apiCache;
         }
 
@@ -330,15 +319,6 @@ const dataManager = {
         this.apiCacheTimestamp = Date.now();
         // try build index for searching
         try { await this._buildJsonDbIndex(assembled); } catch {}
-
-        // Mark readiness once DB assembled
-        try {
-            if (!this._startupMarked && window._headerV2_startupManager) {
-                window._headerV2_startupManager.markReady('dataManager');
-                this._startupMarked = true;
-            }
-        } catch (e) {}
-
         return assembled;
     },
 
@@ -347,12 +327,6 @@ const dataManager = {
         this._warmup();
         if (this.apiCache && Date.now() - this.apiCacheTimestamp < this.constants.CACHE_DURATION) {
             if (!this._jsonDbIndexReady) this._buildJsonDbIndex(this.apiCache).catch(()=>{});
-            try {
-                if (!this._startupMarked && window._headerV2_startupManager) {
-                    window._headerV2_startupManager.markReady('dataManager');
-                    this._startupMarked = true;
-                }
-            } catch {}
             return this.apiCache;
         }
         try {

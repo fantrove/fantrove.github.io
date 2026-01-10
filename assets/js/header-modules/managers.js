@@ -1,6 +1,5 @@
 // managers.js
-// ✅ ปรับปรุง: Optimized event handlers, deferred initialization, memory efficient,
-// and robust navigation overlay/ readiness marking to avoid stuck loaders on subbutton first-load
+// ✅ ปรับปรุง: Optimized event handlers, deferred initialization, memory efficient
 export const scrollManager = {
     state: { lastScrollY: 0, ticking: false, subNavOffsetTop: 0, subNavHeight: 0, isSubNavFixed: false },
     constants: { SUB_NAV_TOP_SPACING: 0, ANIMATION_DURATION: 0, Z_INDEX: { SUB_NAV: 999 } },
@@ -12,7 +11,7 @@ export const scrollManager = {
         const headerZ = (this.constants.Z_INDEX.SUB_NAV || 999) + 2;
         styleSheet.textContent = `
 header { position: relative; z-index: ${headerZ}; contain: layout style paint; }
-#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms; }
+#sub-nav { position: sticky; top: ${this.constants.SUB_NAV_TOP_SPACING}px; left: 0; right: 0; z-index: ${this.constants.Z_INDEX.SUB_NAV}; transition: background ${this.constants.ANIMATION_DURATION}ms ease; }
 #sub-nav.fixed { background: rgba(255, 255, 255, 1); border-bottom: 0.5px solid rgba(19, 180, 127, 0.18); border-radius: 0 0 40px 40px; }
 #sub-nav.fixed #sub-buttons-container { padding: 5px !important; }
 #sub-nav.fixed .hj { border-color: rgba(0, 0, 0, 0); background: transparent; }
@@ -114,8 +113,6 @@ header { position: relative; z-index: ${headerZ}; contain: layout style paint; }
             this.handleInitialScroll();
         } catch (e) {
             console.error('scrollManager init error', e);
-        } finally {
-            try { window._headerV2_startupManager?.markReady('scrollManager'); } catch {}
         }
     }
 };
@@ -180,7 +177,7 @@ export const performanceOptimizer = {
         }, 800);
 
         window.addEventListener('error', event => {
-            throttledNotify('เกิดข้���ผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
+            throttledNotify('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
             console.error('Captured error', event.error || event);
         });
 
@@ -197,8 +194,6 @@ export const performanceOptimizer = {
             this.setupErrorBoundary();
         } catch (e) {
             console.error('performanceOptimizer init error', e);
-        } finally {
-            try { window._headerV2_startupManager?.markReady('perf'); } catch {}
         }
     }
 };
@@ -288,14 +283,12 @@ export const buttonManager = {
     async loadConfig() {
         if (this.buttonConfig) {
             await this.renderMainButtons();
-            try { window._headerV2_startupManager?.markReady('buttonManager'); } catch {}
             return;
         }
         const cached = window._headerV2_dataManager.getCached('buttonConfig');
         if (cached) {
             this.buttonConfig = cached;
             await this.renderMainButtons();
-            try { window._headerV2_startupManager?.markReady('buttonManager'); } catch {}
             return;
         }
         // Medium priority (priority 2)
@@ -308,7 +301,6 @@ export const buttonManager = {
         window._headerV2_dataManager.setCache('buttonConfig', response);
         await this.renderMainButtons();
         await window._headerV2_navigationManager.updateButtonStates();
-        try { window._headerV2_startupManager?.markReady('buttonManager'); } catch {}
     },
 
     async renderMainButtons() {
@@ -844,48 +836,23 @@ export const navigationManager = {
                     window._headerV2_buttonManager.state.currentSubButton = subNavBtn;
                 }
                 await window._headerV2_contentManager.clearContent();
-
-                try {
-                    if (subButton && subButton.jsonFile && mainButton.jsonFile) {
-                        const pMain = window._headerV2_dataManager.fetchWithRetry(mainButton.jsonFile, {}, 2).catch(e=>null);
-                        const pSub = window._headerV2_dataManager.fetchWithRetry(subButton.jsonFile, {}, 3).catch(e=>null);
-                        const [mainData, subData] = await Promise.all([pMain, pSub]);
-                        const combined = [];
-                        if (Array.isArray(mainData)) combined.push(...mainData);
-                        else if (mainData) combined.push(mainData);
-                        if (Array.isArray(subData)) combined.push(...subData);
-                        else if (subData) combined.push(subData);
-                        await window._headerV2_contentManager.renderContent(combined);
-                    } else if (subButton && subButton.jsonFile) {
+                if (subButton && subButton.jsonFile) {
+                    try {
                         await window._headerV2_contentManager.renderContent([{ jsonFile: subButton.jsonFile }]);
-                    } else if (mainButton.jsonFile) {
-                        await window._headerV2_contentManager.renderContent([{ jsonFile: mainButton.jsonFile }]);
-                    } else {
-                        try { window._headerV2_startupManager?.markReady('navigation'); } catch {}
+                    } catch (e) {
+                        window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาย่อย', 'error');
                     }
-                    // After render completes, mark navigation readiness
-                    try { window._headerV2_startupManager?.markReady('navigation'); } catch {}
-                } catch (e) {
-                    window._headerV2_utils.showNotification('โหลดเนื้อหาหลัก/ย่อยไม่สำเร็จ', 'error');
-                    console.error(e);
-                    try { window._headerV2_startupManager?.markFailed('navigation'); } catch {}
-                } finally {
-                    try { window._headerV2_contentLoadingManager.hide(); } catch {}
                 }
             } else {
-                // No sub buttons: render main only
+                window._headerV2_subNavManager.hideSubNav();
+                window._headerV2_buttonManager.state.currentSubButton = null;
                 await window._headerV2_contentManager.clearContent();
-                try {
-                    if (mainButton?.jsonFile) {
+                if (mainButton?.jsonFile) {
+                    try {
                         await window._headerV2_contentManager.renderContent([{ jsonFile: mainButton.jsonFile }]);
+                    } catch (e) {
+                        window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาหลัก', 'error');
                     }
-                    try { window._headerV2_startupManager?.markReady('navigation'); } catch {}
-                } catch (e) {
-                    window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการโหลดเนื้อหาหลัก', 'error');
-                    console.error(e);
-                    try { window._headerV2_startupManager?.markFailed('navigation'); } catch {}
-                } finally {
-                    try { window._headerV2_contentLoadingManager.hide(); } catch {}
                 }
             }
 
@@ -898,7 +865,6 @@ export const navigationManager = {
             window._headerV2_contentLoadingManager.hide();
             window._headerV2_utils.showNotification('เกิดข้อผิดพลาดในการนำทาง', 'error');
             console.error('navigateTo error', error);
-            try { window._headerV2_startupManager?.markFailed('navigation'); } catch {}
         } finally {
             window._headerV2_contentLoadingManager.hide();
             this.state.isNavigating = false;
@@ -939,12 +905,4 @@ export const navigationManager = {
             });
         } catch {}
     }
-};
-
-export default {
-    scrollManager,
-    performanceOptimizer,
-    subNavManager,
-    buttonManager,
-    navigationManager
 };
