@@ -211,7 +211,7 @@ section.con h1 {
 }
 
 .buttons svg, #language-button svg {
-  height: 21px !important;
+  height: 23px !important;
   width: auto;
   flex-shrink: 0;
   display: block;
